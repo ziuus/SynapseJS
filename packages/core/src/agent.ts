@@ -191,6 +191,90 @@ export class Agent {
       }) as any,
       execute: async (args: any) => ({ _axonSignal: 'HIGHLIGHT_ELEMENT', payload: args })
     });
+
+    // ── WAVE 3 INTEGRATIONS ─────────────────────────────────────────────────
+
+    // 11. WAIT FOR ELEMENT — poll DOM until an element appears
+    this.tools.register({
+      name: 'waitForElement',
+      description: 'Wait until a specific DOM element appears on the page. Use after interactions that trigger async content loads, like opening a modal or loading a list.',
+      schema: z.object({
+        elementId: z.string().describe('The element ID to wait for'),
+        timeoutMs: z.number().optional().describe('Max milliseconds to wait, default 5000'),
+      }) as any,
+      execute: async (args: any) => ({ _axonSignal: 'WAIT_FOR_ELEMENT', payload: args })
+    });
+
+    // 12. GET PAGE URL — read the current page URL
+    this.tools.register({
+      name: 'getPageUrl',
+      description: 'Return the current page URL or pathname. Use when the user asks where they are, what page they are on, or what the URL is.',
+      schema: z.object({}) as any,
+      execute: async () => ({ _axonSignal: 'GET_PAGE_URL', payload: {} })
+    });
+
+    // 13. SET PAGE TITLE — update the browser tab title
+    this.tools.register({
+      name: 'setPageTitle',
+      description: 'Update the browser tab title (document.title). Use when user wants to rename the page or set a custom tab name.',
+      schema: z.object({
+        title: z.string().describe('New title to set for the browser tab'),
+      }) as any,
+      execute: async (args: any) => ({ _axonSignal: 'SET_PAGE_TITLE', payload: args })
+    });
+
+    // 14. OPEN MODAL — open a dialog or modal by ID
+    this.tools.register({
+      name: 'openModal',
+      description: 'Open a modal, dialog, or drawer. Use when the user wants to open a popup, lightbox, or overlay panel.',
+      schema: z.object({
+        elementId: z.string().describe('The ID of the modal trigger button or dialog element'),
+        action: z.enum(['open', 'close']).optional().describe('Whether to open or close the modal, defaults to open'),
+      }) as any,
+      execute: async (args: any) => ({ _axonSignal: 'OPEN_MODAL', payload: args })
+    });
+
+    // 15. DOWNLOAD FILE — trigger a file download
+    this.tools.register({
+      name: 'downloadFile',
+      description: 'Trigger a file download in the browser. Use when the user asks to download data, an export, a report, or a file.',
+      schema: z.object({
+        url: z.string().describe('The URL of the file to download'),
+        filename: z.string().optional().describe('The suggested filename for the downloaded file'),
+      }) as any,
+      execute: async (args: any) => ({ _axonSignal: 'DOWNLOAD_FILE', payload: args })
+    });
+
+    // 16. SUBMIT FORM — submit a form element by ID
+    this.tools.register({
+      name: 'submitForm',
+      description: 'Submit a form element programmatically. Use when the user asks to save, send, submit, or confirm a form.',
+      schema: z.object({
+        formId: z.string().describe('The ID of the <form> element to submit'),
+      }) as any,
+      execute: async (args: any) => ({ _axonSignal: 'SUBMIT_FORM', payload: args })
+    });
+
+    // 17. CHECKBOX TOGGLE — check or uncheck a checkbox
+    this.tools.register({
+      name: 'checkboxToggle',
+      description: 'Check or uncheck a checkbox input. Use when the user wants to enable/disable options, accept terms, or toggle boolean settings.',
+      schema: z.object({
+        elementId: z.string().describe('The ID of the checkbox element'),
+        checked: z.boolean().optional().describe('true to check, false to uncheck. If omitted, toggles current state.'),
+      }) as any,
+      execute: async (args: any) => ({ _axonSignal: 'CHECKBOX_TOGGLE', payload: args })
+    });
+
+    // 18. SET THEME — set a data-theme attribute on the document
+    this.tools.register({
+      name: 'setTheme',
+      description: 'Set the application theme by updating the data-theme attribute on the <html> element. Supports any theme name (dark, light, blue, etc.).',
+      schema: z.object({
+        theme: z.string().describe('Theme name to apply, e.g. "dark", "light", "ocean", "high-contrast"'),
+      }) as any,
+      execute: async (args: any) => ({ _axonSignal: 'SET_THEME', payload: args })
+    });
   }
 
   /**

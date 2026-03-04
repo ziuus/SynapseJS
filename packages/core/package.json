@@ -1,6 +1,6 @@
 {
   "name": "@axonjs/core",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "The AI Runtime Layer for Frontend Applications",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
