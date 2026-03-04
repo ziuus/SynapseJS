@@ -8,8 +8,10 @@ export interface Tool<TArgs extends z.ZodTypeAny = any, TResult = any> {
 }
 
 export interface AgentConfig {
-  llmProvider: 'openai' | 'mock'; 
-  apiKey?: string; // Required if not using 'mock'
+  llmProvider: 'openai' | 'mock' | 'browser'; 
+  apiKey?: string; // Required for 'openai'
+  browserModelId?: string; // Optional: Override the default browser model
+  onProgress?: (progress: { text: string; progress: number }) => void; // Used when downloading local browser models
   memory?: 'session' | 'none';
 }
 

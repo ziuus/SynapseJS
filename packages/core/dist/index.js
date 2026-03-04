@@ -67,9 +67,13 @@ var ToolRegistry = class {
 // src/agent.ts
 var import_ai = require("ai");
 var import_openai = require("@ai-sdk/openai");
+var import_zod_to_json_schema = require("zod-to-json-schema");
+var import_web_llm = require("@mlc-ai/web-llm");
 var Agent = class {
   config;
   tools;
+  browserEngine = null;
+  isInitializingBrowser = false;
   constructor(config) {
     this.config = config;
     this.tools = new ToolRegistry();
@@ -81,6 +85,30 @@ var Agent = class {
     this.tools.register(tool);
   }
   /**
+   * Initialize the WebLLM browser engine if requested. This downloads weights to cache.
+   */
+  async initializeBrowserEngine() {
+    if (this.browserEngine) return;
+    if (this.isInitializingBrowser) {
+      while (this.isInitializingBrowser) {
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      return;
+    }
+    this.isInitializingBrowser = true;
+    const modelId = this.config.browserModelId || "Phi-3-mini-4k-instruct-q4f16_1-MLC";
+    console.log(`[AxonJS] Initializing browser engine with model: ${modelId}...`);
+    this.browserEngine = await (0, import_web_llm.CreateMLCEngine)(modelId, {
+      initProgressCallback: (progress) => {
+        if (this.config.onProgress) {
+          this.config.onProgress({ text: progress.text, progress: progress.progress });
+        }
+      }
+    });
+    this.isInitializingBrowser = false;
+    console.log(`[AxonJS] Browser engine initialized.`);
+  }
+  /**
    * Primary method to trigger the agent's reasoning loop.
    */
   async run(prompt, context) {
@@ -90,6 +118,9 @@ var Agent = class {
         throw new Error("AxonJS Error: OpenAPI key is missing in config.");
       }
       return this.runOpenAI(prompt, context);
+    }
+    if (this.config.llmProvider === "browser") {
+      return this.runBrowser(prompt, context);
     }
     throw new Error(`Provider ${this.config.llmProvider} is not implemented yet.`);
   }
@@ -105,6 +136,56 @@ var Agent = class {
       };
     }
     return aiTools;
+  }
+  /**
+   * Translates the Axon Tool Registry into the OpenAI standard JSON schema expected by WebLLM.
+   */
+  getWebLLMTools() {
+    const tools = [];
+    for (const tool of this.tools.getAllTools()) {
+      tools.push({
+        type: "function",
+        function: {
+          name: tool.name,
+          description: tool.description,
+          // Strip the $schema wrapper added by zodToJsonSchema
+          parameters: (0, import_zod_to_json_schema.zodToJsonSchema)(tool.schema)
+        }
+      });
+    }
+    return tools;
+  }
+  /**
+   * The execution loop entirely in the browser using WebGPU.
+   */
+  async runBrowser(prompt, context) {
+    await this.initializeBrowserEngine();
+    if (!this.browserEngine) throw new Error("Engine failed to initialize");
+    const response = await this.browserEngine.chat.completions.create({
+      messages: [
+        { role: "system", content: "You are an intelligent frontend application agent. You have access to tools that control the application state and UI. Use them to fulfill the user request." },
+        { role: "user", content: prompt }
+      ],
+      tools: this.getWebLLMTools()
+      // Cast to bypass strict WebLLM type definitions for schemas
+    });
+    const choice = response.choices[0];
+    const toolCallsFromLLM = [];
+    if (choice.message.tool_calls && choice.message.tool_calls.length > 0) {
+      for (const call of choice.message.tool_calls) {
+        const parsedArgs = JSON.parse(call.function.arguments);
+        toolCallsFromLLM.push({ name: call.function.name, args: parsedArgs });
+        try {
+          await this.tools.execute(call.function.name, parsedArgs);
+        } catch (error) {
+          console.error(`[AxonJS Browser] Error executing tool ${call.function.name}:`, error);
+        }
+      }
+    }
+    return {
+      text: choice.message.content || "",
+      toolCalls: toolCallsFromLLM
+    };
   }
   /**
    * The real execution loop using OpenAI via the AI SDK.
