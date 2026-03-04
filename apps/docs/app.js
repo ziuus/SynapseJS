@@ -38,14 +38,14 @@ function copyCode(btn, text) {
 
 /* ── Search ─────────────────────────────────────────────────────────────────── */
 const SEARCH_INDEX = [
-  { title: 'Introduction', page: 'index.html', desc: 'What is AxonJS?' },
+  { title: 'Introduction', page: 'index.html', desc: 'What is SynapseJS?' },
   { title: 'Quick Start', page: 'quick-start.html', desc: 'Set up in 5 minutes' },
   { title: 'Providers', page: 'providers.html', desc: 'Groq, Gemini, OpenAI' },
   { title: 'Agent', page: 'agent.html', desc: 'Core Agent class API' },
   { title: 'Tool Registry', page: 'tool-registry.html', desc: 'register, unregister, list' },
   { title: 'Custom Tools', page: 'custom-tools.html', desc: 'Register your own tools' },
-  { title: 'useAgentDOM', page: 'use-agent-dom.html', desc: 'DOM scanning hook' },
-  { title: 'useAxonSignals', page: 'use-axon-signals.html', desc: 'Signal handler hook' },
+  { title: 'useSynapseDOM', page: 'use-agent-dom.html', desc: 'DOM scanning hook' },
+  { title: 'useSynapseSignals', page: 'use-axon-signals.html', desc: 'Signal handler hook' },
   { title: 'TypeScript Types', page: 'types.html', desc: 'AxonSignal, CoreMessage, etc.' },
   { title: 'FAQ', page: 'faq.html', desc: 'Common questions' },
   { title: 'Changelog', page: 'changelog.html', desc: 'Release history' },

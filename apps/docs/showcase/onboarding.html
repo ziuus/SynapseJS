@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Onboarding — SynapseJS Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .onboard-layout { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--bg); padding: 40px 20px; }
+    .onboard-card {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 24px;
+      width: 100%; max-width: 500px; padding: 48px; position: relative;
+    }
+    .step-indicator { display: flex; gap: 8px; margin-bottom: 32px; justify-content: center; }
+    .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+    .step-dot.active { background: var(--indigo); width: 24px; border-radius: 4px; }
+    
+    .view { display: none; }
+    .view.active { display: block; animation: fadeIn 0.3s ease; }
+    
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .form-group { margin-bottom: 24px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-2); margin-bottom: 8px; }
+    .form-input {
+      width: 100%; padding: 12px 16px; background: var(--bg-3); border: 1px solid var(--border);
+      border-radius: 12px; color: var(--text); outline: none; transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: var(--indigo); }
+    
+    .checkbox-group { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 12px; border: 1px solid var(--border); border-radius: 12px; transition: all 0.2s; }
+    .checkbox-group:hover { border-color: var(--indigo-lo); background: var(--bg-3); }
+    .checkbox-group input { width: 18px; height: 18px; accent-color: var(--indigo); }
+    
+    /* Demo Panel */
+    .demo-panel {
+      position: fixed; bottom: 24px; left: 24px; width: 320px;
+      background: var(--bg-2); border: 1px solid var(--indigo); border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4); overflow: hidden; z-index: 1100;
+    }
+    .demo-panel-header { padding: 12px 16px; background: var(--indigo); color: white; font-size: 14px; font-weight: 600; }
+    .demo-panel-body { padding: 16px; }
+    .demo-action-btn {
+      width: 100%; padding: 8px; background: var(--bg-3); border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text-2); font-size: 12px; text-align: left;
+      margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between;
+    }
+    .demo-action-btn:hover { background: var(--indigo-lo); border-color: var(--indigo); color: var(--text); }
+    .debug-log {
+      font-family: monospace; font-size: 10px; color: var(--emerald);
+      background: #000; padding: 8px; height: 80px; overflow-y: auto; border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body class="onboard-layout">
+
+<div class="onboard-card">
+  <div style="text-align:center; margin-bottom:32px">
+    <a href="../showcase.html" style="text-decoration:none; color:var(--text-3); font-size:12px; display:block; margin-bottom:12px">← Back to Showcase</a>
+    <h1 style="font-size:24px; font-weight:800">Welcome to Synapse</h1>
+  </div>
+
+  <div class="step-indicator">
+    <div class="step-dot active" id="dot-1"></div>
+    <div class="step-dot" id="dot-2"></div>
+    <div class="step-dot" id="dot-3"></div>
+  </div>
+
+  <!-- Step 1: Basics -->
+  <div class="view active" id="view-1">
+    <div class="form-group">
+      <label class="form-label">Company Name</label>
+      <input type="text" id="company-name" class="form-input" placeholder="e.g. Acme Corp" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Team Size</label>
+      <select id="team-size" class="form-input">
+        <option value="1-10">1-10 employees</option>
+        <option value="11-50">11-50 employees</option>
+        <option value="51-200">51-200 employees</option>
+        <option value="201+">201+ employees</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" style="width:100%; padding:14px" id="next-btn-1" onclick="nextStep(2)">Continue</button>
+  </div>
+
+  <!-- Step 2: Features -->
+  <div class="view" id="view-2">
+    <p style="font-size:14px; color:var(--text-2); margin-bottom:20px; text-align:center">What features would you like to enable?</p>
+    <div class="form-group">
+      <label class="checkbox-group">
+        <input type="checkbox" id="feature-ai" checked />
+        <div>
+          <div style="font-size:14px; font-weight:600">AI Automation</div>
+          <div style="font-size:11px; color:var(--text-3)">Enable intelligent signal processing</div>
+        </div>
+      </label>
+    </div>
+    <div class="form-group">
+      <label class="checkbox-group">
+        <input type="checkbox" id="feature-analytics" />
+        <div>
+          <div style="font-size:14px; font-weight:600">Deep Analytics</div>
+          <div style="font-size:11px; color:var(--text-3)">Track agent performance and goals</div>
+        </div>
+      </label>
+    </div>
+    <div class="form-group">
+      <label class="checkbox-group">
+        <input type="checkbox" id="feature-security" />
+        <div>
+          <div style="font-size:14px; font-weight:600">Advanced Security</div>
+          <div style="font-size:11px; color:var(--text-3)">RBAC and audit logging</div>
+        </div>
+      </label>
+    </div>
+    <button class="btn btn-primary" style="width:100%; padding:14px" id="next-btn-2" onclick="nextStep(3)">Set Up Features</button>
+  </div>
+
+  <!-- Step 3: Success -->
+  <div class="view" id="view-3">
+    <div style="text-align:center; padding:20px 0">
+      <div style="font-size:64px; margin-bottom:24px">🎉</div>
+      <h2 style="font-size:24px; font-weight:800; margin-bottom:12px">You're all set!</h2>
+      <p style="font-size:14px; color:var(--text-2); margin-bottom:32px">Your workspace is ready. The AI concierge has configured everything for you.</p>
+      <button class="btn btn-primary" style="width:100%; padding:14px" onclick="location.href='../index.html'">Go to Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- Simulation Panel -->
+<div class="demo-panel">
+  <div class="demo-panel-header">Onboarding Concierge</div>
+  <div class="demo-panel-body">
+    <p style="font-size:12px; color:var(--text-3); margin-bottom:12px">The AI can speed-run onboarding using SynapseJS tools.</p>
+    <button class="demo-action-btn" onclick="simulateAI('complete_step_1')">
+      <span>"Fill step 1 and continue"</span>
+      <span style="color:var(--indigo-hi)">→</span>
+    </button>
+    <button class="demo-action-btn" onclick="simulateAI('toggle_features')">
+      <span>"Enable analytics and security"</span>
+      <span style="color:var(--indigo-hi)">→</span>
+    </button>
+    <button class="demo-action-btn" onclick="simulateAI('finish')">
+      <span>"Finish the setup"</span>
+      <span style="color:var(--indigo-hi)">→</span>
+    </button>
+  </div>
+  <div id="debug-log" class="debug-log">> Waiting for wizard start...</div>
+</div>
+
+<script>
+  function log(msg) {
+    const debug = document.getElementById('debug-log');
+    debug.innerHTML += `<div>> ${msg}</div>`;
+    debug.scrollTop = debug.scrollHeight;
+  }
+
+  function nextStep(step) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(`view-${step}`).classList.add('active');
+    
+    document.querySelectorAll('.step-dot').forEach(d => d.classList.remove('active'));
+    document.getElementById(`dot-${step}`).classList.add('active');
+    
+    log(`[UI] Transitioned to Step ${step}`);
+  }
+
+  function simulateAI(scenario) {
+    if (scenario === 'complete_step_1') {
+      log('Intent: Complete first step');
+      log('Signal: FILL_FORM { fields: [{ elementId: "company-name", value: "Synapse Labs" }] }');
+      document.getElementById('company-name').value = 'Synapse Labs';
+      log('Signal: SELECT_DROPDOWN { elementId: "team-size", value: "11-50" }');
+      document.getElementById('team-size').value = '11-50';
+      setTimeout(() => {
+        log('Signal: UI_INTERACTION { elementId: "next-btn-1", action: "click" }');
+        nextStep(2);
+      }, 1000);
+    }
+    
+    if (scenario === 'toggle_features') {
+      log('Intent: Enable all features');
+      log('Signal: CHECKBOX_TOGGLE { elementId: "feature-analytics", checked: true }');
+      document.getElementById('feature-analytics').checked = true;
+      setTimeout(() => {
+        log('Signal: CHECKBOX_TOGGLE { elementId: "feature-security", checked: true }');
+        document.getElementById('feature-security').checked = true;
+      }, 500);
+    }
+    
+    if (scenario === 'finish') {
+      log('Intent: Finish onboarding');
+      log('Signal: UI_INTERACTION { elementId: "next-btn-2", action: "click" }');
+      setTimeout(() => nextStep(3), 500);
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AxonJS Docs — The AI Runtime Layer for Frontend</title>
+    <title>SynapseJS Docs — The AI Runtime Layer for Frontend</title>
     <meta
       name="description"
-      content="Full documentation for AxonJS — 20 built-in AI tools, useAgentDOM, useAxonSignals, and complete API reference."
+      content="Full documentation for SynapseJS — 20 built-in AI tools, useSynapseDOM, useSynapseSignals, and complete API reference."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -32,7 +32,7 @@
           <a href="index.html" class="sidebar-logo">
             <div class="logo-icon">⚡</div>
             <div>
-              <div class="logo-name">AxonJS</div>
+              <div class="logo-name">SynapseJS</div>
               <div class="logo-version">v0.3.0</div>
             </div>
           </a>
@@ -65,6 +65,31 @@
           </div>
 
           <div class="nav-group">
+            <div class="nav-group-label">Showcase</div>
+            <a href="showcase.html" class="nav-link" data-page="showcase"
+              >Showcase Gallery</a
+            >
+            <a
+              href="showcase/shopping.html"
+              class="nav-link"
+              data-page="showcase-shopping"
+              >AI Shopping Assistant</a
+            >
+            <a
+              href="showcase/dashboard.html"
+              class="nav-link"
+              data-page="showcase-dashboard"
+              >SaaS Dashboard</a
+            >
+            <a
+              href="showcase/configurator.html"
+              class="nav-link"
+              data-page="showcase-configurator"
+              >3D Configurator</a
+            >
+          </div>
+
+          <div class="nav-group">
             <div class="nav-group-label">Core Concepts</div>
             <a href="agent.html" class="nav-link" data-page="agent">Agent</a>
             <a
@@ -87,13 +112,13 @@
               href="use-agent-dom.html"
               class="nav-link"
               data-page="use-agent-dom"
-              >useAgentDOM</a
+              >useSynapseDOM</a
             >
             <a
               href="use-axon-signals.html"
               class="nav-link"
               data-page="use-axon-signals"
-              >useAxonSignals</a
+              >useSynapseSignals</a
             >
           </div>
 
@@ -193,13 +218,13 @@
 
         <div class="sidebar-footer">
           <a
-            href="https://github.com/ziuus/AxonJS"
+            href="https://github.com/ziuus/SynapseJS"
             target="_blank"
             class="sidebar-footer-link"
             >GitHub ↗</a
           >
           <a
-            href="https://www.npmjs.com/package/@axonjs/core"
+            href="https://www.npmjs.com/package/@synapsejs/core"
             target="_blank"
             class="sidebar-footer-link"
             >npm ↗</a
@@ -235,7 +260,7 @@
               <span class="theme-icon">🌙</span>
             </button>
             <a
-              href="https://github.com/ziuus/AxonJS"
+              href="https://github.com/ziuus/SynapseJS"
               target="_blank"
               class="topbar-gh"
             >
@@ -258,12 +283,12 @@
           <!-- Hero -->
           <div class="hero">
             <div class="hero-badge">v0.3.0 — Production Ready</div>
-            <h1 class="hero-title">AxonJS</h1>
+            <h1 class="hero-title">SynapseJS</h1>
             <p class="hero-subtitle">
               The AI Runtime Layer for Frontend Applications
             </p>
             <p class="hero-desc">
-              Drop AxonJS into any React / Next.js app and your AI agent
+              Drop SynapseJS into any React / Next.js app and your AI agent
               instantly gains
               <strong>20 built-in superpowers</strong> — click, fill, navigate,
               scroll, copy, highlight, control 3D scenes, and more. Zero
@@ -274,7 +299,7 @@
                 >Get Started →</a
               >
               <a
-                href="https://github.com/ziuus/AxonJS"
+                href="https://github.com/ziuus/SynapseJS"
                 target="_blank"
                 class="btn btn-ghost"
                 >View on GitHub</a
@@ -308,10 +333,10 @@
           <!-- Install banner -->
           <div class="install-banner">
             <span class="install-label">Install</span>
-            <code class="install-code">npm install @axonjs/core</code>
+            <code class="install-code">npm install @synapsejs/core</code>
             <button
               class="copy-btn"
-              onclick="copyCode(this, 'npm install @axonjs/core')"
+              onclick="copyCode(this, 'npm install @synapsejs/core')"
               title="Copy"
             >
               <svg
@@ -328,11 +353,11 @@
             </button>
           </div>
 
-          <!-- What is AxonJS -->
+          <!-- What is SynapseJS -->
           <section class="section">
-            <h2 class="section-title">What is AxonJS?</h2>
+            <h2 class="section-title">What is SynapseJS?</h2>
             <p class="section-text">
-              AxonJS is a TypeScript library that bridges your LLM (Groq,
+              SynapseJS is a TypeScript library that bridges your LLM (Groq,
               Gemini, OpenAI) and your web UI. It gives the AI a structured
               toolkit to <em>see</em> the DOM, <em>act</em> on elements, and
               <em>respond</em> to user intent — all without you writing any of
@@ -405,7 +430,7 @@
               <pre
                 class="code-block"
                 id="code1"
-              ><code><span class="token-keyword">import</span> { <span class="token-ident">Agent</span> } <span class="token-keyword">from</span> <span class="token-string">'@axonjs/core'</span>;
+              ><code><span class="token-keyword">import</span> { <span class="token-ident">Agent</span> } <span class="token-keyword">from</span> <span class="token-string">'@synapsejs/core'</span>;
 
 <span class="token-keyword">const</span> <span class="token-ident">agent</span> = <span class="token-keyword">new</span> <span class="token-ident">Agent</span>({
   <span class="token-prop">llmProvider</span>: <span class="token-string">'groq'</span>,
@@ -451,11 +476,11 @@
                 class="code-block"
                 id="code2"
               ><code><span class="token-string">'use client'</span>;
-<span class="token-keyword">import</span> { <span class="token-ident">useAgentDOM</span>, <span class="token-ident">useAxonSignals</span> } <span class="token-keyword">from</span> <span class="token-string">'@axonjs/core/client'</span>;
+<span class="token-keyword">import</span> { <span class="token-ident">useSynapseDOM</span>, <span class="token-ident">useSynapseSignals</span> } <span class="token-keyword">from</span> <span class="token-string">'@synapsejs/core/client'</span>;
 
 <span class="token-keyword">export default function</span> <span class="token-fn">Page</span>() {
-  <span class="token-keyword">const</span> <span class="token-ident">domElements</span> = <span class="token-fn">useAgentDOM</span>();
-  <span class="token-keyword">const</span> { <span class="token-ident">processSignals</span> } = <span class="token-fn">useAxonSignals</span>({
+  <span class="token-keyword">const</span> <span class="token-ident">domElements</span> = <span class="token-fn">useSynapseDOM</span>();
+  <span class="token-keyword">const</span> { <span class="token-ident">processSignals</span> } = <span class="token-fn">useSynapseSignals</span>({
     <span class="token-const">SHOW_NOTIFICATION</span>: ({ <span class="token-ident">message</span>, <span class="token-ident">type</span> }) => <span class="token-fn">toast</span>(<span class="token-ident">message</span>, <span class="token-ident">type</span>),
     <span class="token-const">NAVIGATE</span>: ({ <span class="token-ident">url</span> }) => <span class="token-ident">router</span>.<span class="token-fn">push</span>(<span class="token-ident">url</span>),
     <span class="token-const">SET_THEME</span>: ({ <span class="token-ident">theme</span> }) => <span class="token-ident">setTheme</span>(<span class="token-ident">theme</span>),
@@ -630,7 +655,41 @@
             </div>
           </section>
 
-          <!-- Next steps -->
+          <!-- Showcase Section -->
+      <section class="section">
+        <h2 class="section-title">Explore the Showcase</h2>
+        <p class="section-text" style="margin-bottom:24px">
+          See SynapseJS in action across various high-fidelity demos. Each showcase includes a simulation panel to demonstrate how signals drive the UI.
+        </p>
+        <div class="next-steps">
+          <a href="showcase/shopping.html" class="next-step-card">
+            <div class="next-step-icon">🛒</div>
+            <div>
+              <div class="next-step-title">E-Commerce</div>
+              <div class="next-step-desc">Interactive shopping & cart control</div>
+            </div>
+          </a>
+          <a href="showcase/dashboard.html" class="next-step-card">
+            <div class="next-step-icon">📊</div>
+            <div>
+              <div class="next-step-title">SaaS Admin</div>
+              <div class="next-step-desc">Theme switching & profile automation</div>
+            </div>
+          </a>
+          <a href="showcase/configurator.html" class="next-step-card">
+            <div class="next-step-icon">🛋️</div>
+            <div>
+              <div class="next-step-title">3D Control</div>
+              <div class="next-step-desc">AI-powered spatial configurator</div>
+            </div>
+          </a>
+        </div>
+        <div style="margin-top:16px; text-align:center">
+          <a href="showcase.html" class="btn btn-ghost" style="width:100%">View All Showcases →</a>
+        </div>
+      </section>
+
+      <!-- Next steps -->
           <section class="section">
             <h2 class="section-title">Next Steps</h2>
             <div class="next-steps">
@@ -638,7 +697,7 @@
                 <div class="next-step-icon">🚀</div>
                 <div>
                   <div class="next-step-title">Quick Start</div>
-                  <div class="next-step-desc">Set up AxonJS in 5 minutes</div>
+                  <div class="next-step-desc">Set up SynapseJS in 5 minutes</div>
                 </div>
               </a>
               <a href="custom-tools.html" class="next-step-card">
@@ -653,7 +712,7 @@
               <a href="use-axon-signals.html" class="next-step-card">
                 <div class="next-step-icon">⚡</div>
                 <div>
-                  <div class="next-step-title">useAxonSignals</div>
+                  <div class="next-step-title">useSynapseSignals</div>
                   <div class="next-step-desc">
                     Handle all signals with one hook
                   </div>
@@ -664,13 +723,13 @@
 
           <!-- Footer -->
           <footer class="doc-footer">
-            <div class="footer-left">MIT License · AxonJS v0.3.0</div>
+            <div class="footer-left">MIT License · SynapseJS v0.3.0</div>
             <div class="footer-right">
-              <a href="https://github.com/ziuus/AxonJS" target="_blank"
+              <a href="https://github.com/ziuus/SynapseJS" target="_blank"
                 >GitHub</a
               >
               <a
-                href="https://www.npmjs.com/package/@axonjs/core"
+                href="https://www.npmjs.com/package/@synapsejs/core"
                 target="_blank"
                 >npm</a
               >

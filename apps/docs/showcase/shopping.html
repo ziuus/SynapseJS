@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Shopping Assistant — SynapseJS Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .shop-layout { display: flex; flex-direction: column; height: 100vh; }
+    .shop-header {
+      padding: 16px 24px;
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .cart-badge {
+      background: var(--indigo);
+      color: white;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: 6px;
+    }
+    .shop-content { padding: 40px 24px; max-width: 1200px; margin: 0 auto; width: 100%; }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .product-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    .product-card:hover { transform: translateY(-4px); border-color: var(--indigo-hi); }
+    .product-img {
+      height: 180px;
+      background: var(--bg-3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px;
+    }
+    .product-info { padding: 20px; }
+    .product-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .product-price { font-size: 16px; color: var(--indigo-hi); font-weight: 600; margin-bottom: 12px; }
+    .add-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .add-btn:hover { background: var(--indigo); color: white; border-color: var(--indigo); }
+    
+    /* Demo Controls */
+    .demo-panel {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      width: 320px;
+      background: var(--bg-2);
+      border: 1px solid var(--indigo);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      overflow: hidden;
+      z-index: 100;
+    }
+    .demo-panel-header {
+      padding: 12px 16px;
+      background: var(--indigo);
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex; justify-content: space-between;
+    }
+    .demo-panel-body { padding: 16px; }
+    .demo-chat-bubble {
+      background: var(--bg-3);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      margin-bottom: 12px;
+      border-left: 3px solid var(--indigo);
+    }
+    .demo-action-btn {
+      width: 100%;
+      padding: 8px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-2);
+      font-size: 12px;
+      text-align: left;
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: flex; justify-content: space-between;
+    }
+    .demo-action-btn:hover { background: var(--indigo-lo); border-color: var(--indigo); color: var(--text); }
+    
+    .debug-log {
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--emerald);
+      background: #000;
+      padding: 8px;
+      height: 80px;
+      overflow-y: auto;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body class="shop-layout">
+
+<header class="shop-header">
+  <div style="display:flex; align-items:center; gap:10px">
+    <a href="../showcase.html" style="text-decoration:none; color:var(--text-3); font-size:20px">←</a>
+    <span style="font-weight:800; font-size:20px; letter-spacing:-0.03em">Synapse<span style="color:var(--indigo-hi)">Store</span></span>
+  </div>
+  <div style="display:flex; gap:20px; align-items:center">
+    <nav style="display:flex; gap:24px; font-size:14px; color:var(--text-2)">
+      <span>Apparel</span>
+      <span>Tech</span>
+      <span>Home</span>
+    </nav>
+    <div style="position:relative; cursor:pointer">
+      <span>🛒 Cart</span>
+      <span id="cart-count" class="cart-badge">0</span>
+    </div>
+  </div>
+</header>
+
+<main class="shop-content">
+  <h2 style="font-size:32px; font-weight:800; margin-bottom:32px">Featured Products</h2>
+  
+  <div class="product-grid">
+    <div class="product-card" id="prod-1">
+      <div class="product-img">🎧</div>
+      <div class="product-info">
+        <div class="product-title">Sonic Pro Headphones</div>
+        <div class="product-price">$299.00</div>
+        <button class="add-btn" onclick="addToCart('Sonic Pro Headphones', 'prod-1')">Add to Cart</button>
+      </div>
+    </div>
+    <div class="product-card" id="prod-2">
+      <div class="product-img">⌚</div>
+      <div class="product-info">
+        <div class="product-title">Vantage Smart Watch</div>
+        <div class="product-price">$199.00</div>
+        <button class="add-btn" onclick="addToCart('Vantage Smart Watch', 'prod-2')">Add to Cart</button>
+      </div>
+    </div>
+    <div class="product-card" id="prod-3">
+      <div class="product-img">⌨️</div>
+      <div class="product-info">
+        <div class="product-title">Mechanical Keyboard</div>
+        <div class="product-price">$129.00</div>
+        <button class="add-btn" onclick="addToCart('Mechanical Keyboard', 'prod-3')">Add to Cart</button>
+      </div>
+    </div>
+    <div class="product-card" id="prod-4">
+      <div class="product-img">🔋</div>
+      <div class="product-info">
+        <div class="product-title">PowerCore 20k</div>
+        <div class="product-price">$49.00</div>
+        <button class="add-btn" onclick="addToCart('PowerCore 20k', 'prod-4')">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Simulation Panel -->
+<div class="demo-panel">
+  <div class="demo-panel-header">
+    <span>AI Assistant (Demo)</span>
+    <span style="font-size:10px; opacity:0.8">SynapseJS Active</span>
+  </div>
+  <div class="demo-panel-body">
+    <div class="demo-chat-bubble">Hey! I'm your AI assistant. I can help you find products or add them to your cart.</div>
+    
+    <div style="font-size:11px; color:var(--text-3); margin-bottom:8px">Try these intents:</div>
+    
+    <button class="demo-action-btn" onclick="simulateAI('add_headphones')">
+      <span>"Add the headphones to my cart"</span>
+      <span style="color:var(--indigo-hi)">→</span>
+    </button>
+    
+    <button class="demo-action-btn" onclick="simulateAI('scroll_bottom')">
+      <span>"Show me more products"</span>
+      <span style="color:var(--indigo-hi)">→</span>
+    </button>
+    
+    <button class="demo-action-btn" onclick="simulateAI('notify_test')">
+      <span>"Is this item in stock?"</span>
+      <span style="color:var(--indigo-hi)">→</span>
+    </button>
+  </div>
+  <div id="debug-log" class="debug-log">
+    > Waiting for user intent...
+  </div>
+</div>
+
+<script>
+  let cartCount = 0;
+  
+  function addToCart(name, id) {
+    cartCount++;
+    document.getElementById('cart-count').textContent = cartCount;
+    log(`[UI] Added "${name}" to cart.`);
+    showToast(`Added ${name} to cart!`, 'success');
+  }
+  
+  function log(msg) {
+    const debug = document.getElementById('debug-log');
+    debug.innerHTML += `<div>> ${msg}</div>`;
+    debug.scrollTop = debug.scrollHeight;
+  }
+  
+  function showToast(msg, type) {
+    console.log(`[Showcase Notification] ${type}: ${msg}`);
+    // Simple toast implementation for demo
+    const toast = document.createElement('div');
+    toast.style.position = 'fixed';
+    toast.style.bottom = '20px';
+    toast.style.left = '50%';
+    toast.style.transform = 'translateX(-50%)';
+    toast.style.background = type === 'success' ? '#10b981' : '#6366f1';
+    toast.style.color = 'white';
+    toast.style.padding = '12px 24px';
+    toast.style.borderRadius = '30px';
+    toast.style.fontSize = '14px';
+    toast.style.zIndex = '1000';
+    toast.style.boxShadow = '0 10px 25px rgba(0,0,0,0.3)';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  function simulateAI(scenario) {
+    if (scenario === 'add_headphones') {
+      log('Intent: Add headphones');
+      log('Signal: UI_INTERACTION { elementId: "prod-1", action: "click" }');
+      const btn = document.querySelector('#prod-1 .add-btn');
+      btn.style.outline = '4px solid #6366f1';
+      btn.style.outlineOffset = '2px';
+      setTimeout(() => {
+        btn.click();
+        btn.style.outline = '';
+      }, 800);
+    }
+    
+    if (scenario === 'scroll_bottom') {
+      log('Intent: Scroll down');
+      log('Signal: SCROLL_TO { top: 1000, behavior: "smooth" }');
+      window.scrollTo({ top: 1000, behavior: 'smooth' });
+    }
+    
+    if (scenario === 'notify_test') {
+      log('Intent: Check stock');
+      log('Signal: SHOW_NOTIFICATION { message: "Item is in stock!", type: "info" }');
+      showToast('Item is in stock and ready to ship!', 'info');
+    }
+  }
+</script>
+
+</body>
+</html>

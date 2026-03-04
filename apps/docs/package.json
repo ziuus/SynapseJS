@@ -1,7 +1,7 @@
 {
-  "name": "axonjs-docs",
+  "name": "synapsejs-docs",
   "version": "1.0.0",
-  "description": "AxonJS Documentation Site",
+  "description": "SynapseJS Documentation Site",
   "scripts": {
     "dev": "npx -y serve . -p 3001 --no-clipboard",
     "build": "echo 'Static site — no build needed'",

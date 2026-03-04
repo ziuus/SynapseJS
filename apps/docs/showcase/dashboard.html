@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SaaS Dashboard — SynapseJS Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .dash-layout { display: flex; height: 100vh; background: var(--bg); }
+    .dash-sidebar {
+      width: 240px; background: var(--bg-2); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; padding: 24px 0;
+    }
+    .dash-nav-link {
+      padding: 12px 24px; color: var(--text-2); font-size: 14px; text-decoration: none;
+      display: flex; align-items: center; gap: 12px; transition: all 0.2s;
+    }
+    .dash-nav-link:hover, .dash-nav-link.active { background: var(--indigo-lo); color: var(--indigo-hi); }
+    .dash-main { flex: 1; padding: 40px; overflow-y: auto; }
+    .dash-card {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px;
+      padding: 24px; margin-bottom: 24px;
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-3); text-transform: uppercase; margin-bottom: 8px; }
+    .form-input {
+      width: 100%; padding: 10px 12px; background: var(--bg-3); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); outline: none; transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: var(--indigo); }
+    
+    /* Modal Simulation */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center; z-index: 1000;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-content {
+      background: var(--bg-2); border: 1px solid var(--indigo); border-radius: 16px;
+      width: 400px; padding: 32px; text-align: center;
+    }
+    
+    /* Demo Panel */
+    .demo-panel {
+      position: fixed; bottom: 24px; right: 24px; width: 320px;
+      background: var(--bg-2); border: 1px solid var(--indigo); border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4); overflow: hidden; z-index: 1100;
+    }
+    .demo-panel-header { padding: 12px 16px; background: var(--indigo); color: white; font-size: 14px; font-weight: 600; }
+    .demo-panel-body { padding: 16px; }
+    .demo-action-btn {
+      width: 100%; padding: 8px; background: var(--bg-3); border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text-2); font-size: 12px; text-align: left;
+      margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between;
+    }
+    .demo-action-btn:hover { background: var(--indigo-lo); border-color: var(--indigo); color: var(--text); }
+    .debug-log {
+      font-family: monospace; font-size: 10px; color: var(--emerald);
+      background: #000; padding: 8px; height: 80px; overflow-y: auto; border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body class="dash-layout">
+
+<aside class="dash-sidebar">
+  <div style="padding:0 24px 24px; font-weight:800; font-size:18px">
+    <a href="../showcase.html" style="text-decoration:none; color:var(--text)">⚡ Dash<span style="color:var(--indigo-hi)">Sync</span></a>
+  </div>
+  <a href="#" class="dash-nav-link active"><span>🏠</span> Dashboard</a>
+  <a href="#" class="dash-nav-link"><span>👤</span> Profile</a>
+  <a href="#" class="dash-nav-link"><span>⚙️</span> Settings</a>
+  <a href="#" class="dash-nav-link"><span>🔐</span> Security</a>
+</aside>
+
+<main class="dash-main">
+  <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px">
+    <h1 style="font-size:28px; font-weight:800">Account Settings</h1>
+    <div style="display:flex; gap:12px">
+      <button class="btn btn-ghost" onclick="toggleTheme()">Toggle Theme</button>
+      <button class="btn btn-primary" id="open-modal-btn" onclick="openModal()">Update Plan</button>
+    </div>
+  </header>
+
+  <div class="dash-card">
+    <h2 style="font-size:18px; font-weight:700; margin-bottom:20px">Profile Information</h2>
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input type="text" id="full-name" class="form-input" value="Alex Rivera" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" id="email" class="form-input" value="alex@example.com" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Preferred Theme</label>
+      <select id="theme-select" class="form-input" onchange="applyThemeSelection(this.value)">
+        <option value="dark">Dark Mode</option>
+        <option value="light">Light Mode</option>
+        <option value="indigo">Indigo Soul</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" id="save-profile-btn" onclick="saveProfile()">Save Changes</button>
+  </div>
+</main>
+
+<!-- Modal -->
+<div id="plan-modal" class="modal-overlay">
+  <div class="modal-content">
+    <h3 style="font-size:20px; font-weight:700; margin-bottom:12px">Upgrade to Pro</h3>
+    <p style="font-size:14px; color:var(--text-2); margin-bottom:24px">Get unlimited access to all AI features and priority support.</p>
+    <div style="display:flex; gap:12px; justify-content:center">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmUpgrade()">Confirm $19/mo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Simulation Panel -->
+<div class="demo-panel">
+  <div class="demo-panel-header">AI Dashboard Assistant</div>
+  <div class="demo-panel-body">
+    <button class="demo-action-btn" onclick="simulateAI('dark_mode')">
+      <span>"Switch to light mode"</span>
+      <span style="color:var(--indigo-hi)">→</span>
+    </button>
+    <button class="demo-action-btn" onclick="simulateAI('update_profile')">
+      <span>"Update my name to Jordan"</span>
+      <span style="color:var(--indigo-hi)">→</span>
+    </button>
+    <button class="demo-action-btn" onclick="simulateAI('upgrade_plan')">
+      <span>"Open the upgrade dialog"</span>
+      <span style="color:var(--indigo-hi)">→</span>
+    </button>
+  </div>
+  <div id="debug-log" class="debug-log">> System Ready...</div>
+</div>
+
+<script>
+  function log(msg) {
+    const debug = document.getElementById('debug-log');
+    debug.innerHTML += `<div>> ${msg}</div>`;
+    debug.scrollTop = debug.scrollHeight;
+  }
+  
+  function applyThemeSelection(theme) {
+    document.documentElement.dataset.theme = theme;
+    log(`[UI] Theme set to: ${theme}`);
+  }
+
+  function openModal() {
+    document.getElementById('plan-modal').classList.add('open');
+    log(`[UI] Opened modal: plan-modal`);
+  }
+  
+  function closeModal() {
+    document.getElementById('plan-modal').classList.remove('open');
+    log(`[UI] Closed modal`);
+  }
+  
+  function saveProfile() {
+    const name = document.getElementById('full-name').value;
+    log(`[UI] Saved profile for: ${name}`);
+    alert('Profile Updated!');
+  }
+
+  function simulateAI(scenario) {
+    if (scenario === 'dark_mode') {
+      log('Intent: Switch theme');
+      log('Signal: SET_THEME { theme: "light" }');
+      applyThemeSelection('light');
+    }
+    if (scenario === 'update_profile') {
+      log('Intent: Update profile name');
+      log('Signal: FILL_FORM { fields: [{ elementId: "full-name", value: "Jordan" }] }');
+      const input = document.getElementById('full-name');
+      input.style.outline = '2px solid #6366f1';
+      setTimeout(() => {
+        input.value = 'Jordan';
+        input.style.outline = '';
+        log('Signal: UI_INTERACTION { elementId: "save-profile-btn", action: "click" }');
+        document.getElementById('save-profile-btn').style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          document.getElementById('save-profile-btn').style.transform = '';
+          alert('Profile Updated to Jordan!');
+        }, 200);
+      }, 800);
+    }
+    if (scenario === 'upgrade_plan') {
+      log('Intent: Upgrade plan');
+      log('Signal: OPEN_MODAL { elementId: "open-modal-btn", action: "open" }');
+      const btn = document.getElementById('open-modal-btn');
+      btn.style.outline = '2px solid white';
+      setTimeout(() => {
+        btn.style.outline = '';
+        openModal();
+      }, 500);
+    }
+  }
+  
+  // Reuse existing toggleTheme from app.js but with logging
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.dataset.theme === 'dark';
+    const newTheme = isDark ? 'light' : 'dark';
+    html.dataset.theme = newTheme;
+    log(`[UI] Manual theme toggle: ${newTheme}`);
+  }
+</script>
+
+</body>
+</html>
