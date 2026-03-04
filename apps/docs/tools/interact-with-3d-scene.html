@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>interactWith3DScene — AxonJS Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .param-table { width:100%; border-collapse:collapse; margin:16px 0; }
+    .param-table th { text-align:left; padding:8px 12px; background:var(--bg-3); border-bottom:1px solid var(--border); font-size:12px; color:var(--text-3); text-transform:uppercase; letter-spacing:.05em; }
+    .param-table td { padding:10px 12px; border-bottom:1px solid var(--border-2); font-size:13px; color:var(--text-2); vertical-align:top; }
+    .param-table td:first-child code { color:var(--indigo-hi); }
+    .param-req { background:rgba(16,185,129,.15); color:#6ee7b7; padding:1px 6px; border-radius:20px; font-size:11px; }
+    .param-opt { background:var(--bg-3); color:var(--text-3); padding:1px 6px; border-radius:20px; font-size:11px; }
+    .tool-header { margin-bottom:32px; }
+    .tool-signal-tag { display:inline-flex; align-items:center; gap:6px; background:var(--bg-3); border:1px solid var(--border); border-radius:20px; padding:4px 12px; font-family:monospace; font-size:12px; color:var(--text-2); margin-top:12px; }
+  </style>
+</head>
+<body>
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="sidebar-logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-name">AxonJS</div><div class="logo-version">v0.3.0</div></div>
+      </a>
+    </div>
+    <div class="search-wrap" style="position:relative">
+      <input type="text" id="search" placeholder="Search docs…" class="search-input" oninput="handleSearch(this.value)" />
+      <span class="search-kbd">⌘K</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Getting Started</div>
+        <a href="../index.html" class="nav-link">Introduction</a>
+        <a href="../quick-start.html" class="nav-link">Quick Start</a>
+        <a href="../providers.html" class="nav-link">Providers</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Core Concepts</div>
+        <a href="../agent.html" class="nav-link">Agent</a>
+        <a href="../tool-registry.html" class="nav-link">Tool Registry</a>
+        <a href="../custom-tools.html" class="nav-link">Custom Tools</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">React Hooks</div>
+        <a href="../use-agent-dom.html" class="nav-link">useAgentDOM</a>
+        <a href="../use-axon-signals.html" class="nav-link">useAxonSignals</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Built-in Tools</div>
+        <a href="interact-with-screen.html" class="nav-link nav-link-tool">interactWithScreen</a>
+        <a href="read-screen-text.html" class="nav-link nav-link-tool">readScreenText</a>
+        <a href="observe-state.html" class="nav-link nav-link-tool">observeState</a>
+        <a href="fill-form.html" class="nav-link nav-link-tool">fillForm</a>
+        <a href="navigate-to.html" class="nav-link nav-link-tool">navigateTo</a>
+        <a href="show-notification.html" class="nav-link nav-link-tool">showNotification</a>
+        <a href="scroll-to.html" class="nav-link nav-link-tool">scrollTo</a>
+        <a href="copy-to-clipboard.html" class="nav-link nav-link-tool">copyToClipboard</a>
+        <a href="toggle-element.html" class="nav-link nav-link-tool">toggleElement</a>
+        <a href="select-dropdown.html" class="nav-link nav-link-tool">selectDropdown</a>
+        <a href="highlight-element.html" class="nav-link nav-link-tool">highlightElement</a>
+        <a href="wait-for-element.html" class="nav-link nav-link-tool">waitForElement</a>
+        <a href="get-page-url.html" class="nav-link nav-link-tool">getPageUrl</a>
+        <a href="set-page-title.html" class="nav-link nav-link-tool">setPageTitle</a>
+        <a href="open-modal.html" class="nav-link nav-link-tool">openModal</a>
+        <a href="download-file.html" class="nav-link nav-link-tool">downloadFile</a>
+        <a href="submit-form.html" class="nav-link nav-link-tool">submitForm</a>
+        <a href="checkbox-toggle.html" class="nav-link nav-link-tool">checkboxToggle</a>
+        <a href="set-theme.html" class="nav-link nav-link-tool">setTheme</a>
+        <a href="interact-with-3d-scene.html" class="nav-link nav-link-tool">interactWith3DScene</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="https://github.com/ziuus/AxonJS" target="_blank" class="sidebar-footer-link">GitHub ↗</a>
+      <a href="https://www.npmjs.com/package/@axonjs/core" target="_blank" class="sidebar-footer-link">npm ↗</a>
+    </div>
+  </aside>
+
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-breadcrumb">Tools → interactWith3DScene</div>
+      <div class="topbar-right">
+        <button class="theme-btn" onclick="toggleTheme()"><span class="theme-icon">🌙</span></button>
+        <a href="https://github.com/ziuus/AxonJS" target="_blank" class="topbar-gh">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        </a>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="tool-header">
+        <span class="wave-badge wave-3d" style="margin-bottom:12px; display:inline-block">3D Integration</span>
+        <h1 style="font-size:40px; font-weight:800; letter-spacing:-0.02em; margin-bottom:12px">interactWith3DScene</h1>
+        <p style="font-size:17px; color:var(--text-2); max-width:600px; margin-bottom:8px">Emit events or set variables on a Spline 3D scene embedded in the page.</p>
+        <div class="tool-signal-tag">Signal: <strong>3D_INTERACTION</strong></div>
+      </div>
+
+      <section class="section">
+        <h2 class="section-title">When to Use</h2>
+        <p class="section-text">The page contains a Spline 3D canvas and the user wants to trigger animations or change 3D state.</p>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Parameters</h2>
+        <table class="param-table">
+          <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>          <tr>
+            <td><code>sceneId</code></td>
+            <td><code>string</code></td>
+            <td><span class="param-req">required</span></td>
+            <td>The element ID of the 3D scene container</td>
+          </tr>
+          <tr>
+            <td><code>actionType</code></td>
+            <td><code>"emitEvent" | "setVariable"</code></td>
+            <td><span class="param-req">required</span></td>
+            <td>Whether to fire an event or set a Spline variable</td>
+          </tr>
+          <tr>
+            <td><code>target</code></td>
+            <td><code>string</code></td>
+            <td><span class="param-req">required</span></td>
+            <td>Event name or variable name to target</td>
+          </tr>
+          <tr>
+            <td><code>value</code></td>
+            <td><code>any</code></td>
+            <td><span class="param-opt">optional</span></td>
+            <td>New value (for setVariable only)</td>
+          </tr></tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Example</h2>
+        <p class="section-text" style="font-size:13px; margin-bottom:12px">User says: "Trigger the hover animation on the 3D scene"</p>
+        <div class="code-block-wrap">
+          <div class="code-block-header">
+            <span>Agent tool call</span>
+            <button class="copy-btn" onclick="copyCode(this, document.getElementById('ex-code').textContent)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+          </div>
+          <pre class="code-block" id="ex-code"><code>agent calls interactWith3DScene({
+  sceneId: "hero-3d-scene",
+  actionType: "emitEvent",
+  target: "mouseHover"
+})</code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Frontend Handler</h2>
+        <p class="section-text">Handle this signal in your component using <a href="../use-axon-signals.html">useAxonSignals</a>:</p>
+        <div class="code-block-wrap">
+          <div class="code-block-header">
+            <span>Signal handler (TypeScript)</span>
+            <button class="copy-btn" onclick="copyCode(this, document.getElementById('handler-code').textContent)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+          </div>
+          <pre class="code-block" id="handler-code"><code>case '3D_INTERACTION': {
+  const { actionType, target, value } = args;
+  if (!window.AxonSplineInterop) break;
+  if (actionType === 'emitEvent') window.AxonSplineInterop.emitEvent('mouseHover', target);
+  if (actionType === 'setVariable') window.AxonSplineInterop.setVariable(target, value);
+  break;
+}</code></pre>
+        </div>
+      </section>
+
+      <footer class="doc-footer">
+        <div class="footer-left">MIT License · AxonJS v0.3.0</div>
+        <div class="footer-right">
+          <a href="https://github.com/ziuus/AxonJS" target="_blank">GitHub</a>
+          <a href="../changelog.html">Changelog</a>
+        </div>
+      </footer>
+    </main>
+  </div>
+</div>
+<script src="../app.js"></script>
+</body>
+</html>
