@@ -1,15 +1,27 @@
 import { z } from 'zod';
 
-export interface Tool<TArgs extends z.ZodTypeAny = any, TResult = any> {
+/**
+ * Standardized message format representing conversation history
+ */
+export type CoreMessage = {
+  role: 'user' | 'assistant' | 'system' | 'data';
+  content: string;
+};
+
+export interface Tool<TArgs = any, TResult = any> {
   name: string;
   description: string;
-  schema: TArgs; // Zod schema is now required for strict validation
-  execute: (args: z.infer<TArgs>) => Promise<TResult> | TResult;
+  schema?: z.ZodType<TArgs>; // Zod schema is now optional if jsonSchema is provided
+  jsonSchema?: any; // Raw JSON schema for high compatibility
+  execute: (args: any) => Promise<TResult> | TResult;
 }
 
 export interface AgentConfig {
-  llmProvider: 'openai' | 'gemini' | 'mock'; 
-  apiKey?: string; // Required for 'openai' and 'gemini'
+  llmProvider: 'openai' | 'gemini' | 'groq' | 'mock'; 
+  apiKey?: string; // Required for 'openai', 'gemini', and 'groq'
+  systemPrompt?: string; // Custom instructions for the agent
+  model?: string; // Optional specific model override
+  maxSteps?: number; // Optional loop limit
   memory?: 'session' | 'none';
 }
 

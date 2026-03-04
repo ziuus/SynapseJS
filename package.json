@@ -3,6 +3,10 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "apps/*"
-  ]
+    "apps/*",
+    "apps/nextjs-demo"
+  ],
+  "dependencies": {
+    "zod": "^3.25.76"
+  }
 }

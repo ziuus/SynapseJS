@@ -39,7 +39,7 @@ export class ToolRegistry {
     
     // Strict Input Validation before anything touches the application
     console.log(`[AxonJS Validation] Validating arguments for ${name}...`);
-    const parsedArgs = tool.schema.parse(args);
+    const parsedArgs = tool.schema ? tool.schema.parse(args) : args;
     
     return tool.execute(parsedArgs);
   }

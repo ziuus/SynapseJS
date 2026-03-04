@@ -11,16 +11,44 @@ const runtime = createAgent({
   memory: 'session'
 });
 
-// Register a mock tool with strict Zod validation
 runtime.registerTool({
   name: 'navigateToPage',
   description: 'Navigates the user to a different page in the application. Use this whenever the user asks to see a different part of the app.',
   schema: z.object({
     url: z.string().describe("The path to navigate to, e.g. /dashboard or /settings")
   }),
-  execute: ({ url }) => {
+  execute: ({ url }: { url: string }) => {
     console.log(`[App Execution] Navigating window to: ${url}`);
     return `Successfully navigated to ${url}`;
+  },
+});
+
+runtime.registerTool({
+  name: 'getWeather',
+  description: 'Gets the current weather for a specific location.',
+  schema: z.object({
+    location: z.string().describe("The city or region to get weather for")
+  }),
+  execute: ({ location }: { location: string }) => {
+    console.log(`[App Execution] Checking weather for: ${location}`);
+    // Mock weather data
+    const conditions = ['Sunny', 'Rainy', 'Cloudy', 'Snowy'];
+    const temp = Math.floor(Math.random() * 30) + 10;
+    const cond = conditions[Math.floor(Math.random() * conditions.length)];
+    return `The weather in ${location} is ${temp}°C and ${cond}.`;
+  },
+});
+
+runtime.registerTool({
+  name: 'sendTextMessage',
+  description: 'Sends a text message to a specific contact.',
+  schema: z.object({
+    recipient: z.string().describe("The name of the person to text (e.g., Alice)"),
+    message: z.string().describe("The exact text message content to send")
+  }),
+  execute: ({ recipient, message }: { recipient: string, message: string }) => {
+    console.log(`[App Execution] Sending text to ${recipient}: "${message}"`);
+    return `Message successfully sent to ${recipient}.`;
   },
 });
 

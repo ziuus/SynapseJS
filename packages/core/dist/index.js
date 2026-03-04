@@ -26,6 +26,9 @@ __export(index_exports, {
 });
 module.exports = __toCommonJS(index_exports);
 
+// src/agent.ts
+var import_ai = require("ai");
+
 // src/tool-registry.ts
 var ToolRegistry = class {
   tools = /* @__PURE__ */ new Map();
@@ -59,21 +62,37 @@ var ToolRegistry = class {
       throw new Error(`Tool '${name}' not found in registry.`);
     }
     console.log(`[AxonJS Validation] Validating arguments for ${name}...`);
-    const parsedArgs = tool.schema.parse(args);
+    const parsedArgs = tool.schema ? tool.schema.parse(args) : args;
     return tool.execute(parsedArgs);
   }
 };
 
 // src/agent.ts
-var import_ai = require("ai");
 var import_openai = require("@ai-sdk/openai");
 var import_google = require("@ai-sdk/google");
+var import_groq = require("@ai-sdk/groq");
+var import_zod = require("zod");
 var Agent = class {
   config;
   tools;
   constructor(config) {
     this.config = config;
     this.tools = new ToolRegistry();
+    this.tools.register({
+      name: "interactWithScreen",
+      description: 'Interact with the user interface. You MUST provide the exact "elementId" from the current DOM state, an "action" (click/type), and a "value" if typing.',
+      schema: import_zod.z.object({
+        elementId: import_zod.z.string(),
+        action: import_zod.z.enum(["click", "type"]),
+        value: import_zod.z.string().optional()
+      }),
+      execute: async ({ elementId, action, value }) => {
+        return {
+          _axonSignal: "UI_INTERACTION",
+          payload: { elementId, action, value }
+        };
+      }
+    });
   }
   /**
    * Helper to register a tool directly on the agent's registry.
@@ -84,16 +103,19 @@ var Agent = class {
   /**
    * Primary method to trigger the agent's reasoning loop.
    */
-  async run(prompt, context) {
-    console.log(`[AxonJS] Agent running with prompt: "${prompt}"`);
+  async run(messages, context) {
+    console.log(`[AxonJS] Agent running with ${messages.length} messages`);
     if (!this.config.apiKey && this.config.llmProvider !== "mock") {
       throw new Error(`AxonJS Error: OpenAPI/Gemini key is missing in config.`);
     }
     if (this.config.llmProvider === "openai") {
-      return this.runOpenAI(prompt, context);
+      return this.runOpenAI(messages, context);
     }
     if (this.config.llmProvider === "gemini") {
-      return this.runGemini(prompt, context);
+      return this.runGemini(messages, context);
+    }
+    if (this.config.llmProvider === "groq") {
+      return this.runGroq(messages, context);
     }
     throw new Error(`Provider ${this.config.llmProvider} is not implemented yet.`);
   }
@@ -102,10 +124,17 @@ var Agent = class {
    */
   getAITools() {
     const aiTools = {};
-    for (const tool of this.tools.getAllTools()) {
-      aiTools[tool.name] = {
-        description: tool.description,
-        parameters: tool.schema
+    for (const t of this.tools.getAllTools()) {
+      aiTools[t.name] = {
+        description: t.description,
+        parameters: {
+          kind: "object",
+          safeParse: (input) => ({ success: true, data: input })
+        },
+        execute: async (args) => {
+          console.log(`[AxonJS] Tool Executing: ${t.name} | Args:`, JSON.stringify(args));
+          return await this.tools.execute(t.name, args);
+        }
       };
     }
     return aiTools;
@@ -113,54 +142,93 @@ var Agent = class {
   /**
    * The semantic execution loop using Google Gemini via the AI SDK.
    */
-  async runGemini(prompt, context) {
+  async runGemini(messages, context) {
     const google = (0, import_google.createGoogleGenerativeAI)({
       apiKey: this.config.apiKey
     });
+    const defaultSystem = `You are Axon, an intelligent UI Agent. 
+You have access to 'interactWithScreen' to control the application.
+You will be provided with a 'Current Live DOM State' in the context as a JSON list.
+To interact with the UI, you MUST find the exact 'id' of the element in that JSON and pass it to 'interactWithScreen'.
+If you are asked about the state (like cart count), look for elements in the DOM state with descriptive text or IDs like 'cart-status'.
+Always respond to the user after performing actions.`;
     const response = await (0, import_ai.generateText)({
-      model: google("gemini-1.5-flash"),
-      system: "You are an intelligent frontend application agent. You have access to tools that control the application state and UI. Use them to fulfill the user request.",
-      prompt,
-      tools: this.getAITools()
+      model: google(this.config.model || "gemini-2.5-flash"),
+      system: this.config.systemPrompt || defaultSystem,
+      messages,
+      tools: this.getAITools(),
+      maxSteps: this.config.maxSteps || 5
     });
-    return this.processSDKResponse(response);
+    const allToolCalls = (response.steps || []).flatMap(
+      (step) => (step.toolCalls || []).map((tc) => ({ name: tc.toolName, args: tc.args }))
+    );
+    return {
+      text: response.text.trim(),
+      toolCalls: allToolCalls
+    };
   }
   /**
-   * The real execution loop using OpenAI via the AI SDK.
+   * The semantic execution loop using Groq via the AI SDK.
    */
-  async runOpenAI(prompt, context) {
+  /**
+   * The semantic execution loop using Groq via the AI SDK.
+   */
+  async runGroq(messages, context) {
+    const groq = (0, import_groq.createGroq)({
+      apiKey: this.config.apiKey
+    });
+    const defaultSystem = `You are Axon, an intelligent UI Agent. 
+You have access to 'interactWithScreen' to control the application.
+You will be provided with a 'Current Live DOM State' in the context as a JSON list. 
+To interact with the UI, you MUST find the exact 'id' of the element in that JSON and pass it to 'interactWithScreen'.
+If you are asked about the state (like cart count), look for elements in the DOM state with descriptive text or IDs like 'cart-status'.
+Always respond to the user after performing actions.`;
+    const response = await (0, import_ai.generateText)({
+      model: groq(this.config.model || "llama-3.3-70b-versatile"),
+      system: this.config.systemPrompt || defaultSystem,
+      messages,
+      tools: this.getAITools(),
+      maxSteps: this.config.maxSteps || 5
+    });
+    const allToolCalls = (response.steps || []).flatMap(
+      (step) => (step.toolCalls || []).map((tc) => ({ name: tc.toolName, args: tc.args }))
+    );
+    return {
+      text: response.text.trim(),
+      toolCalls: allToolCalls
+    };
+  }
+  /**
+   * The semantic execution loop using OpenAI via the AI SDK.
+   */
+  async runOpenAI(messages, context) {
     const openai = (0, import_openai.createOpenAI)({
       apiKey: this.config.apiKey
     });
+    const defaultSystem = `You are Axon, an intelligent UI Agent. 
+You have access to 'interactWithScreen' to control the application.
+You will be provided with a 'Current Live DOM State' in the context as a JSON list. 
+To interact with the UI, you MUST find the exact 'id' of the element in that JSON and pass it to 'interactWithScreen'.
+If you are asked about the state (like cart count), look for elements in the DOM state with descriptive text or IDs like 'cart-status'.
+Always respond to the user after performing actions.`;
     const response = await (0, import_ai.generateText)({
-      model: openai("gpt-4o-mini"),
-      system: "You are an intelligent frontend application agent. You have access to tools that control the application state and UI. Use them to fulfill the user request.",
-      prompt,
-      tools: this.getAITools()
+      model: openai(this.config.model || "gpt-4o-mini"),
+      system: this.config.systemPrompt || defaultSystem,
+      messages,
+      tools: this.getAITools(),
+      maxSteps: this.config.maxSteps || 5
     });
-    return this.processSDKResponse(response);
+    const allToolCalls = (response.steps || []).flatMap(
+      (step) => (step.toolCalls || []).map((tc) => ({ name: tc.toolName, args: tc.args }))
+    );
+    return {
+      text: response.text.trim(),
+      toolCalls: allToolCalls
+    };
   }
   /**
    * Reusable method to parse the AI SDK response and execute local tools
    */
-  async processSDKResponse(response) {
-    const toolCallsFromLLM = [];
-    if (response.toolCalls && response.toolCalls.length > 0) {
-      for (const call of response.toolCalls) {
-        const args = call.args || {};
-        toolCallsFromLLM.push({ name: call.toolName, args });
-        try {
-          await this.tools.execute(call.toolName, args);
-        } catch (error) {
-          console.error(`[AxonJS] Error executing tool ${call.toolName}:`, error);
-        }
-      }
-    }
-    return {
-      text: response.text,
-      toolCalls: toolCallsFromLLM
-    };
-  }
 };
 function createAgent(config) {
   return new Agent(config);

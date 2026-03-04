@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAgent } from '@axonjs/react';
 
 function App() {
@@ -10,28 +10,35 @@ function App() {
     if (!input) return;
     
     setLog(prev => [...prev, `User: ${input}`]);
-    const response = await agent.run(input);
-    
-    setLog(prev => [...prev, `Agent: ${response.text}`]);
-    
-    if (response.toolCalls && response.toolCalls.length > 0) {
-       response.toolCalls.forEach(call => {
-          setLog(prev => [...prev, `⚙️ Tool Request Detected: ${call.name} with args ${JSON.stringify(call.args)}`]);
-          // Recreate the minimal validation locally just for the UI log.
-          try {
-             const tool = agent.tools.getTool(call.name);
-             if (tool) {
-                 tool.schema.parse(call.args);
-             }
-             setLog(prev => [...prev, `✅ Zod Validation Passed.`]);
-             setLog(prev => [...prev, `✔️ Tool Executed successfully.`]);
-          } catch (e: any) {
-             setLog(prev => [...prev, `❌ Zod Validation Failed: ${e.message}`]);
-          }
-       });
-    }
-    
+    const userInput = input;
     setInput('');
+
+    try {
+      setLog(prev => [...prev, `⚙️ Agent is thinking...`]);
+      const response = await agent.run(userInput);
+      
+      setLog(prev => [...prev, `Agent: ${response.text}`]);
+      
+      if (response.toolCalls && response.toolCalls.length > 0) {
+         response.toolCalls.forEach(call => {
+            setLog(prev => [...prev, `⚙️ Tool Request Detected: ${call.name} with args ${JSON.stringify(call.args)}`]);
+            // Recreate the minimal validation locally just for the UI log.
+            try {
+               const tool = agent.tools.getTool(call.name);
+               if (tool) {
+                   tool.schema.parse(call.args);
+               }
+               setLog(prev => [...prev, `✅ Zod Validation Passed.`]);
+               setLog(prev => [...prev, `✔️ Tool Executed successfully.`]);
+            } catch (e: any) {
+               setLog(prev => [...prev, `❌ Zod Validation Failed: ${e.message}`]);
+            }
+         });
+      }
+    } catch (e: any) {
+      setLog(prev => [...prev, `❌ Error: ${e.message}`]);
+      console.error(e);
+    }
   };
 
   return (

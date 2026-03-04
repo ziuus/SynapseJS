@@ -1,14 +1,25 @@
 import { z } from 'zod';
 
-interface Tool<TArgs extends z.ZodTypeAny = any, TResult = any> {
+/**
+ * Standardized message format representing conversation history
+ */
+type CoreMessage = {
+    role: 'user' | 'assistant' | 'system' | 'data';
+    content: string;
+};
+interface Tool<TArgs = any, TResult = any> {
     name: string;
     description: string;
-    schema: TArgs;
-    execute: (args: z.infer<TArgs>) => Promise<TResult> | TResult;
+    schema?: z.ZodType<TArgs>;
+    jsonSchema?: any;
+    execute: (args: any) => Promise<TResult> | TResult;
 }
 interface AgentConfig {
-    llmProvider: 'openai' | 'gemini' | 'mock';
+    llmProvider: 'openai' | 'gemini' | 'groq' | 'mock';
     apiKey?: string;
+    systemPrompt?: string;
+    model?: string;
+    maxSteps?: number;
     memory?: 'session' | 'none';
 }
 interface AgentResponse {
@@ -50,7 +61,7 @@ declare class Agent {
     /**
      * Primary method to trigger the agent's reasoning loop.
      */
-    run(prompt: string, context?: any): Promise<AgentResponse>;
+    run(messages: CoreMessage[], context?: any): Promise<AgentResponse>;
     /**
      * Translates the Axon Tool Registry into the format expected by the AI SDK.
      */
@@ -60,14 +71,17 @@ declare class Agent {
      */
     private runGemini;
     /**
-     * The real execution loop using OpenAI via the AI SDK.
+     * The semantic execution loop using Groq via the AI SDK.
+     */
+    /**
+     * The semantic execution loop using Groq via the AI SDK.
+     */
+    private runGroq;
+    /**
+     * The semantic execution loop using OpenAI via the AI SDK.
      */
     private runOpenAI;
-    /**
-     * Reusable method to parse the AI SDK response and execute local tools
-     */
-    private processSDKResponse;
 }
 declare function createAgent(config: AgentConfig): Agent;
 
-export { Agent, type AgentConfig, type AgentResponse, type Tool, ToolRegistry, createAgent };
+export { Agent, type AgentConfig, type AgentResponse, type CoreMessage, type Tool, ToolRegistry, createAgent };
