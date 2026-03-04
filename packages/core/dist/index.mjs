@@ -39,13 +39,10 @@ var ToolRegistry = class {
 // src/agent.ts
 import { generateText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
-import { zodToJsonSchema } from "zod-to-json-schema";
-import { CreateMLCEngine } from "@mlc-ai/web-llm";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 var Agent = class {
   config;
   tools;
-  browserEngine = null;
-  isInitializingBrowser = false;
   constructor(config) {
     this.config = config;
     this.tools = new ToolRegistry();
@@ -57,42 +54,18 @@ var Agent = class {
     this.tools.register(tool);
   }
   /**
-   * Initialize the WebLLM browser engine if requested. This downloads weights to cache.
-   */
-  async initializeBrowserEngine() {
-    if (this.browserEngine) return;
-    if (this.isInitializingBrowser) {
-      while (this.isInitializingBrowser) {
-        await new Promise((r) => setTimeout(r, 100));
-      }
-      return;
-    }
-    this.isInitializingBrowser = true;
-    const modelId = this.config.browserModelId || "Phi-3-mini-4k-instruct-q4f16_1-MLC";
-    console.log(`[AxonJS] Initializing browser engine with model: ${modelId}...`);
-    this.browserEngine = await CreateMLCEngine(modelId, {
-      initProgressCallback: (progress) => {
-        if (this.config.onProgress) {
-          this.config.onProgress({ text: progress.text, progress: progress.progress });
-        }
-      }
-    });
-    this.isInitializingBrowser = false;
-    console.log(`[AxonJS] Browser engine initialized.`);
-  }
-  /**
    * Primary method to trigger the agent's reasoning loop.
    */
   async run(prompt, context) {
     console.log(`[AxonJS] Agent running with prompt: "${prompt}"`);
+    if (!this.config.apiKey && this.config.llmProvider !== "mock") {
+      throw new Error(`AxonJS Error: OpenAPI/Gemini key is missing in config.`);
+    }
     if (this.config.llmProvider === "openai") {
-      if (!this.config.apiKey) {
-        throw new Error("AxonJS Error: OpenAPI key is missing in config.");
-      }
       return this.runOpenAI(prompt, context);
     }
-    if (this.config.llmProvider === "browser") {
-      return this.runBrowser(prompt, context);
+    if (this.config.llmProvider === "gemini") {
+      return this.runGemini(prompt, context);
     }
     throw new Error(`Provider ${this.config.llmProvider} is not implemented yet.`);
   }
@@ -110,54 +83,19 @@ var Agent = class {
     return aiTools;
   }
   /**
-   * Translates the Axon Tool Registry into the OpenAI standard JSON schema expected by WebLLM.
+   * The semantic execution loop using Google Gemini via the AI SDK.
    */
-  getWebLLMTools() {
-    const tools = [];
-    for (const tool of this.tools.getAllTools()) {
-      tools.push({
-        type: "function",
-        function: {
-          name: tool.name,
-          description: tool.description,
-          // Strip the $schema wrapper added by zodToJsonSchema
-          parameters: zodToJsonSchema(tool.schema)
-        }
-      });
-    }
-    return tools;
-  }
-  /**
-   * The execution loop entirely in the browser using WebGPU.
-   */
-  async runBrowser(prompt, context) {
-    await this.initializeBrowserEngine();
-    if (!this.browserEngine) throw new Error("Engine failed to initialize");
-    const response = await this.browserEngine.chat.completions.create({
-      messages: [
-        { role: "system", content: "You are an intelligent frontend application agent. You have access to tools that control the application state and UI. Use them to fulfill the user request." },
-        { role: "user", content: prompt }
-      ],
-      tools: this.getWebLLMTools()
-      // Cast to bypass strict WebLLM type definitions for schemas
+  async runGemini(prompt, context) {
+    const google = createGoogleGenerativeAI({
+      apiKey: this.config.apiKey
     });
-    const choice = response.choices[0];
-    const toolCallsFromLLM = [];
-    if (choice.message.tool_calls && choice.message.tool_calls.length > 0) {
-      for (const call of choice.message.tool_calls) {
-        const parsedArgs = JSON.parse(call.function.arguments);
-        toolCallsFromLLM.push({ name: call.function.name, args: parsedArgs });
-        try {
-          await this.tools.execute(call.function.name, parsedArgs);
-        } catch (error) {
-          console.error(`[AxonJS Browser] Error executing tool ${call.function.name}:`, error);
-        }
-      }
-    }
-    return {
-      text: choice.message.content || "",
-      toolCalls: toolCallsFromLLM
-    };
+    const response = await generateText({
+      model: google("gemini-1.5-flash"),
+      system: "You are an intelligent frontend application agent. You have access to tools that control the application state and UI. Use them to fulfill the user request.",
+      prompt,
+      tools: this.getAITools()
+    });
+    return this.processSDKResponse(response);
   }
   /**
    * The real execution loop using OpenAI via the AI SDK.
@@ -172,6 +110,12 @@ var Agent = class {
       prompt,
       tools: this.getAITools()
     });
+    return this.processSDKResponse(response);
+  }
+  /**
+   * Reusable method to parse the AI SDK response and execute local tools
+   */
+  async processSDKResponse(response) {
     const toolCallsFromLLM = [];
     if (response.toolCalls && response.toolCalls.length > 0) {
       for (const call of response.toolCalls) {

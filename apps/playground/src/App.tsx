@@ -5,15 +5,6 @@ function App() {
   const agent = useAgent();
   const [input, setInput] = useState('');
   const [log, setLog] = useState<string[]>([]);
-  const [loadingProgress, setLoadingProgress] = useState<{text: string, progress: number} | null>(null);
-
-  useEffect(() => {
-    const handleProgress = (e: any) => {
-      setLoadingProgress(e.detail);
-    };
-    window.addEventListener('axon-progress', handleProgress);
-    return () => window.removeEventListener('axon-progress', handleProgress);
-  }, []);
 
   const handleRunAgent = async () => {
     if (!input) return;
@@ -56,18 +47,6 @@ function App() {
         ))}
         {log.length === 0 && <span style={{ color: '#888' }}>Agent is waiting for input... (Try asking it to navigate!)</span>}
       </div>
-
-      {loadingProgress && loadingProgress.progress < 1 && (
-        <div style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
-           <div style={{ marginBottom: '0.5rem', fontSize: '0.9em', color: '#555' }}>
-             Loading AI Model into Browser GPU... {Math.round(loadingProgress.progress * 100)}%
-           </div>
-           <div style={{ width: '100%', backgroundColor: '#ddd', height: '8px', borderRadius: '4px' }}>
-              <div style={{ width: `${loadingProgress.progress * 100}%`, backgroundColor: '#4CAF50', height: '100%', borderRadius: '4px' }} />
-           </div>
-           <small style={{ color: '#888', display: 'block', marginTop: '4px' }}>{loadingProgress.text}</small>
-        </div>
-      )}
 
       <div style={{ display: 'flex', gap: '0.5rem' }}>
         <input 

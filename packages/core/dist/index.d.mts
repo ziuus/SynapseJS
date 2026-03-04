@@ -7,13 +7,8 @@ interface Tool<TArgs extends z.ZodTypeAny = any, TResult = any> {
     execute: (args: z.infer<TArgs>) => Promise<TResult> | TResult;
 }
 interface AgentConfig {
-    llmProvider: 'openai' | 'mock' | 'browser';
+    llmProvider: 'openai' | 'gemini' | 'mock';
     apiKey?: string;
-    browserModelId?: string;
-    onProgress?: (progress: {
-        text: string;
-        progress: number;
-    }) => void;
     memory?: 'session' | 'none';
 }
 interface AgentResponse {
@@ -47,17 +42,11 @@ declare class ToolRegistry {
 declare class Agent {
     private config;
     tools: ToolRegistry;
-    private browserEngine;
-    private isInitializingBrowser;
     constructor(config: AgentConfig);
     /**
      * Helper to register a tool directly on the agent's registry.
      */
     registerTool<TArgs extends z.ZodTypeAny = any, TResult = any>(tool: Tool<TArgs, TResult>): void;
-    /**
-     * Initialize the WebLLM browser engine if requested. This downloads weights to cache.
-     */
-    initializeBrowserEngine(): Promise<void>;
     /**
      * Primary method to trigger the agent's reasoning loop.
      */
@@ -67,17 +56,17 @@ declare class Agent {
      */
     private getAITools;
     /**
-     * Translates the Axon Tool Registry into the OpenAI standard JSON schema expected by WebLLM.
+     * The semantic execution loop using Google Gemini via the AI SDK.
      */
-    private getWebLLMTools;
-    /**
-     * The execution loop entirely in the browser using WebGPU.
-     */
-    private runBrowser;
+    private runGemini;
     /**
      * The real execution loop using OpenAI via the AI SDK.
      */
     private runOpenAI;
+    /**
+     * Reusable method to parse the AI SDK response and execute local tools
+     */
+    private processSDKResponse;
 }
 declare function createAgent(config: AgentConfig): Agent;
 

@@ -6,12 +6,8 @@ import { AxonProvider, createAgent } from '@axonjs/react';
 import { z } from 'zod';
 
 const runtime = createAgent({
-  llmProvider: 'browser',
-  browserModelId: 'Phi-3-mini-4k-instruct-q4f16_1-MLC', // A fast, tiny model
-  onProgress: (progress) => {
-    // Dispatch a custom event so the React app can pick it up for a loading bar
-    window.dispatchEvent(new CustomEvent('axon-progress', { detail: progress }));
-  },
+  llmProvider: import.meta.env.VITE_GEMINI_API_KEY ? 'gemini' : (import.meta.env.VITE_OPENAI_API_KEY ? 'openai' : 'mock'),
+  apiKey: import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_OPENAI_API_KEY,
   memory: 'session'
 });
 
