@@ -133,6 +133,64 @@ export class Agent {
         };
       }
     });
+
+    // ── WAVE 2 INTEGRATIONS ─────────────────────────────────────────────────
+
+    // 6. SCROLL — scroll to any element or a pixel offset
+    this.tools.register({
+      name: 'scrollTo',
+      description: 'Scroll the page to bring an element into view, or scroll to an absolute pixel offset. Use when the user asks to scroll down, scroll to a section, or jump to a part of the page.',
+      schema: z.object({
+        elementId: z.string().optional().describe('Scroll the page until this element is visible'),
+        top: z.number().optional().describe('Scroll to this y-pixel offset (alternative to elementId)'),
+        behavior: z.enum(['smooth', 'instant']).optional().describe('Scroll animation style, default smooth'),
+      }) as any,
+      execute: async (args: any) => ({ _axonSignal: 'SCROLL_TO', payload: args })
+    });
+
+    // 7. COPY — copy any text to the clipboard
+    this.tools.register({
+      name: 'copyToClipboard',
+      description: 'Copy specified text to the user\'s clipboard. Use when the user wants to copy a value, link, code snippet, or any text content.',
+      schema: z.object({
+        text: z.string().describe('The text to copy to the clipboard'),
+      }) as any,
+      execute: async (args: any) => ({ _axonSignal: 'COPY_TO_CLIPBOARD', payload: args })
+    });
+
+    // 8. TOGGLE — show/hide any element
+    this.tools.register({
+      name: 'toggleElement',
+      description: 'Show or hide a DOM element. Use when the user wants to toggle the visibility of a panel, modal, sidebar, or collapsible section.',
+      schema: z.object({
+        elementId: z.string().describe('The ID of the element to toggle'),
+        visible: z.boolean().optional().describe('If true, show the element; if false, hide it. If omitted, toggles the current visibility.'),
+      }) as any,
+      execute: async (args: any) => ({ _axonSignal: 'TOGGLE_ELEMENT', payload: args })
+    });
+
+    // 9. SELECT — choose an option in a dropdown / select element
+    this.tools.register({
+      name: 'selectDropdown',
+      description: 'Choose an option in a <select> dropdown element by its value or visible label. Use when the user wants to pick from a dropdown menu.',
+      schema: z.object({
+        elementId: z.string().describe('The ID of the <select> element'),
+        value: z.string().describe('The option value or visible label text to select'),
+      }) as any,
+      execute: async (args: any) => ({ _axonSignal: 'SELECT_DROPDOWN', payload: args })
+    });
+
+    // 10. HIGHLIGHT — visually draw attention to an element
+    this.tools.register({
+      name: 'highlightElement',
+      description: 'Visually highlight a specific UI element to draw the user\'s attention to it. Useful for tutorials, onboarding, and pointing out features.',
+      schema: z.object({
+        elementId: z.string().describe('The ID of the element to highlight'),
+        color: z.string().optional().describe('CSS color for the highlight ring, default is indigo'),
+        durationMs: z.number().optional().describe('How long to show the highlight in milliseconds, default 2000'),
+      }) as any,
+      execute: async (args: any) => ({ _axonSignal: 'HIGHLIGHT_ELEMENT', payload: args })
+    });
   }
 
   /**

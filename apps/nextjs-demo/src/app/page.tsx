@@ -100,9 +100,50 @@ export default function ChatDashboard() {
         case 'observeState':         handleReadElement(tc.args); break;
         case 'navigateTo':           handleNavigate(tc.args); break;
         case 'fillForm':             handleFillForm(tc.args); break;
-        case 'showNotification':
-          showToast(tc.args.message, tc.args.type, tc.args.durationMs);
+        case 'showNotification':     showToast(tc.args.message, tc.args.type, tc.args.durationMs); break;
+
+        // ── Wave 2 signals ───────────────────────────────────────────────────
+        case 'scrollTo': {
+          const { elementId, top, behavior = 'smooth' } = tc.args;
+          if (elementId) {
+            document.getElementById(elementId)?.scrollIntoView({ behavior, block: 'center' });
+          } else if (top !== undefined) {
+            window.scrollTo({ top, behavior });
+          }
           break;
+        }
+        case 'copyToClipboard':
+          navigator.clipboard.writeText(tc.args.text).then(() =>
+            showToast('Copied to clipboard!', 'success')
+          ).catch(() => showToast('Clipboard copy failed', 'error'));
+          break;
+        case 'toggleElement': {
+          const el = document.getElementById(tc.args.elementId) as HTMLElement;
+          if (!el) break;
+          const shouldShow = tc.args.visible !== undefined ? tc.args.visible : el.style.display === 'none';
+          el.style.display = shouldShow ? '' : 'none';
+          break;
+        }
+        case 'selectDropdown': {
+          const sel = document.getElementById(tc.args.elementId) as HTMLSelectElement;
+          if (!sel) break;
+          sel.value = tc.args.value;
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+          break;
+        }
+        case 'highlightElement': {
+          const hl = document.getElementById(tc.args.elementId) as HTMLElement;
+          if (!hl) break;
+          const color = tc.args.color || '#6366f1';
+          const dur = tc.args.durationMs || 2000;
+          const prev = hl.style.outline;
+          hl.style.outline = `3px solid ${color}`;
+          hl.style.outlineOffset = '3px';
+          hl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(() => { hl.style.outline = prev; hl.style.outlineOffset = ''; }, dur);
+          showToast(`Highlighted #${tc.args.elementId}`, 'info', dur);
+          break;
+        }
       }
     });
   }, [handleAISignal, handle3DSignal, handleReadElement, handleNavigate, handleFillForm, showToast]);
@@ -206,7 +247,7 @@ export default function ChatDashboard() {
 
       {/* ── Tool pills — shows what integrations are active ─────────────────── */}
       <div className={`flex gap-2 px-6 py-2 overflow-x-auto ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-slate-100'} border-b text-xs`}>
-        {['click/type', 'fillForm', 'navigate', 'notify', 'readText', 'observeState', '3D scene'].map(t => (
+        {['click/type', 'fillForm', 'navigate', 'notify', 'readText', 'observeState', 'scrollTo', 'copy', 'toggle', 'selectDropdown', 'highlight', '3D scene'].map(t => (
           <span key={t} className="px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 whitespace-nowrap font-mono shrink-0">
             {t}
           </span>
