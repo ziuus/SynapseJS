@@ -31,7 +31,12 @@ module.exports = __toCommonJS(index_exports);
 var import_react = require("react");
 var import_jsx_runtime = require("react/jsx-runtime");
 var SynapseContext = (0, import_react.createContext)(null);
-function SynapseProvider({ runtime, children }) {
+function SynapseProvider({ runtime, feats, children }) {
+  (0, import_react.useEffect)(() => {
+    if (feats) {
+      feats.forEach((feat) => runtime.loadFeat(feat));
+    }
+  }, [runtime, feats]);
   return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SynapseContext.Provider, { value: { agent: runtime }, children });
 }
 function useAgent() {

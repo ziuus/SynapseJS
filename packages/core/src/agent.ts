@@ -1,6 +1,6 @@
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { jsonSchema, generateText, tool as aiTool } from 'ai';
-import { AgentConfig, AgentResponse, Tool, CoreMessage } from './types';
+import { AgentConfig, AgentResponse, Tool, CoreMessage, SynapseFeat, SynapseSignal } from './types';
 import { ToolRegistry } from './tool-registry';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
@@ -10,6 +10,7 @@ import { z } from 'zod';
 export class Agent {
   private config: AgentConfig;
   public tools: ToolRegistry;
+  private feats: Map<string, SynapseFeat> = new Map();
 
   constructor(config: AgentConfig) {
     this.config = config;
@@ -285,10 +286,45 @@ export class Agent {
   }
 
   /**
+   * Loads a Feat (automation bundle) into the agent.
+   * Registers feat tools and returns any initial signals defined by the feat.
+   */
+  loadFeat(feat: SynapseFeat): SynapseSignal[] {
+    console.log(`[SynapseJS] Loading Feat: ${feat.manifest.name} v${feat.manifest.version}`);
+    this.feats.set(feat.manifest.name, feat);
+    
+    // Register all tools provided by the feat
+    for (const tool of feat.tools) {
+      this.tools.register(tool);
+    }
+
+    // Return initial signals if defined
+    return feat.onLoad ? feat.onLoad() : [];
+  }
+
+  /**
+   * Aggregates default instructions with all loaded feat instructions.
+   */
+  private getFullSystemPrompt(defaultSystem: string): string {
+    let fullPrompt = this.config.systemPrompt || defaultSystem;
+    
+    if (this.feats.size > 0) {
+      fullPrompt += "\n\n### ADDITIONAL CAPABILITIES (Loaded Feats):\n";
+      for (const feat of this.feats.values()) {
+        if (feat.instructions) {
+          fullPrompt += `\n[Feat: ${feat.manifest.name}]\n${feat.instructions}\n`;
+        }
+      }
+    }
+    
+    return fullPrompt;
+  }
+
+  /**
    * Primary method to trigger the agent's reasoning loop.
    */
   async run(messages: CoreMessage[], context?: any): Promise<AgentResponse> {
-    console.log(`[SynapseJS] AGENT VERSION 2.0.0-FIX running with ${messages.length} messages`);
+    console.log(`[SynapseJS] AGENT v0.3.0-FEATS running with ${messages.length} messages`);
 
     if (!this.config.apiKey && this.config.llmProvider !== 'mock') {
         throw new Error(`SynapseJS Error: OpenAPI/Gemini key is missing in config.`);
@@ -344,8 +380,8 @@ If the DOM state contains 'type: 3d-scene', you can use the 'interactWith3DScene
 Always respond to the user after performing actions.`;
 
     const response = await (generateText as any)({
-      model: google(this.config.model || 'gemini-2.5-flash'),
-      system: this.config.systemPrompt || defaultSystem,
+      model: google(this.config.model || 'gemini-2.0-flash-exp'),
+      system: this.getFullSystemPrompt(defaultSystem),
       messages: messages as any,
       tools: this.getAITools(),
       maxSteps: this.config.maxSteps || 5,
@@ -409,7 +445,7 @@ Always respond to the user after performing actions.`;
 
     const response = await (generateText as any)({
       model: groq(this.config.model || 'llama-3.3-70b-versatile'),
-      system: this.config.systemPrompt || defaultSystem,
+      system: this.getFullSystemPrompt(defaultSystem),
       messages: messages as any,
       tools: this.getAITools(),
       maxSteps: this.config.maxSteps || 5,
@@ -443,7 +479,7 @@ Always respond to the user after performing actions.`;
 
     const response = await (generateText as any)({
       model: openai(this.config.model || 'gpt-4o-mini'),
-      system: this.config.systemPrompt || defaultSystem,
+      system: this.getFullSystemPrompt(defaultSystem),
       messages: messages as any,
       tools: this.getAITools(),
       maxSteps: this.config.maxSteps || 5,

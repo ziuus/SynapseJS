@@ -1,5 +1,5 @@
-import React, { createContext, useContext, ReactNode } from 'react';
-import { Agent } from '@synapsejs/core';
+import React, { createContext, useContext, ReactNode, useEffect } from 'react';
+import { Agent, SynapseFeat } from '@synapsejs/core';
 
 interface SynapseContextType {
   agent: Agent;
@@ -9,10 +9,18 @@ const SynapseContext = createContext<SynapseContextType | null>(null);
 
 export interface SynapseProviderProps {
   runtime: Agent;
+  feats?: SynapseFeat[];
   children: ReactNode;
 }
 
-export function SynapseProvider({ runtime, children }: SynapseProviderProps) {
+export function SynapseProvider({ runtime, feats, children }: SynapseProviderProps) {
+  // Load feats on initialization
+  useEffect(() => {
+    if (feats) {
+      feats.forEach(feat => runtime.loadFeat(feat));
+    }
+  }, [runtime, feats]);
+
   return (
     <SynapseContext.Provider value={{ agent: runtime }}>
       {children}

@@ -3,9 +3,16 @@ import { z } from 'zod';
 /**
  * Standardized message format representing conversation history
  */
+export type MessagePart = 
+  | { type: 'text'; text: string }
+  | { type: 'image'; image: string; mimeType: string };
+
+/**
+ * Standardized message format representing conversation history
+ */
 export type CoreMessage = {
   role: 'user' | 'assistant' | 'system' | 'data';
-  content: string;
+  content: string | MessagePart[];
 };
 
 export interface Tool<TArgs = any, TResult = any> {
@@ -53,7 +60,8 @@ export type SynapseSignalType =
   | 'DOWNLOAD_FILE'
   | 'SUBMIT_FORM'
   | 'CHECKBOX_TOGGLE'
-  | 'SET_THEME';
+  | 'SET_THEME'
+  | 'CAPTURE_SCREENSHOT';
 
 /** The base shape of every signal returned by a built-in Axon tool */
 export interface SynapseSignal<T = unknown> {
@@ -89,3 +97,29 @@ export const SYNAPSE_TOOL_NAMES = [
 ] as const;
 
 export type SynapseToolName = typeof SYNAPSE_TOOL_NAMES[number];
+
+// ── Feats (High-level Automations) ───────────────────────────────────────────
+
+/** metadata for a Synapse Feat */
+export interface FeatManifest {
+  name: string;
+  version: string;
+  description: string;
+  author?: string;
+  tags?: string[];
+}
+
+/** 
+ * A Synapse Feat is a high-level automation bundle.
+ * It can include multiple tools and a system prompt fragment.
+ */
+export interface SynapseFeat {
+  manifest: FeatManifest;
+  /** Tools provided by this feat */
+  tools: Tool[];
+  /** Optional instructions injected into the agent's system prompt when feat is active */
+  instructions?: string;
+  /** Optional initial signals to fire when feat is loaded */
+  onLoad?: () => SynapseSignal[];
+}
+

@@ -18,6 +18,7 @@ const TOOL_TO_SIGNAL: Record<string, string> = {
   getPageUrl: 'GET_PAGE_URL', setPageTitle: 'SET_PAGE_TITLE',
   openModal: 'OPEN_MODAL', downloadFile: 'DOWNLOAD_FILE',
   submitForm: 'SUBMIT_FORM', checkboxToggle: 'CHECKBOX_TOGGLE', setTheme: 'SET_THEME',
+  scanViewport: 'CAPTURE_SCREENSHOT',
 };
 
 export default function ChatDashboard() {
@@ -198,6 +199,13 @@ export default function ChatDashboard() {
           setTheme(t);
           document.documentElement.dataset.theme = t;
           showToast(`Theme set to ${t}`, 'success');
+          break;
+        }
+        case 'CAPTURE_SCREENSHOT': {
+          showToast(`📸 Viewport scan: ${tc.args.reason || 'Analyzing visual layout'}…`, 'info', 4000);
+          // In a real app, we would use html2canvas or a similar utility here 
+          // to generate a base64 string and append it to the next agent message.
+          console.log('[SynapseJS Vision] Capture signal received for reason:', tc.args.reason);
           break;
         }
       }

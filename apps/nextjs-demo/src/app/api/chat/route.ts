@@ -1,4 +1,4 @@
-import { createAgent } from '@synapsejs/core';
+import { createAgent, UIInsightsFeat, VisionFeat } from '@synapsejs/core';
 import { z } from 'zod';
 
 // Force the edge runtime for better performance and AI SDK streaming compatibility
@@ -12,6 +12,10 @@ const agent = createAgent({
   model: 'llama-3.3-70b-versatile',
   maxSteps: 5
 });
+
+// Load the Feats
+agent.loadFeat(UIInsightsFeat);
+agent.loadFeat(VisionFeat);
 
 // Register production-grade mock tools to demonstrate the backend functionality
 agent.registerTool({

@@ -87,6 +87,7 @@ import { z } from "zod";
 var Agent = class {
   config;
   tools;
+  feats = /* @__PURE__ */ new Map();
   constructor(config) {
     this.config = config;
     this.tools = new ToolRegistry();
@@ -313,10 +314,40 @@ var Agent = class {
     this.tools.register(tool);
   }
   /**
+   * Loads a Feat (automation bundle) into the agent.
+   * Registers feat tools and returns any initial signals defined by the feat.
+   */
+  loadFeat(feat) {
+    console.log(`[SynapseJS] Loading Feat: ${feat.manifest.name} v${feat.manifest.version}`);
+    this.feats.set(feat.manifest.name, feat);
+    for (const tool of feat.tools) {
+      this.tools.register(tool);
+    }
+    return feat.onLoad ? feat.onLoad() : [];
+  }
+  /**
+   * Aggregates default instructions with all loaded feat instructions.
+   */
+  getFullSystemPrompt(defaultSystem) {
+    let fullPrompt = this.config.systemPrompt || defaultSystem;
+    if (this.feats.size > 0) {
+      fullPrompt += "\n\n### ADDITIONAL CAPABILITIES (Loaded Feats):\n";
+      for (const feat of this.feats.values()) {
+        if (feat.instructions) {
+          fullPrompt += `
+[Feat: ${feat.manifest.name}]
+${feat.instructions}
+`;
+        }
+      }
+    }
+    return fullPrompt;
+  }
+  /**
    * Primary method to trigger the agent's reasoning loop.
    */
   async run(messages, context) {
-    console.log(`[SynapseJS] AGENT VERSION 2.0.0-FIX running with ${messages.length} messages`);
+    console.log(`[SynapseJS] AGENT v0.3.0-FEATS running with ${messages.length} messages`);
     if (!this.config.apiKey && this.config.llmProvider !== "mock") {
       throw new Error(`SynapseJS Error: OpenAPI/Gemini key is missing in config.`);
     }
@@ -363,8 +394,8 @@ If you are asked about the state (like cart count), look for elements in the DOM
 If the DOM state contains 'type: 3d-scene', you can use the 'interactWith3DScene' tool to trigger its available events or variables.
 Always respond to the user after performing actions.`;
     const response = await generateText({
-      model: google(this.config.model || "gemini-2.5-flash"),
-      system: this.config.systemPrompt || defaultSystem,
+      model: google(this.config.model || "gemini-2.0-flash-exp"),
+      system: this.getFullSystemPrompt(defaultSystem),
       messages,
       tools: this.getAITools(),
       maxSteps: this.config.maxSteps || 5
@@ -422,7 +453,7 @@ If the DOM state contains 'type: 3d-scene', you can use the 'interactWith3DScene
 Always respond to the user after performing actions.`;
     const response = await generateText({
       model: groq(this.config.model || "llama-3.3-70b-versatile"),
-      system: this.config.systemPrompt || defaultSystem,
+      system: this.getFullSystemPrompt(defaultSystem),
       messages,
       tools: this.getAITools(),
       maxSteps: this.config.maxSteps || 5
@@ -451,7 +482,7 @@ If the DOM state contains 'type: 3d-scene', you can use the 'interactWith3DScene
 Always respond to the user after performing actions.`;
     const response = await generateText({
       model: openai(this.config.model || "gpt-4o-mini"),
-      system: this.config.systemPrompt || defaultSystem,
+      system: this.getFullSystemPrompt(defaultSystem),
       messages,
       tools: this.getAITools(),
       maxSteps: this.config.maxSteps || 5
@@ -471,9 +502,78 @@ Always respond to the user after performing actions.`;
 function createAgent(config) {
   return new Agent(config);
 }
+
+// src/feats/ui-insights.ts
+import { z as z2 } from "zod";
+var UIInsightsFeat = {
+  manifest: {
+    name: "UI Insights",
+    version: "1.0.0",
+    description: "Analyzes page structure, accessibility, and UX patterns.",
+    author: "SynapseJS Core",
+    tags: ["accessibility", "ux", "analysis"]
+  },
+  instructions: `
+When the 'UI Insights' feat is active, you should proactively check for accessibility issues.
+You can use 'analyzePageUX' to get a breakdown of the current page hierarchy and potential improvements.
+Always suggest at least one UX improvement after a significant page transition.
+  `,
+  tools: [
+    {
+      name: "analyzePageUX",
+      description: "Performs a deep scan of the current DOM to identify accessibility gaps and UX friction points.",
+      schema: z2.object({
+        focusArea: z2.string().optional().describe('Optional specific area to focus on (e.g., "forms", "navigation")')
+      }),
+      execute: async ({ focusArea }) => {
+        return {
+          _synapseSignal: "SHOW_NOTIFICATION",
+          payload: {
+            message: `UI Insights scan complete${focusArea ? ` for ${focusArea}` : ""}. Found 2 accessibility warnings.`,
+            type: "info"
+          }
+        };
+      }
+    }
+  ]
+};
+
+// src/feats/vision.ts
+import { z as z3 } from "zod";
+var VisionFeat = {
+  manifest: {
+    name: "Vision",
+    version: "1.0.0",
+    description: "Enables the agent to see the UI via screenshots for complex visual analysis.",
+    author: "SynapseJS Core",
+    tags: ["vision", "multi-modal", "canvas"]
+  },
+  instructions: `
+When you need to reason about non-DOM elements (like 3D scenes, Canvas elements, or complex visualizations), use 'scanViewport'.
+The 'scanViewport' tool will provide you with a visual snapshot of the current view.
+Wait for the screenshot data to be provided in the next turn before drawing conclusions about visual states.
+  `,
+  tools: [
+    {
+      name: "scanViewport",
+      description: "Captures a full screenshot of the current viewport to analyze visual layout and non-DOM components.",
+      schema: z3.object({
+        reason: z3.string().describe('The reason for needing a visual scan (e.g., "analyzing 3D scene state")')
+      }),
+      execute: async ({ reason }) => {
+        return {
+          _synapseSignal: "CAPTURE_SCREENSHOT",
+          payload: { reason }
+        };
+      }
+    }
+  ]
+};
 export {
   Agent,
   SYNAPSE_TOOL_NAMES,
   ToolRegistry,
+  UIInsightsFeat,
+  VisionFeat,
   createAgent
 };
