@@ -1,125 +1,256 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SynapseJS — Intelligence for your Frontend</title>
-    <meta name="description" content="The AI runtime layer that gives your React apps superpowers. Drop-in 20+ AI tools and built-in automation feats.">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="landing.css">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SynapseJS — AI Runtime for the Modern Web</title>
+  <meta name="description" content="SynapseJS is the AI runtime layer that connects intelligent agents directly to your UI. Drop-in 20+ tools and automation feats into any React app." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="landing.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="landing.js" defer></script>
 </head>
 <body>
 
-    <div class="spatial-bg"></div>
-    <div class="heavenly-aura"></div>
-    <div class="glow-orb" style="top: -10%; right: -10%;"></div>
-    <div class="glow-orb" style="bottom: -20%; left: -20%;"></div>
+  <!-- ── Canvas Particle Background ── -->
+  <canvas id="particle-canvas"></canvas>
 
-    <nav class="navbar">
-        <a href="#" class="logo magnetic">
-            <div class="logo-icon">⚡</div>
-            <span>SynapseJS</span>
+  <!-- ── Navigation ── -->
+  <nav class="navbar" id="navbar">
+    <a href="/" class="logo magnetic">
+      <div class="logo-mark">⚡</div>
+      <span>Synapse<strong>JS</strong></span>
+    </a>
+    <div class="nav-center">
+      <a href="intro.html" class="nav-link">Docs</a>
+      <a href="showcase.html" class="nav-link">Showcase</a>
+      <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="nav-link">GitHub</a>
+      <a href="intro.html#changelog" class="nav-link">Changelog</a>
+    </div>
+    <div class="nav-end">
+      <button class="nav-icon-btn magnetic" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <span id="theme-icon">🌙</span>
+      </button>
+      <a href="intro.html" class="btn btn-primary magnetic">Get Started →</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ════════════════════════════════════════════
+         HERO
+    ═══════════════════════════════════════════════ -->
+    <section class="hero">
+      <div class="hero-badge" id="hero-badge">
+        <span class="badge-dot"></span>
+        v0.3.0 — Feats & Vision Now Available
+      </div>
+
+      <h1 class="hero-title" id="hero-title">
+        The AI Runtime<br>
+        <span class="text-gradient">Layer for Your UI</span>
+      </h1>
+
+      <p class="hero-desc" id="hero-desc">
+        Connect any AI agent directly to your web application.<br>
+        20+ built-in tools. Zero config. Instant superpowers.
+      </p>
+
+      <div class="hero-actions" id="hero-actions">
+        <a href="intro.html#quickstart" class="btn btn-primary magnetic">
+          Start in 5 Minutes
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
-        <div class="nav-links">
-            <a href="intro.html" class="nav-link">Documentation</a>
-            <a href="showcase.html" class="nav-link">Showcase</a>
-            <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="nav-link">GitHub</a>
+        <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="btn btn-ghost magnetic">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+
+      <!-- Hero Code Preview -->
+      <div class="hero-code-wrapper" id="hero-code">
+        <div class="code-topbar">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-label">agent.ts</span>
         </div>
-        <div style="display: flex; gap: 1rem; align-items: center;">
-            <button class="theme-toggle magnetic" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
-                <span id="theme-icon">🌙</span>
-            </button>
-            <a href="intro.html" class="btn btn-secondary magnetic">Get Started</a>
+        <pre class="code-block"><code><span class="c-keyword">import</span> <span class="c-brace">{</span> createAgent <span class="c-brace">}</span> <span class="c-keyword">from</span> <span class="c-string">'@synapsejs/core'</span><span class="c-semi">;</span>
+
+<span class="c-keyword">const</span> agent <span class="c-op">=</span> <span class="c-fn">createAgent</span><span class="c-brace">({</span>
+  model<span class="c-op">:</span> <span class="c-fn">google</span><span class="c-brace">(</span><span class="c-string">'gemini-2.0-flash'</span><span class="c-brace">)</span><span class="c-semi">,</span>
+  tools<span class="c-op">:</span> <span class="c-brace">[</span>
+    <span class="c-fn">scrollTo</span><span class="c-brace">()</span><span class="c-semi">,</span>
+    <span class="c-fn">highlightElement</span><span class="c-brace">()</span><span class="c-semi">,</span>
+    <span class="c-fn">fillForm</span><span class="c-brace">()</span><span class="c-semi">,</span>
+    <span class="c-fn">vision</span><span class="c-brace">()</span>       <span class="c-comment">// ← See what the user sees</span>
+  <span class="c-brace">]</span>
+<span class="c-brace">})</span><span class="c-semi">;</span>
+
+<span class="c-keyword">await</span> agent<span class="c-semi">.</span><span class="c-fn">run</span><span class="c-brace">(</span><span class="c-string">'Help me find the checkout button'</span><span class="c-brace">)</span><span class="c-semi">;</span></code></pre>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         STATS BAR
+    ═══════════════════════════════════════════════ -->
+    <section class="stats-bar reveal">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-num">20+</span>
+          <span class="stat-label">Built-in Tools</span>
         </div>
-    </nav>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">3</span>
+          <span class="stat-label">AI Providers</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">&lt; 5min</span>
+          <span class="stat-label">Setup Time</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">0</span>
+          <span class="stat-label">Config Files</span>
+        </div>
+      </div>
+    </section>
 
-    <main>
-        <section class="hero">
-            <div class="hero-badge reveal">INTRODUCING SYNAPSE FEATS & VISION v0.3.0</div>
-            <h1 class="hero-title reveal">
-                <span class="gradient-text">Intelligence.</span><br>
-                Heavenly Connected.
-            </h1>
-            <p class="hero-subtitle reveal">
-                SynapseJS is the neural link between your AI agent and your web UI. Drop-in 20+ built-in tools and advanced automation feats into any React or Next.js app in minutes.
-            </p>
-            <div class="hero-actions reveal">
-                <a href="intro.html" class="btn btn-primary magnetic">Documentation</a>
-                <a href="showcase.html" class="btn btn-secondary magnetic">Explore Demos</a>
-            </div>
+    <!-- ════════════════════════════════════════════
+         FEATURES
+    ═══════════════════════════════════════════════ -->
+    <section class="section" id="features">
+      <div class="section-inner">
+        <div class="section-header reveal">
+          <div class="section-tag">Why SynapseJS</div>
+          <h2>Everything your AI agent needs<br><span class="text-gradient">to understand your UI</span></h2>
+          <p class="section-sub">A complete toolkit for building AI-native user experiences — from Vision to fine-grained DOM control.</p>
+        </div>
 
-            <div class="hero-asset-container reveal">
-                <img src="assets/hero.png" alt="SynapseJS Intelligence" class="hero-image" id="heroAsset">
-            </div>
-        </section>
+        <div class="features-grid">
+          <div class="card card-lg reveal" id="feat-vision">
+            <div class="card-icon">👁️</div>
+            <h3>Vision Support</h3>
+            <p>Your agent can literally <em>see</em> the current state of the page via screenshot analysis — understanding dynamic UI without manual selectors.</p>
+            <div class="card-tag">NEW in v0.3.0</div>
+          </div>
+          <div class="card reveal">
+            <div class="card-icon">⚡</div>
+            <h3>20+ DOM Tools</h3>
+            <p>Scroll, click, fill forms, highlight elements, show toasts — all pre-built and ready for your agent to call.</p>
+          </div>
+          <div class="card reveal">
+            <div class="card-icon">🔌</div>
+            <h3>Multi-Provider</h3>
+            <p>Works with Gemini, GPT-4, Groq, and any Vercel AI SDK compatible model. Swap with one line of code.</p>
+          </div>
+          <div class="card reveal">
+            <div class="card-icon">🧩</div>
+            <h3>React Native</h3>
+            <p>First-class React hooks (<code>&lt;SynapseProvider&gt;</code>, <code>useAgent()</code>) for seamless integration into any component tree.</p>
+          </div>
+          <div class="card reveal">
+            <div class="card-icon">🏎️</div>
+            <h3>Feats System</h3>
+            <p>Chain multiple tools into reusable automation "feats" that execute complex multi-step workflows from a single agent command.</p>
+          </div>
+          <div class="card reveal">
+            <div class="card-icon">🔒</div>
+            <h3>Type-Safe</h3>
+            <p>Built on <strong>Zod</strong> for full end-to-end type safety. Define your tool schemas and get auto-complete in your IDE.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <section class="features">
-            <div class="section-header">
-                <h2 class="section-title reveal" id="features-title">Proven Excellence.</h2>
-                <p class="section-subtitle reveal">The most extensible AI framework for modern web development.</p>
-            </div>
+    <!-- ════════════════════════════════════════════
+         HOW IT WORKS
+    ═══════════════════════════════════════════════ -->
+    <section class="section section-alt" id="how-it-works">
+      <div class="section-inner">
+        <div class="section-header reveal">
+          <div class="section-tag">How It Works</div>
+          <h2>From setup to AI-powered<br><span class="text-gradient">UI in three steps</span></h2>
+        </div>
 
-            <div class="features-grid">
-                <div class="feature-card reveal" id="card-feats">
-                    <div class="feature-icon">🍱</div>
-                    <h3>Automation Feats</h3>
-                    <p>Reusable high-level automation bundles. Scaffolding for new features is as easy as 'npm run create-feat'.</p>
-                </div>
-                <div class="feature-card reveal" id="card-vision">
-                    <div class="feature-icon">👁️</div>
-                    <h3>Multi-Modal Vision</h3>
-                    <p>Enabled the agent to "see" your UI. Reasoning about Canvases, 3D scenes, and complex layouts using screenshots.</p>
-                </div>
-                <div class="feature-card reveal" id="card-plumbing">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Zero Plumbing</h3>
-                    <p>Typed signal pipeline connects your LLM to the DOM instantly. No more manual tool orchestration.</p>
-                </div>
-            </div>
-        </section>
-    </main>
+        <div class="steps-grid">
+          <div class="step-item reveal">
+            <div class="step-num">01</div>
+            <h3>Install & Configure</h3>
+            <p>Add <code>@synapsejs/core</code> and wrap your app with <code>&lt;SynapseProvider&gt;</code>. Point it at your preferred AI model.</p>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item reveal">
+            <div class="step-num">02</div>
+            <h3>Drop In Your Tools</h3>
+            <p>Select from 20+ pre-built tools or define custom ones using the Zod schema builder. No boilerplate.</p>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item reveal">
+            <div class="step-num">03</div>
+            <h3>Agent Goes to Work</h3>
+            <p>Call <code>agent.run(prompt)</code> and watch your AI navigate, fill, and control your UI in real time.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <!-- Heavenly Demo Assistant -->
-    <div class="assistant-trigger" onclick="toggleAssistant()" id="ai-trigger">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#020617" stroke-width="2.5">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-        </svg>
+    <!-- ════════════════════════════════════════════
+         CTA
+    ═══════════════════════════════════════════════ -->
+    <section class="section cta-section reveal">
+      <div class="cta-card">
+        <h2>Ready to build AI-native<br><span class="text-gradient">web experiences?</span></h2>
+        <p>Join developers building the next generation of intelligent UI. SynapseJS is open source and free forever.</p>
+        <div class="cta-actions">
+          <a href="intro.html" class="btn btn-primary magnetic">Read the Docs →</a>
+          <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="btn btn-ghost magnetic">⭐ Star on GitHub</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/" class="logo">
+        <div class="logo-mark">⚡</div>
+        <span>Synapse<strong>JS</strong></span>
+      </a>
+      <p class="footer-copy">© 2026 SynapseJS. Open Source, MIT Licensed.</p>
+      <div class="footer-links">
+        <a href="https://github.com/ziuus/SynapseJS" target="_blank">GitHub</a>
+        <a href="intro.html">Docs</a>
+        <a href="showcase.html">Showcase</a>
+      </div>
     </div>
+  </footer>
 
-    <div id="synapse-assistant">
-        <div class="assistant-header">
-            <div class="assistant-title">SYNAPSE ASSISTANT</div>
-            <button onclick="toggleAssistant()" style="background:none; border:none; color:var(--primary); cursor:pointer;">✕</button>
-        </div>
-        <div class="assistant-chat" id="chat-box">
-            <div class="msg msg-ai">Hi! I'm the Synapse Assistant. I can interact with this page to show you how our framework works. Try asking me "Highlight the features" or "Scroll to the top".</div>
-        </div>
-        <div class="assistant-input-wrap">
-            <input type="text" id="ai-input" class="assistant-input" placeholder="Ask the agent to act..." onkeypress="if(event.key==='Enter') sendMessage()">
-            <button onclick="sendMessage()" class="btn-send">Send</button>
-        </div>
+  <!-- ── Synapse Assistant Demo Widget ── -->
+  <div id="synapse-assistant" role="dialog" aria-label="Synapse AI Assistant">
+    <div class="assistant-header">
+      <div class="assistant-title-row">
+        <div class="logo-mark" style="width:28px;height:28px;font-size:.9rem;">⚡</div>
+        <span class="assistant-title">Synapse <strong>Assistant</strong></span>
+        <div class="assistant-status"><span class="badge-dot"></span>Live</div>
+      </div>
+      <button class="close-btn" onclick="toggleAssistant()">✕</button>
     </div>
+    <div class="assistant-chat" id="chat-box">
+      <div class="msg msg-ai">👋 I'm the SynapseJS demo agent. I can control this page in real time.<br><br>Try: <em>"Highlight the features"</em> or <em>"Scroll to how it works"</em></div>
+    </div>
+    <div class="assistant-input-row">
+      <input id="ai-input" type="text" placeholder="Ask me to do something…" onkeydown="if(event.key==='Enter') sendMessage()" />
+      <button class="send-btn magnetic" onclick="sendMessage()">↑</button>
+    </div>
+  </div>
+  <button class="assistant-fab magnetic" onclick="toggleAssistant()" aria-label="Open AI Assistant">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+  </button>
 
-    <footer>
-        <div class="logo magnetic">
-            <div class="logo-icon">⚡</div>
-            <span>SynapseJS</span>
-        </div>
-        <div class="footer-links">
-            <a href="intro.html" class="nav-link">Docs</a>
-            <a href="showcase.html" class="nav-link">Demos</a>
-            <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="nav-link">GitHub</a>
-        </div>
-        <p class="footer-text">© 2026 SynapseJS Engine. Released under MIT License.</p>
-    </footer>
-
-    <script src="landing.js"></script>
 </body>
 </html>

@@ -1,229 +1,219 @@
-// ── GSAP Initialization ───────────────────────────────────────────────────
-gsap.registerPlugin(ScrollTrigger);
+/* --------------------------------------------------------------------------
+ * SynapseJS Landing — JavaScript
+ * Antigravity Design: GSAP + Particles + Magnetic + Theme Toggle
+ * -------------------------------------------------------------------------- */
 
-// ── Reveal Animations ────────────────────────────────────────────────────
-const reveals = document.querySelectorAll('.reveal');
-
-reveals.forEach((el) => {
-  gsap.from(el, {
-    scrollTrigger: {
-      trigger: el,
-      start: 'top 85%',
-      toggleActions: 'play none none reverse',
-    },
-    y: 50,
-    opacity: 0,
-    duration: 1,
-    ease: 'power3.out',
-  });
-});
-
-// ── Hero Asset Tilt ──────────────────────────────────────────────────────
-const heroAsset = document.querySelector('#heroAsset');
-if (heroAsset) {
-  window.addEventListener('mousemove', (e) => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 15;
-    const y = (e.clientY / window.innerHeight - 0.5) * -15;
-    gsap.to(heroAsset, {
-      rotateY: x,
-      rotateX: y + 15, // Base 15deg tilt
-      duration: 1.2,
-      ease: 'power2.out',
-    });
-  });
-}
-
-// ── Theme Logic ──────────────────────────────────────────────────────────
-function toggleTheme() {
-  const currentTheme = document.documentElement.getAttribute('data-theme');
-  const targetTheme = currentTheme === 'light' ? 'dark' : 'light';
-  document.documentElement.setAttribute('data-theme', targetTheme);
-  localStorage.setItem('synapse-theme', targetTheme);
-  
-  const icon = document.getElementById('theme-icon');
-  if (icon) icon.textContent = targetTheme === 'light' ? '☀️' : '🌙';
-  console.log(`[SynapseJS] Theme switched to ${targetTheme}`);
-}
-
-// Initialize Theme
+// ── Theme ──────────────────────────────────────────────────────────────────
 const savedTheme = localStorage.getItem('synapse-theme') || 'dark';
 document.documentElement.setAttribute('data-theme', savedTheme);
+
+function toggleTheme() {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('synapse-theme', next);
+  const icon = document.getElementById('theme-icon');
+  if (icon) icon.textContent = next === 'light' ? '☀️' : '🌙';
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   const icon = document.getElementById('theme-icon');
   if (icon) icon.textContent = savedTheme === 'light' ? '☀️' : '🌙';
 });
 
-// ── Magnetic Buttons ─────────────────────────────────────────────────────
-const magneticEls = document.querySelectorAll('.magnetic');
-magneticEls.forEach((el) => {
-  el.addEventListener('mousemove', (e) => {
-    const rect = el.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    gsap.to(el, { x: x * 0.35, y: y * 0.35, duration: 0.5, ease: 'power2.out' });
+// ── Particle System ────────────────────────────────────────────────────────
+(function initParticles() {
+  const canvas = document.getElementById('particle-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const particles = [];
+  const COUNT = window.innerWidth < 600 ? 30 : 70;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  class Particle {
+    constructor() { this.reset(true); }
+    reset(randomY = false) {
+      this.x = Math.random() * canvas.width;
+      this.y = randomY ? Math.random() * canvas.height : canvas.height + 10;
+      this.r = Math.random() * 2 + 0.5;
+      this.dx = (Math.random() - 0.5) * 0.4;
+      this.dy = -(Math.random() * 0.5 + 0.2);
+      this.alpha = Math.random() * 0.5 + 0.1;
+      this.life = 1;
+      this.decay = Math.random() * 0.002 + 0.001;
+    }
+    update() {
+      this.x += this.dx;
+      this.y += this.dy;
+      this.life -= this.decay;
+      if (this.life <= 0 || this.y < -10) this.reset();
+    }
+    draw() {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const col = isLight ? `rgba(234,88,12,${this.alpha * this.life})` : `rgba(249,115,22,${this.alpha * this.life})`;
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = col;
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+  }
+
+  for (let i = 0; i < COUNT; i++) particles.push(new Particle());
+
+  (function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(loop);
+  })();
+})();
+
+// ── GSAP Animations ────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  if (typeof gsap === 'undefined') return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero entrance — staggered cascade
+  const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+  tl.to('#hero-badge',   { opacity: 1, y: 0, duration: 0.8 }, 0.2)
+    .to('#hero-title',   { opacity: 1, y: 0, duration: 1.0 }, 0.45)
+    .to('#hero-desc',    { opacity: 1, y: 0, duration: 0.9 }, 0.65)
+    .to('#hero-actions', { opacity: 1, y: 0, duration: 0.8 }, 0.80)
+    .to('#hero-code',    { opacity: 1, y: 0, duration: 1.2 }, 0.95);
+
+  // Scroll reveal for all .reveal elements
+  document.querySelectorAll('.reveal').forEach((el) => {
+    gsap.to(el, {
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 88%',
+        toggleActions: 'play none none reverse',
+      },
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: 'power3.out',
+    });
   });
-  el.addEventListener('mouseleave', () => {
-    gsap.to(el, { x: 0, y: 0, duration: 0.8, ease: 'elastic.out(1, 0.3)' });
+
+  // Stagger feature cards
+  gsap.utils.toArray('.card').forEach((card, i) => {
+    gsap.to(card, {
+      scrollTrigger: {
+        trigger: card,
+        start: 'top 90%',
+        toggleActions: 'play none none reverse',
+      },
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      delay: i * 0.08,
+      ease: 'power3.out',
+    });
+  });
+
+  // 3D Hero Card parallax on mouse move
+  const heroCode = document.getElementById('hero-code');
+  if (heroCode) {
+    window.addEventListener('mousemove', (e) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const rx = ((e.clientY - cy) / cy) * -8;
+      const ry = ((e.clientX - cx) / cx) * 8;
+      gsap.to(heroCode, {
+        rotateX: 14 + rx,
+        rotateY: ry,
+        duration: 2,
+        ease: 'power2.out',
+      });
+    });
+  }
+
+  // Navbar scroll effect
+  const navbar = document.getElementById('navbar');
+  if (navbar) {
+    ScrollTrigger.create({
+      start: 100,
+      onToggle({ isActive }) {
+        navbar.style.boxShadow = isActive ? '0 1px 0 rgba(255,255,255,0.04)' : 'none';
+      }
+    });
+  }
+});
+
+// ── Physics Magnetic Buttons ───────────────────────────────────────────────
+window.addEventListener('load', () => {
+  if (typeof gsap === 'undefined') return;
+  document.querySelectorAll('.magnetic').forEach((el) => {
+    el.addEventListener('mousemove', (e) => {
+      const { left, top, width, height } = el.getBoundingClientRect();
+      const x = (e.clientX - left - width / 2) * 0.45;
+      const y = (e.clientY - top - height / 2) * 0.45;
+      gsap.to(el, { x, y, duration: 0.9, ease: 'power3.out', overwrite: 'auto' });
+    });
+    el.addEventListener('mouseleave', () => {
+      gsap.to(el, { x: 0, y: 0, duration: 1.5, ease: 'elastic.out(1, 0.3)' });
+    });
   });
 });
 
-// ── Assistant Logic ──────────────────────────────────────────────────────
+// ── Assistant Demo ─────────────────────────────────────────────────────────
 const assistant = document.getElementById('synapse-assistant');
-const chatBox = document.getElementById('chat-box');
-const aiInput = document.getElementById('ai-input');
+const chatBox   = document.getElementById('chat-box');
+const aiInput   = document.getElementById('ai-input');
 
 function toggleAssistant() {
-  assistant.classList.toggle('active');
-  if (assistant.classList.contains('active')) {
-    aiInput.focus();
-  }
+  if (!assistant) return;
+  const isOpen = assistant.classList.toggle('active');
+  if (isOpen && aiInput) aiInput.focus();
 }
 
-function addMessage(text, role) {
+function addMsg(text, role) {
+  if (!chatBox) return;
   const div = document.createElement('div');
   div.className = `msg msg-${role}`;
-  div.textContent = text;
+  div.innerHTML = text;
   chatBox.appendChild(div);
   chatBox.scrollTop = chatBox.scrollHeight;
   return div;
 }
 
 async function sendMessage() {
-  const text = aiInput.value.trim();
+  const text = aiInput?.value?.trim();
   if (!text) return;
-
-  addMessage(text, 'user');
+  addMsg(text, 'user');
   aiInput.value = '';
 
-  // Simulate AI Thinking
-  const thinking = addMessage('...', 'ai');
-  await new Promise(r => setTimeout(r, 800));
-  thinking.remove();
+  const thinking = addMsg('<em>Thinking...</em>', 'ai');
+  await new Promise(r => setTimeout(r, 500));
+  thinking?.remove();
 
-  // Simple Pattern Matching for Demo
-  const input = text.toLowerCase();
-  
-  if (input.includes('highlight') || input.includes('show features')) {
-    addMessage('Highlighting the features grid for you. Emitting HIGHLIGHT_ELEMENT signal...', 'ai');
-    const cards = document.querySelectorAll('.feature-card');
-    cards.forEach(card => card.classList.add('synapse-highlight'));
-    setTimeout(() => cards.forEach(card => card.classList.remove('synapse-highlight')), 3000);
-  } else if (input.includes('scroll') && input.includes('top')) {
-    addMessage('Scrolling to the top. Emitting SCROLL_TO signal...', 'ai');
+  const q = text.toLowerCase();
+
+  if (q.includes('highlight') || q.includes('feature')) {
+    addMsg('Emitting <strong>HIGHLIGHT_ELEMENT</strong> signal… ⚡', 'ai');
+    document.querySelectorAll('.card').forEach(c => c.classList.add('synapse-highlight'));
+    setTimeout(() => document.querySelectorAll('.card').forEach(c => c.classList.remove('synapse-highlight')), 2500);
+
+  } else if (q.includes('top') || q.includes('hero')) {
+    addMsg('Emitting <strong>SCROLL_TO</strong> signal — navigating to top.', 'ai');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else if (input.includes('scroll') && (input.includes('feature') || input.includes('down'))) {
-    addMessage('Scrolling to features. Emitting SCROLL_TO signal...', 'ai');
-    document.querySelector('.features').scrollIntoView({ behavior: 'smooth' });
-  } else if (input.includes('docs') || input.includes('documentation')) {
-    addMessage('Documentation is available via the Documentation link. Emitting NAVIGATE signal...', 'ai');
-    document.querySelector('.nav-link[href="intro.html"]').classList.add('synapse-highlight');
-    setTimeout(() => document.querySelector('.nav-link[href="intro.html"]').classList.remove('synapse-highlight'), 3000);
+
+  } else if (q.includes('how') || q.includes('step') || q.includes('work')) {
+    addMsg('Scrolling to <em>How It Works</em> section…', 'ai');
+    document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
+
+  } else if (q.includes('stat') || q.includes('number')) {
+    addMsg('Here\'s a snapshot: <strong>20+ tools</strong>, <strong>3 providers</strong>, setup in <strong>5 min</strong>.', 'ai');
+
   } else {
-    addMessage("I can highlight parts of this page or scroll to sections. Try: 'Highlight features' or 'Scroll to bottom'.", 'ai');
+    addMsg('I can control this page in real time! Try: <em>"Highlight features"</em>, <em>"Scroll to steps"</em>, or <em>"Go to top"</em>.', 'ai');
   }
 }
-
-// ── Design Spells: Particle Background ──────────────────────────────────────
-const particles = [];
-const particleCount = 40;
-const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d');
-canvas.style.position = 'fixed';
-canvas.style.top = '0';
-canvas.style.left = '0';
-canvas.style.width = '100vw';
-canvas.style.height = '100vh';
-canvas.style.pointerEvents = 'none';
-canvas.style.zIndex = '0';
-canvas.style.opacity = '0.5';
-document.body.appendChild(canvas);
-
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resize);
-resize();
-
-class Particle {
-  constructor() {
-    this.reset();
-  }
-  reset() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.size = Math.random() * 2 + 1;
-    this.speedX = (Math.random() - 0.5) * 0.5;
-    this.speedY = (Math.random() - 0.5) * 0.5;
-    this.alpha = Math.random() * 0.5 + 0.1;
-  }
-  update() {
-    this.x += this.speedX;
-    this.y += this.speedY;
-    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-  }
-  draw() {
-    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    ctx.fillStyle = isLight ? `rgba(13, 148, 136, ${this.alpha})` : `rgba(45, 212, 191, ${this.alpha})`;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-
-for (let i = 0; i < particleCount; i++) particles.push(new Particle());
-
-function animateParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach(p => {
-    p.update();
-    p.draw();
-  });
-  requestAnimationFrame(animateParticles);
-}
-animateParticles();
-
-// ── Enhanced Magnetic Magic (Design Spells) ──────────────────────────────────
-magneticEls.forEach((el) => {
-  el.addEventListener('mousemove', (e) => {
-    const rect = el.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    
-    // Physics-based tracking with lag
-    gsap.to(el, { 
-      x: x * 0.45, 
-      y: y * 0.45, 
-      duration: 0.8, 
-      ease: 'power3.out',
-      overwrite: 'auto'
-    });
-    
-    // Magnetic pulse effect
-    if (el.classList.contains('logo') || el.classList.contains('btn-primary')) {
-       gsap.to(el, { scale: 1.05, duration: 0.3 });
-    }
-  });
-  
-  el.addEventListener('mouseleave', () => {
-    gsap.to(el, { x: 0, y: 0, scale: 1, duration: 1.2, ease: 'elastic.out(1, 0.3)' });
-  });
-});
-
-console.log('[SynapseJS] Design Spells: Magnetic Magic & Particles Active. ✨');
-const orbs = document.querySelectorAll('.glow-orb');
-window.addEventListener('mousemove', (e) => {
-  const { clientX, clientY } = e;
-  const xPercent = (clientX / window.innerWidth - 0.5) * 100;
-  const yPercent = (clientY / window.innerHeight - 0.5) * 100;
-
-  orbs.forEach((orb, i) => {
-    const factor = (i + 1) * 0.2;
-    gsap.to(orb, {
-      x: xPercent * factor,
-      y: yPercent * factor,
-      duration: 2,
-      ease: 'power1.out'
-    });
-  });
-});

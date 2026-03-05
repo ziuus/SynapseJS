@@ -11,17 +11,17 @@
   --text: #ffffff;
   --text-2: #b4b7cc;
   --text-3: #7c7f99;
-  --indigo: #2dd4bf;
-  --indigo-hi: #5eead4;
-  --indigo-lo: rgba(45, 212, 191, 0.12);
-  --purple: #22d3ee;
+  --indigo: #f97316;
+  --indigo-hi: #fb923c;
+  --indigo-lo: rgba(249, 115, 22, 0.12);
+  --purple: #ef4444;
   --emerald: #10b981;
   --amber: #f59e0b;
   --red: #ef4444;
   --radius: 12px;
   --sidebar-w: 280px;
   --topbar-h: 60px;
-  --glow: rgba(45, 212, 191, 0.15);
+  --glow: rgba(249, 115, 22, 0.15);
 }
 
 [data-theme="light"] {
@@ -36,7 +36,7 @@
   --text: #0f172a;
   --text-2: #475569;
   --text-3: #94a3b8;
-  --indigo-lo: rgba(45, 212, 191, 0.05);
+  --indigo-lo: rgba(249, 115, 22, 0.05);
 }
 
 /* ── Reset ─────────────────────────────────────────────────────────────────── */
