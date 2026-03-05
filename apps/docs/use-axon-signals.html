@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>useSynapseSignals — SynapseJS Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-name">SynapseJS</div><div class="logo-version">v0.3.0</div></div>
+      </a>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="search" placeholder="Search docs…" class="search-input" oninput="handleSearch(this.value)" />
+      <span class="search-kbd">⌘K</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">React Hooks</div>
+        <a href="use-agent-dom.html" class="nav-link">useSynapseDOM</a>
+        <a href="use-axon-signals.html" class="nav-link active">useSynapseSignals</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="sidebar-footer-link">GitHub ↗</a>
+    </div>
+  </aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-breadcrumb">React Hooks → useSynapseSignals</div>
+      <div class="topbar-right">
+        <button class="theme-btn" onclick="toggleTheme()"><span class="theme-icon">🌙</span></button>
+      </div>
+    </header>
+    <main class="content">
+      <div class="hero" style="padding-bottom:32px">
+        <div class="hero-badge">React Hook</div>
+        <h1 class="hero-title" style="font-size:48px">useSynapseSignals</h1>
+        <p class="hero-subtitle">Handle every AI signal with a single, typed hook.</p>
+      </div>
+
+      <section class="section">
+        <h2 class="section-title">Overview</h2>
+        <p class="section-text"><code>useSynapseSignals</code> is the recommended way to wire up your entire signal pipeline. You pass a handler map — one callback per signal type — and the hook returns a <code>processSignals</code> function that you call after each AI response. Each callback is fully typed via the <code>AxonSignal</code> discriminated union.</p>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Usage</h2>
+        <div class="code-block-wrap">
+          <div class="code-block-header"><span>app/page.tsx</span></div>
+          <pre class="code-block"><code><span class="token-string">'use client'</span>;
+<span class="token-keyword">import</span> { <span class="token-ident">useSynapseSignals</span> } <span class="token-keyword">from</span> <span class="token-string">'@synapsejs/core/client'</span>;
+<span class="token-keyword">import</span> { <span class="token-ident">toast</span> } <span class="token-keyword">from</span> <span class="token-string">'sonner'</span>;
+
+<span class="token-keyword">const</span> { <span class="token-ident">processSignals</span> } = <span class="token-fn">useSynapseSignals</span>({
+  <span class="token-const">SHOW_NOTIFICATION</span>: ({ <span class="token-ident">message</span>, <span class="token-ident">type</span> }) => <span class="token-fn">toast</span>[type](<span class="token-ident">message</span>),
+  <span class="token-const">NAVIGATE</span>: ({ <span class="token-ident">url</span> }) => router.<span class="token-fn">push</span>(<span class="token-ident">url</span>),
+  <span class="token-const">SET_THEME</span>: ({ <span class="token-ident">theme</span> }) => <span class="token-fn">setTheme</span>(<span class="token-ident">theme</span>),
+  <span class="token-const">OPEN_MODAL</span>: ({ <span class="token-ident">elementId</span> }) => <span class="token-fn">openModal</span>(<span class="token-ident">elementId</span>),
+  <span class="token-const">FILL_FORM</span>: ({ <span class="token-ident">fields</span> }) => fields.<span class="token-fn">forEach</span>(({ <span class="token-ident">elementId</span>, <span class="token-ident">value</span> }) => {
+    <span class="token-keyword">const</span> <span class="token-ident">el</span> = document.<span class="token-fn">getElementById</span>(<span class="token-ident">elementId</span>) <span class="token-keyword">as</span> <span class="token-type">HTMLInputElement</span>;
+    <span class="token-keyword">if</span> (<span class="token-ident">el</span>) <span class="token-ident">el</span>.<span class="token-prop">value</span> = <span class="token-ident">value</span>;
+  }),
+});
+
+<span class="token-comment">// After getting an AI response:</span>
+<span class="token-keyword">const</span> <span class="token-ident">data</span> = <span class="token-keyword">await</span> <span class="token-fn">fetch</span>(<span class="token-string">'/api/chat'</span>, { ... }).<span class="token-fn">then</span>(<span class="token-ident">r</span> => <span class="token-ident">r</span>.<span class="token-fn">json</span>());
+<span class="token-fn">processSignals</span>(<span class="token-ident">data</span>.<span class="token-ident">messages</span>.<span class="token-fn">flatMap</span>(<span class="token-ident">m</span> => <span class="token-ident">m</span>.<span class="token-ident">toolCalls</span> ?? []));</code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">All Signal Types</h2>
+        <table style="width:100%; border-collapse:collapse; font-size:13px">
+          <thead>
+            <tr style="background:var(--bg-3)">
+              <th style="text-align:left; padding:10px 12px; border-bottom:1px solid var(--border)">Signal</th>
+              <th style="text-align:left; padding:10px 12px; border-bottom:1px solid var(--border)">Payload Fields</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:10px 12px; border-bottom:1px solid var(--border); font-family:monospace; font-size:12px">UI_INTERACTION</td><td style="padding:10px 12px; border-bottom:1px solid var(--border)"><code>elementId, action, value?</code></td></tr>
+            <tr><td style="padding:10px 12px; border-bottom:1px solid var(--border); font-family:monospace; font-size:12px">FILL_FORM</td><td style="padding:10px 12px; border-bottom:1px solid var(--border)"><code>fields: [{elementId, value}]</code></td></tr>
+            <tr><td style="padding:10px 12px; border-bottom:1px solid var(--border); font-family:monospace; font-size:12px">NAVIGATE</td><td style="padding:10px 12px; border-bottom:1px solid var(--border)"><code>url</code></td></tr>
+            <tr><td style="padding:10px 12px; border-bottom:1px solid var(--border); font-family:monospace; font-size:12px">SHOW_NOTIFICATION</td><td style="padding:10px 12px; border-bottom:1px solid var(--border)"><code>message, type?, durationMs?</code></td></tr>
+            <tr><td style="padding:10px 12px; border-bottom:1px solid var(--border); font-family:monospace; font-size:12px">SCROLL_TO</td><td style="padding:10px 12px; border-bottom:1px solid var(--border)"><code>elementId?, top?</code></td></tr>
+            <tr><td style="padding:10px 12px; border-bottom:1px solid var(--border); font-family:monospace; font-size:12px">SET_THEME</td><td style="padding:10px 12px; border-bottom:1px solid var(--border)"><code>theme</code></td></tr>
+            <tr><td style="padding:10px 12px; border-bottom:1px solid var(--border); font-family:monospace; font-size:12px">OPEN_MODAL</td><td style="padding:10px 12px; border-bottom:1px solid var(--border)"><code>elementId, action</code></td></tr>
+            <tr><td style="padding:10px 12px; border-bottom:1px solid var(--border); font-family:monospace; font-size:12px">SELECT_DROPDOWN</td><td style="padding:10px 12px; border-bottom:1px solid var(--border)"><code>elementId, value</code></td></tr>
+            <tr><td style="padding:10px 12px; font-family:monospace; font-size:12px">3D_INTERACTION</td><td style="padding:10px 12px"><code>sceneId, actionType, target, value?</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <footer class="doc-footer">
+        <div class="footer-left">MIT License · SynapseJS v0.3.0</div>
+      </footer>
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

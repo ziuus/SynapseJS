@@ -16,7 +16,7 @@ export class ToolRegistry {
    */
   register<TArgs extends z.ZodTypeAny = any, TResult = any>(tool: Tool<TArgs, TResult>) {
     if (this.tools.has(tool.name)) {
-      console.warn(`[AxonJS] Tool '${tool.name}' overwritten.`);
+      console.warn(`[SynapseJS] Tool '${tool.name}' overwritten.`);
     }
     this.tools.set(tool.name, tool as Tool);
   }
@@ -60,7 +60,7 @@ export class ToolRegistry {
   async execute(name: string, args: any): Promise<any> {
     const tool = this.getTool(name);
     if (!tool) {
-      throw new Error(`[AxonJS] Tool '${name}' not found. Available: ${this.list().join(', ')}`);
+      throw new Error(`[SynapseJS] Tool '${name}' not found. Available: ${this.list().join(', ')}`);
     }
     const parsedArgs = tool.schema ? tool.schema.parse(args) : args;
     return tool.execute(parsedArgs);

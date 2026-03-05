@@ -1,3 +1,3 @@
 "use client";
-export * from './useAgentDOM';
-export * from './useAxonSignals';
+export * from './useSynapseDOM';
+export * from './useSynapseSignals';

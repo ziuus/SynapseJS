@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ — SynapseJS Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .faq-item { margin-bottom: 16px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .faq-q {
+      padding: 20px 24px; font-weight: 600; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--bg-2); transition: background 0.2s;
+    }
+    .faq-q:hover { background: var(--bg-3); }
+    .faq-a { padding: 0 24px 20px; font-size: 14px; color: var(--text-2); line-height: 1.7; display: none; background: var(--bg-2); }
+    .faq-item.open .faq-a { display: block; }
+    .faq-item.open .faq-caret { transform: rotate(180deg); }
+    .faq-caret { transition: transform 0.2s; }
+  </style>
+</head>
+<body>
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-name">SynapseJS</div><div class="logo-version">v0.3.0</div></div>
+      </a>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="search" placeholder="Search docs…" class="search-input" oninput="handleSearch(this.value)" />
+      <span class="search-kbd">⌘K</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Getting Started</div>
+        <a href="index.html" class="nav-link">Introduction</a>
+        <a href="quick-start.html" class="nav-link">Quick Start</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Reference</div>
+        <a href="types.html" class="nav-link">TypeScript Types</a>
+        <a href="faq.html" class="nav-link active">FAQ</a>
+        <a href="changelog.html" class="nav-link">Changelog</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="sidebar-footer-link">GitHub ↗</a>
+    </div>
+  </aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-breadcrumb">Reference → FAQ</div>
+      <div class="topbar-right">
+        <button class="theme-btn" onclick="toggleTheme()"><span class="theme-icon">🌙</span></button>
+      </div>
+    </header>
+    <main class="content">
+      <div class="hero" style="padding-bottom:32px">
+        <h1 class="hero-title" style="font-size:48px">FAQ</h1>
+        <p class="hero-subtitle">Common questions about SynapseJS.</p>
+      </div>
+
+      <section class="section">
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Does SynapseJS work with Next.js App Router? <span class="faq-caret">▾</span></div>
+          <div class="faq-a">Yes! SynapseJS is designed for App Router. The <code>Agent</code> class and tool definitions run server-side in API routes. The React hooks (<code>useSynapseDOM</code>, <code>useSynapseSignals</code>) are imported from <code>@synapsejs/core/client</code> and only run in Client Components.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Can I use SynapseJS with Pages Router or Vite-React? <span class="faq-caret">▾</span></div>
+          <div class="faq-a">Yes. For Pages Router, place your <code>Agent</code> in <code>pages/api/</code>. For Vite-React (no server), SynapseJS can still manage signals on the client — you'd call a third-party AI API directly and pass the tool call results through <code>processSignals</code>.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Is my API key safe? <span class="faq-caret">▾</span></div>
+          <div class="faq-a">Yes. The <code>Agent</code> class runs exclusively on the server in your API routes. Your API key is never sent to the browser. The client only receives the AI's text response and tool call signals — both of which are safe to expose.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">How many elements should I mark with data-synapse? <span class="faq-caret">▾</span></div>
+          <div class="faq-a">Mark only the elements you want the AI to be aware of and interact with. A good rule of thumb: if the user might ask the AI to click, fill, or observe it, mark it. Keeping the DOM snapshot focused also reduces token usage and improves response accuracy.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Can I disable specific built-in tools? <span class="faq-caret">▾</span></div>
+          <div class="faq-a">Yes — use <code>ToolRegistry.unregister('toolName')</code> before the Agent is invoked. For example call <code>ToolRegistry.unregister('interactWith3DScene')</code> if you don't use Spline in your app.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">What's the difference between useSynapseDOM and useSynapseSignals? <span class="faq-caret">▾</span></div>
+          <div class="faq-a"><code>useSynapseDOM</code> is an outgoing pipeline — it reads your DOM and packages info to send to the AI. <code>useSynapseSignals</code> is an incoming pipeline — it processes what the AI sends back and fires your UI handlers.</div>
+        </div>
+      </section>
+
+      <footer class="doc-footer">
+        <div class="footer-left">MIT License · SynapseJS v0.3.0</div>
+      </footer>
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+  function toggleFaq(item) {
+    item.classList.toggle('open');
+  }
+</script>
+</body>
+</html>

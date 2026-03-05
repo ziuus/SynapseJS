@@ -32,7 +32,7 @@ export interface AgentResponse {
 
 // ── Typed Axon Signal union ────────────────────────────────────────────────────
 
-/** Every signal type the AxonJS built-in tools can emit */
+/** Every signal type the SynapseJS built-in tools can emit */
 export type AxonSignalType =
   | 'UI_INTERACTION'
   | '3D_INTERACTION'
@@ -61,11 +61,11 @@ export interface AxonSignal<T = unknown> {
   payload: T;
 }
 
-/** Handler map used by useAxonSignals and processToolCalls */
+/** Handler map used by useSynapseSignals and processToolCalls */
 export type AgentSignalHandler = Partial<Record<AxonSignalType, (payload: any) => void>>;
 
 /** All built-in tool names exported as a constant array */
-export const AXON_TOOL_NAMES = [
+export const SYNAPSE_TOOL_NAMES = [
   'interactWithScreen',
   'interactWith3DScene',
   'readScreenText',
@@ -88,4 +88,4 @@ export const AXON_TOOL_NAMES = [
   'setTheme',
 ] as const;
 
-export type AxonToolName = typeof AXON_TOOL_NAMES[number];
+export type AxonToolName = typeof SYNAPSE_TOOL_NAMES[number];

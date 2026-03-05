@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tool Registry — SynapseJS Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-name">SynapseJS</div><div class="logo-version">v0.3.0</div></div>
+      </a>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="search" placeholder="Search docs…" class="search-input" oninput="handleSearch(this.value)" />
+      <span class="search-kbd">⌘K</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Getting Started</div>
+        <a href="index.html" class="nav-link">Introduction</a>
+        <a href="quick-start.html" class="nav-link">Quick Start</a>
+        <a href="providers.html" class="nav-link">Providers</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Core Concepts</div>
+        <a href="agent.html" class="nav-link">Agent</a>
+        <a href="tool-registry.html" class="nav-link active">Tool Registry</a>
+        <a href="custom-tools.html" class="nav-link">Custom Tools</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="sidebar-footer-link">GitHub ↗</a>
+    </div>
+  </aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-breadcrumb">Core Concepts → Tool Registry</div>
+      <div class="topbar-right">
+        <button class="theme-btn" onclick="toggleTheme()"><span class="theme-icon">🌙</span></button>
+      </div>
+    </header>
+    <main class="content">
+      <div class="hero" style="padding-bottom:32px">
+        <div class="hero-badge">Core Concept</div>
+        <h1 class="hero-title" style="font-size:48px">Tool Registry</h1>
+        <p class="hero-subtitle">The global catalogue of tools the Agent can call.</p>
+      </div>
+
+      <section class="section">
+        <h2 class="section-title">Overview</h2>
+        <p class="section-text">The <code>ToolRegistry</code> is a singleton that holds all tool definitions the Agent can choose from. All 20 built-in tools are pre-registered automatically. You can add your own tools, remove built-ins you don't need, or query what's currently registered.</p>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">API</h2>
+
+        <div class="code-block-wrap">
+          <div class="code-block-header"><span>tool-registry usage</span></div>
+          <pre class="code-block"><code><span class="token-keyword">import</span> { <span class="token-ident">ToolRegistry</span> } <span class="token-keyword">from</span> <span class="token-string">'@synapsejs/core'</span>;
+
+<span class="token-comment">// Register a custom tool</span>
+<span class="token-ident">ToolRegistry</span>.<span class="token-fn">register</span>({
+  <span class="token-prop">name</span>: <span class="token-string">'myCustomTool'</span>,
+  <span class="token-prop">description</span>: <span class="token-string">'Does something custom'</span>,
+  <span class="token-prop">parameters</span>: { <span class="token-prop">type</span>: <span class="token-string">'object'</span>, <span class="token-prop">properties</span>: { ... } },
+  <span class="token-prop">signal</span>: <span class="token-string">'MY_CUSTOM_SIGNAL'</span>,
+});
+
+<span class="token-comment">// Unregister a built-in you don't want</span>
+<span class="token-ident">ToolRegistry</span>.<span class="token-fn">unregister</span>(<span class="token-string">'interactWith3DScene'</span>);
+
+<span class="token-comment">// Check if a tool is registered</span>
+<span class="token-ident">ToolRegistry</span>.<span class="token-fn">has</span>(<span class="token-string">'showNotification'</span>); <span class="token-comment">// true</span>
+
+<span class="token-comment">// List all registered tools</span>
+<span class="token-keyword">const</span> tools = <span class="token-ident">ToolRegistry</span>.<span class="token-fn">list</span>();
+console.<span class="token-fn">log</span>(tools.<span class="token-fn">map</span>(<span class="token-ident">t</span> => <span class="token-ident">t</span>.<span class="token-prop">name</span>)); <span class="token-comment">// ['interactWithScreen', ...]</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Methods</h2>
+        <table style="width:100%; border-collapse:collapse; font-size:14px">
+          <thead>
+            <tr style="background:var(--bg-3)">
+              <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Method</th>
+              <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Returns</th>
+              <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:12px; border-bottom:1px solid var(--border)"><code>register(tool)</code></td><td style="padding:12px; border-bottom:1px solid var(--border)"><code>void</code></td><td style="padding:12px; border-bottom:1px solid var(--border)">Add a new tool definition to the registry.</td></tr>
+            <tr><td style="padding:12px; border-bottom:1px solid var(--border)"><code>unregister(name)</code></td><td style="padding:12px; border-bottom:1px solid var(--border)"><code>void</code></td><td style="padding:12px; border-bottom:1px solid var(--border)">Remove a tool by name (including built-ins).</td></tr>
+            <tr><td style="padding:12px; border-bottom:1px solid var(--border)"><code>has(name)</code></td><td style="padding:12px; border-bottom:1px solid var(--border)"><code>boolean</code></td><td style="padding:12px; border-bottom:1px solid var(--border)">Check if a tool is registered.</td></tr>
+            <tr><td style="padding:12px"><code>list()</code></td><td style="padding:12px"><code>ToolDef[]</code></td><td style="padding:12px">Return all registered tool definitions.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <footer class="doc-footer">
+        <div class="footer-left">MIT License · SynapseJS v0.3.0</div>
+      </footer>
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

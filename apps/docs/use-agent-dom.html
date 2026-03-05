@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>useSynapseDOM — SynapseJS Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-name">SynapseJS</div><div class="logo-version">v0.3.0</div></div>
+      </a>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="search" placeholder="Search docs…" class="search-input" oninput="handleSearch(this.value)" />
+      <span class="search-kbd">⌘K</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Getting Started</div>
+        <a href="index.html" class="nav-link">Introduction</a>
+        <a href="quick-start.html" class="nav-link">Quick Start</a>
+        <a href="providers.html" class="nav-link">Providers</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">React Hooks</div>
+        <a href="use-agent-dom.html" class="nav-link active">useSynapseDOM</a>
+        <a href="use-axon-signals.html" class="nav-link">useSynapseSignals</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="sidebar-footer-link">GitHub ↗</a>
+    </div>
+  </aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-breadcrumb">React Hooks → useSynapseDOM</div>
+      <div class="topbar-right">
+        <button class="theme-btn" onclick="toggleTheme()"><span class="theme-icon">🌙</span></button>
+      </div>
+    </header>
+    <main class="content">
+      <div class="hero" style="padding-bottom:32px">
+        <div class="hero-badge">React Hook</div>
+        <h1 class="hero-title" style="font-size:48px">useSynapseDOM</h1>
+        <p class="hero-subtitle">Give the AI a live snapshot of your DOM elements.</p>
+      </div>
+
+      <section class="section">
+        <h2 class="section-title">Overview</h2>
+        <p class="section-text"><code>useSynapseDOM</code> scans your React tree for all elements with a <code>data-synapse</code> attribute and returns a serialized map of them. This map is sent to the Agent so it knows exactly what elements exist on screen and what their current state is.</p>
+        <p class="section-text">Import from <code>@synapsejs/core/client</code> to avoid SSR issues — the hook only runs in the browser.</p>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Usage</h2>
+        <div class="code-block-wrap">
+          <div class="code-block-header"><span>app/page.tsx</span></div>
+          <pre class="code-block"><code><span class="token-string">'use client'</span>;
+<span class="token-keyword">import</span> { <span class="token-ident">useSynapseDOM</span> } <span class="token-keyword">from</span> <span class="token-string">'@synapsejs/core/client'</span>;
+
+<span class="token-keyword">export default function</span> <span class="token-fn">Page</span>() {
+  <span class="token-comment">// Returns an object mapping data-synapse IDs → element metadata</span>
+  <span class="token-keyword">const</span> <span class="token-ident">domElements</span> = <span class="token-fn">useSynapseDOM</span>();
+
+  <span class="token-keyword">const</span> <span class="token-fn">handleSend</span> = <span class="token-keyword">async</span> () => {
+    <span class="token-keyword">const</span> <span class="token-ident">res</span> = <span class="token-keyword">await</span> <span class="token-fn">fetch</span>(<span class="token-string">'/api/chat'</span>, {
+      <span class="token-prop">method</span>: <span class="token-string">'POST'</span>,
+      <span class="token-prop">body</span>: JSON.<span class="token-fn">stringify</span>({ messages, <span class="token-ident">domElements</span> }), <span class="token-comment">// ← pass here</span>
+    });
+  };
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Marking Elements</h2>
+        <p class="section-text">Add <code>data-synapse</code> to any element you want the AI to be able to see or interact with. The value should be a descriptive, unique ID.</p>
+        <div class="code-block-wrap">
+          <div class="code-block-header"><span>JSX markup</span></div>
+          <pre class="code-block"><code><span class="token-keyword">&lt;</span><span class="token-type">button</span>
+  <span class="token-prop">data-synapse</span>=<span class="token-string">"submit-order-btn"</span>
+  <span class="token-prop">data-synapse-label</span>=<span class="token-string">"Submit Order"</span>
+  <span class="token-prop">onClick</span>={handleSubmit}
+<span class="token-keyword">&gt;</span>
+  Place Order
+<span class="token-keyword">&lt;/</span><span class="token-type">button</span><span class="token-keyword">&gt;</span>
+
+<span class="token-keyword">&lt;</span><span class="token-type">select</span>
+  <span class="token-prop">data-synapse</span>=<span class="token-string">"plan-selector"</span>
+  <span class="token-prop">value</span>={plan}
+  <span class="token-prop">onChange</span>={e => setPlan(e.target.value)}
+<span class="token-keyword">&gt;</span>
+  <span class="token-keyword">&lt;</span><span class="token-type">option</span> <span class="token-prop">value</span>=<span class="token-string">"free"</span><span class="token-keyword">&gt;</span>Free<span class="token-keyword">&lt;/</span><span class="token-type">option</span><span class="token-keyword">&gt;</span>
+  <span class="token-keyword">&lt;</span><span class="token-type">option</span> <span class="token-prop">value</span>=<span class="token-string">"pro"</span><span class="token-keyword">&gt;</span>Pro<span class="token-keyword">&lt;/</span><span class="token-type">option</span><span class="token-keyword">&gt;</span>
+<span class="token-keyword">&lt;/</span><span class="token-type">select</span><span class="token-keyword">&gt;</span></code></pre>
+        </div>
+      </section>
+
+      <footer class="doc-footer">
+        <div class="footer-left">MIT License · SynapseJS v0.3.0</div>
+      </footer>
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

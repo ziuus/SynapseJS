@@ -16,7 +16,7 @@ export type AgentElement = {
  * A React Hook that scans the current DOM for interactable elements
  * and returns a JSON simplified representation for the LLM to understand.
  */
-export function useAgentDOM() {
+export function useSynapseDOM() {
   const [domElements, setDomElements] = useState<AgentElement[]>([]);
 
   useEffect(() => {

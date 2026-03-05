@@ -4,14 +4,14 @@ import { useEffect, useRef } from 'react';
 import type { AgentSignalHandler, AxonSignalType } from './types';
 
 /**
- * useAxonSignals
+ * useSynapseSignals
  *
  * Drop this hook into any React component to automatically handle all signals
- * emitted by AxonJS built-in tools. Pass a map of signal handlers and call
+ * emitted by SynapseJS built-in tools. Pass a map of signal handlers and call
  * `processSignals(toolCalls)` whenever the agent responds.
  *
  * @example
- * const { processSignals } = useAxonSignals({
+ * const { processSignals } = useSynapseSignals({
  *   SHOW_NOTIFICATION: ({ message, type }) => showToast(message, type),
  *   NAVIGATE: ({ url }) => router.push(url),
  *   HIGHLIGHT_ELEMENT: ({ elementId }) => { ... },
@@ -20,7 +20,7 @@ import type { AgentSignalHandler, AxonSignalType } from './types';
  * // Then in your chat handler:
  * processSignals(data.messages.flatMap(m => m.toolCalls ?? []));
  */
-export function useAxonSignals(handlers: AgentSignalHandler) {
+export function useSynapseSignals(handlers: AgentSignalHandler) {
   // Keep handlers ref fresh without re-registering effect
   const handlersRef = useRef(handlers);
   useEffect(() => { handlersRef.current = handlers; });
@@ -41,7 +41,7 @@ export function useAxonSignals(handlers: AgentSignalHandler) {
         try {
           handler(tc.args);
         } catch (e) {
-          console.error(`[AxonJS] Handler for signal '${signalType}' threw:`, e);
+          console.error(`[SynapseJS] Handler for signal '${signalType}' threw:`, e);
         }
       }
     }

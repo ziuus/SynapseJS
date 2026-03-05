@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Tools — SynapseJS Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-name">SynapseJS</div><div class="logo-version">v0.3.0</div></div>
+      </a>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="search" placeholder="Search docs…" class="search-input" oninput="handleSearch(this.value)" />
+      <span class="search-kbd">⌘K</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Getting Started</div>
+        <a href="index.html" class="nav-link">Introduction</a>
+        <a href="quick-start.html" class="nav-link">Quick Start</a>
+        <a href="providers.html" class="nav-link">Providers</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Core Concepts</div>
+        <a href="agent.html" class="nav-link">Agent</a>
+        <a href="tool-registry.html" class="nav-link">Tool Registry</a>
+        <a href="custom-tools.html" class="nav-link active">Custom Tools</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="sidebar-footer-link">GitHub ↗</a>
+    </div>
+  </aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-breadcrumb">Core Concepts → Custom Tools</div>
+      <div class="topbar-right">
+        <button class="theme-btn" onclick="toggleTheme()"><span class="theme-icon">🌙</span></button>
+      </div>
+    </header>
+    <main class="content">
+      <div class="hero" style="padding-bottom:32px">
+        <div class="hero-badge">Core Concept</div>
+        <h1 class="hero-title" style="font-size:48px">Custom Tools</h1>
+        <p class="hero-subtitle">Extend the Agent with your own domain-specific superpowers.</p>
+      </div>
+
+      <section class="section">
+        <h2 class="section-title">Overview</h2>
+        <p class="section-text">SynapseJS ships with 20 built-in tools, but you can register any number of additional custom tools. A tool definition consists of a name, description (shown to the LLM), a JSON Schema for its parameters, and a signal type that your frontend will receive and handle.</p>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Full Example</h2>
+        <div class="code-block-wrap">
+          <div class="code-block-header"><span>lib/custom-tools.ts</span></div>
+          <pre class="code-block"><code><span class="token-keyword">import</span> { <span class="token-ident">ToolRegistry</span> } <span class="token-keyword">from</span> <span class="token-string">'@synapsejs/core'</span>;
+
+<span class="token-comment">// 1. Register the tool on the server (before Agent is used)</span>
+<span class="token-ident">ToolRegistry</span>.<span class="token-fn">register</span>({
+  <span class="token-prop">name</span>: <span class="token-string">'addToCart'</span>,
+  <span class="token-prop">description</span>: <span class="token-string">'Add a product to the shopping cart by its ID'</span>,
+  <span class="token-prop">parameters</span>: {
+    <span class="token-prop">type</span>: <span class="token-string">'object'</span>,
+    <span class="token-prop">properties</span>: {
+      <span class="token-prop">productId</span>: { <span class="token-prop">type</span>: <span class="token-string">'string'</span>, <span class="token-prop">description</span>: <span class="token-string">'The product ID'</span> },
+      <span class="token-prop">quantity</span>: { <span class="token-prop">type</span>: <span class="token-string">'number'</span>, <span class="token-prop">description</span>: <span class="token-string">'Number of items'</span> },
+    },
+    <span class="token-prop">required</span>: [<span class="token-string">'productId'</span>],
+  },
+  <span class="token-prop">signal</span>: <span class="token-string">'ADD_TO_CART'</span>,
+});</code></pre>
+        </div>
+
+        <div class="code-block-wrap" style="margin-top:16px">
+          <div class="code-block-header"><span>app/page.tsx — handle the signal</span></div>
+          <pre class="code-block"><code><span class="token-keyword">const</span> { <span class="token-ident">processSignals</span> } = <span class="token-fn">useSynapseSignals</span>({
+  <span class="token-comment">// 2. Handle your custom signal in the frontend</span>
+  <span class="token-const">ADD_TO_CART</span>: ({ <span class="token-ident">productId</span>, <span class="token-ident">quantity</span> = <span class="token-string">1</span> }) => {
+    cartStore.<span class="token-fn">add</span>(productId, quantity);
+    toast.<span class="token-fn">success</span>(<span class="token-string">`Added ${quantity} item(s) to cart!`</span>);
+  },
+});</code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Tool Definition Schema</h2>
+        <table style="width:100%; border-collapse:collapse; font-size:14px">
+          <thead>
+            <tr style="background:var(--bg-3)">
+              <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Field</th>
+              <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Type</th>
+              <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:12px; border-bottom:1px solid var(--border)"><code>name</code></td><td style="padding:12px; border-bottom:1px solid var(--border)"><code>string</code></td><td style="padding:12px; border-bottom:1px solid var(--border)">Camel-case function name the LLM calls.</td></tr>
+            <tr><td style="padding:12px; border-bottom:1px solid var(--border)"><code>description</code></td><td style="padding:12px; border-bottom:1px solid var(--border)"><code>string</code></td><td style="padding:12px; border-bottom:1px solid var(--border)">Shown directly to the LLM — be precise about when/why to use it.</td></tr>
+            <tr><td style="padding:12px; border-bottom:1px solid var(--border)"><code>parameters</code></td><td style="padding:12px; border-bottom:1px solid var(--border)"><code>JSON Schema object</code></td><td style="padding:12px; border-bottom:1px solid var(--border)">Standard JSON Schema for the tool's input parameters.</td></tr>
+            <tr><td style="padding:12px"><code>signal</code></td><td style="padding:12px"><code>string</code></td><td style="padding:12px">UPPER_SNAKE_CASE string that identifies this tool call on the frontend.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <footer class="doc-footer">
+        <div class="footer-left">MIT License · SynapseJS v0.3.0</div>
+      </footer>
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

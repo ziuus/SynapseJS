@@ -1,51 +1,40 @@
+import { T as Tool, a as AgentConfig, C as CoreMessage, b as AgentResponse } from './types-BRqIM55z.mjs';
+export { A as AgentSignalHandler, c as AxonSignal, d as AxonSignalType, e as AxonToolName, S as SYNAPSE_TOOL_NAMES } from './types-BRqIM55z.mjs';
 import { z } from 'zod';
 
 /**
- * Standardized message format representing conversation history
+ * ToolRegistry — central store for all AI-callable tools.
+ *
+ * The Agent pre-registers 20 built-in tools. Developers can add custom tools
+ * via `agent.tools.register(...)` after construction.
  */
-type CoreMessage = {
-    role: 'user' | 'assistant' | 'system' | 'data';
-    content: string;
-};
-interface Tool<TArgs = any, TResult = any> {
-    name: string;
-    description: string;
-    schema?: z.ZodType<TArgs>;
-    jsonSchema?: any;
-    execute: (args: any) => Promise<TResult> | TResult;
-}
-interface AgentConfig {
-    llmProvider: 'openai' | 'gemini' | 'groq' | 'mock';
-    apiKey?: string;
-    systemPrompt?: string;
-    model?: string;
-    maxSteps?: number;
-    memory?: 'session' | 'none';
-}
-interface AgentResponse {
-    text: string;
-    toolCalls?: {
-        name: string;
-        args: any;
-    }[];
-}
-
 declare class ToolRegistry {
     private tools;
     /**
-     * Registers a new tool that the AI agent can call.
+     * Register a new tool that the AI agent can call.
+     * Overwrites any existing tool with the same name.
      */
     register<TArgs extends z.ZodTypeAny = any, TResult = any>(tool: Tool<TArgs, TResult>): void;
     /**
-     * Gets a tool by name.
+     * Unregister a tool by name.
+     * @returns true if the tool was removed, false if it didn't exist
      */
-    getTool(name: string): Tool | undefined;
+    unregister(name: string): boolean;
     /**
-     * Gets all registered tools.
+     * Check if a tool exists in the registry.
      */
+    has(name: string): boolean;
+    /**
+     * Get all registered tool names.
+     */
+    list(): string[];
+    /** Get a single tool by name */
+    getTool(name: string): Tool | undefined;
+    /** Get all registered tools as an array */
     getAllTools(): Tool[];
     /**
-     * Executes a tool with strict Zod validation.
+     * Execute a tool with automatic Zod schema validation.
+     * Throws if the tool is not found or arguments fail validation.
      */
     execute(name: string, args: any): Promise<any>;
 }
@@ -84,4 +73,4 @@ declare class Agent {
 }
 declare function createAgent(config: AgentConfig): Agent;
 
-export { Agent, type AgentConfig, type AgentResponse, type CoreMessage, type Tool, ToolRegistry, createAgent };
+export { Agent, AgentConfig, AgentResponse, CoreMessage, Tool, ToolRegistry, createAgent };

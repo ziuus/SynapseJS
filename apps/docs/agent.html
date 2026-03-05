@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent — SynapseJS Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-name">SynapseJS</div><div class="logo-version">v0.3.0</div></div>
+      </a>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="search" placeholder="Search docs…" class="search-input" oninput="handleSearch(this.value)" />
+      <span class="search-kbd">⌘K</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Getting Started</div>
+        <a href="index.html" class="nav-link">Introduction</a>
+        <a href="quick-start.html" class="nav-link">Quick Start</a>
+        <a href="providers.html" class="nav-link">Providers</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Core Concepts</div>
+        <a href="agent.html" class="nav-link active">Agent</a>
+        <a href="tool-registry.html" class="nav-link">Tool Registry</a>
+        <a href="custom-tools.html" class="nav-link">Custom Tools</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">React Hooks</div>
+        <a href="use-agent-dom.html" class="nav-link">useSynapseDOM</a>
+        <a href="use-axon-signals.html" class="nav-link">useSynapseSignals</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="sidebar-footer-link">GitHub ↗</a>
+      <a href="https://www.npmjs.com/package/@synapsejs/core" target="_blank" class="sidebar-footer-link">npm ↗</a>
+    </div>
+  </aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-breadcrumb">Core Concepts → Agent</div>
+      <div class="topbar-right">
+        <button class="theme-btn" onclick="toggleTheme()"><span class="theme-icon">🌙</span></button>
+      </div>
+    </header>
+    <main class="content">
+      <div class="hero" style="padding-bottom:32px">
+        <div class="hero-badge">Core Concept</div>
+        <h1 class="hero-title" style="font-size:48px">Agent</h1>
+        <p class="hero-subtitle">The central orchestrator that connects your LLM to your UI.</p>
+      </div>
+
+      <section class="section">
+        <h2 class="section-title">What is an Agent?</h2>
+        <p class="section-text">The <code>Agent</code> class is the heart of SynapseJS. It wraps your chosen LLM provider and gives it access to all 20 built-in tools (plus any custom tools you register). When the user sends a message, the Agent processes it through the LLM, picks the right tools, and returns typed <code>AxonSignal</code> objects for your frontend to handle.</p>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Constructor</h2>
+        <div class="code-block-wrap">
+          <div class="code-block-header"><span>Agent constructor</span></div>
+          <pre class="code-block"><code><span class="token-keyword">import</span> { <span class="token-ident">Agent</span> } <span class="token-keyword">from</span> <span class="token-string">'@synapsejs/core'</span>;
+
+<span class="token-keyword">const</span> agent = <span class="token-keyword">new</span> <span class="token-ident">Agent</span>({
+  <span class="token-prop">llmProvider</span>: <span class="token-string">'groq'</span>,       <span class="token-comment">// 'groq' | 'gemini' | 'openai'</span>
+  <span class="token-prop">apiKey</span>: <span class="token-string">'sk-...'</span>,           <span class="token-comment">// your API key</span>
+  <span class="token-prop">model</span>: <span class="token-string">'llama-3.3-70b-versatile'</span>, <span class="token-comment">// optional, provider default if omitted</span>
+  <span class="token-prop">systemPrompt</span>: <span class="token-string">'...'</span>,       <span class="token-comment">// optional custom system prompt</span>
+});</code></pre>
+        </div>
+
+        <h3 style="font-size:18px; font-weight:700; margin:28px 0 12px">Options</h3>
+        <table style="width:100%; border-collapse:collapse; font-size:14px">
+          <thead>
+            <tr style="background:var(--bg-3)">
+              <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Option</th>
+              <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Type</th>
+              <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Required</th>
+              <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:12px; border-bottom:1px solid var(--border)"><code>llmProvider</code></td><td style="padding:12px; border-bottom:1px solid var(--border)"><code>'groq' | 'gemini' | 'openai'</code></td><td style="padding:12px; border-bottom:1px solid var(--border); color:var(--emerald)">Yes</td><td style="padding:12px; border-bottom:1px solid var(--border)">The LLM backend to use.</td></tr>
+            <tr><td style="padding:12px; border-bottom:1px solid var(--border)"><code>apiKey</code></td><td style="padding:12px; border-bottom:1px solid var(--border)"><code>string</code></td><td style="padding:12px; border-bottom:1px solid var(--border); color:var(--emerald)">Yes</td><td style="padding:12px; border-bottom:1px solid var(--border)">API key for the chosen provider.</td></tr>
+            <tr><td style="padding:12px; border-bottom:1px solid var(--border)"><code>model</code></td><td style="padding:12px; border-bottom:1px solid var(--border)"><code>string</code></td><td style="padding:12px; border-bottom:1px solid var(--border); color:var(--text-3)">No</td><td style="padding:12px; border-bottom:1px solid var(--border)">Model ID. Defaults to provider's recommended model.</td></tr>
+            <tr><td style="padding:12px"><code>systemPrompt</code></td><td style="padding:12px"><code>string</code></td><td style="padding:12px; color:var(--text-3)">No</td><td style="padding:12px">Override the default system prompt.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">agent.run()</h2>
+        <p class="section-text">The main method. Processes a conversation and returns a text response plus any tool calls the LLM chose to emit.</p>
+        <div class="code-block-wrap">
+          <div class="code-block-header"><span>app/api/chat/route.ts</span></div>
+          <pre class="code-block"><code><span class="token-keyword">const</span> result = <span class="token-keyword">await</span> agent.<span class="token-fn">run</span>(messages, domElements);
+
+<span class="token-comment">// result.text     — the AI's text reply</span>
+<span class="token-comment">// result.toolCalls — array of AxonSignal objects to process</span>
+
+<span class="token-keyword">return</span> Response.<span class="token-fn">json</span>({
+  <span class="token-prop">messages</span>: [...messages, {
+    <span class="token-prop">role</span>: <span class="token-string">'assistant'</span>,
+    <span class="token-prop">content</span>: result.<span class="token-prop">text</span>,
+    <span class="token-prop">toolCalls</span>: result.<span class="token-prop">toolCalls</span>
+  }]
+});</code></pre>
+        </div>
+      </section>
+
+      <footer class="doc-footer">
+        <div class="footer-left">MIT License · SynapseJS v0.3.0</div>
+      </footer>
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog — SynapseJS Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .changelog-entry { padding: 32px 0; border-bottom: 1px solid var(--border); }
+    .changelog-version { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .version-tag { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+    .version-date { font-size: 13px; color: var(--text-3); }
+    .version-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--indigo-lo); color: var(--indigo-hi); border: 1px solid var(--indigo); }
+    .change-category { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); margin: 16px 0 8px; }
+    .change-list { list-style: none; padding: 0; }
+    .change-list li { padding: 6px 0; font-size: 14px; color: var(--text-2); padding-left: 20px; position: relative; }
+    .change-list li::before { content: '•'; position: absolute; left: 0; color: var(--indigo-hi); }
+    .change-list li code { font-size: 12px; }
+  </style>
+</head>
+<body>
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-name">SynapseJS</div><div class="logo-version">v0.3.0</div></div>
+      </a>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="search" placeholder="Search docs…" class="search-input" oninput="handleSearch(this.value)" />
+      <span class="search-kbd">⌘K</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Reference</div>
+        <a href="types.html" class="nav-link">TypeScript Types</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="changelog.html" class="nav-link active">Changelog</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="sidebar-footer-link">GitHub ↗</a>
+    </div>
+  </aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-breadcrumb">Reference → Changelog</div>
+      <div class="topbar-right">
+        <button class="theme-btn" onclick="toggleTheme()"><span class="theme-icon">🌙</span></button>
+      </div>
+    </header>
+    <main class="content">
+      <div class="hero" style="padding-bottom:32px">
+        <h1 class="hero-title" style="font-size:48px">Changelog</h1>
+        <p class="hero-subtitle">All notable changes to SynapseJS.</p>
+      </div>
+
+      <section class="section">
+        <div class="changelog-entry">
+          <div class="changelog-version">
+            <span class="version-tag">v0.3.0</span>
+            <span class="version-badge">Latest</span>
+            <span class="version-date">March 2026</span>
+          </div>
+          <div class="change-category">New Features</div>
+          <ul class="change-list">
+            <li>Wave 3 tools: <code>waitForElement</code>, <code>getPageUrl</code>, <code>setPageTitle</code>, <code>openModal</code>, <code>downloadFile</code>, <code>submitForm</code>, <code>checkboxToggle</code>, <code>setTheme</code></li>
+            <li>3D Integration: <code>interactWith3DScene</code> for Spline designs</li>
+            <li>New hook: <code>useSynapseSignals</code> — handles all 20 signal types with one import</li>
+            <li>Showcase Gallery: 4 high-fidelity demos (Shopping, SaaS, 3D, Onboarding)</li>
+            <li>Production documentation platform at <code>apps/docs</code></li>
+          </ul>
+          <div class="change-category">Improvements</div>
+          <ul class="change-list">
+            <li>Server/client split: hooks now in <code>@synapsejs/core/client</code> — zero SSR errors</li>
+            <li><code>ToolRegistry.unregister()</code>, <code>has()</code>, and <code>list()</code> methods added</li>
+            <li>Rebranded from AxonJS → SynapseJS with npm-available scoped package <code>@synapsejs/core</code></li>
+          </ul>
+        </div>
+        <div class="changelog-entry">
+          <div class="changelog-version">
+            <span class="version-tag">v0.2.0</span>
+            <span class="version-date">February 2026</span>
+          </div>
+          <div class="change-category">New Features</div>
+          <ul class="change-list">
+            <li>Wave 2 tools: <code>scrollTo</code>, <code>copyToClipboard</code>, <code>toggleElement</code>, <code>selectDropdown</code>, <code>highlightElement</code></li>
+            <li>Multi-provider support: Groq, Google Gemini, OpenAI</li>
+            <li>Gemini 2.0 Flash integration with correct tool-call format</li>
+          </ul>
+        </div>
+        <div class="changelog-entry" style="border-bottom:none">
+          <div class="changelog-version">
+            <span class="version-tag">v0.1.0</span>
+            <span class="version-date">January 2026</span>
+          </div>
+          <div class="change-category">Initial Release</div>
+          <ul class="change-list">
+            <li>Wave 1 tools: <code>interactWithScreen</code>, <code>readScreenText</code>, <code>observeState</code>, <code>fillForm</code>, <code>navigateTo</code>, <code>showNotification</code></li>
+            <li>Core <code>Agent</code> class with Groq provider</li>
+            <li><code>useSynapseDOM</code> hook for DOM snapshotting</li>
+            <li>Monorepo structure with <code>@synapsejs/core</code> and demo app</li>
+          </ul>
+        </div>
+      </section>
+
+      <footer class="doc-footer">
+        <div class="footer-left">MIT License · SynapseJS v0.3.0</div>
+      </footer>
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

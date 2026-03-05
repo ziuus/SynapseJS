@@ -288,10 +288,10 @@ export class Agent {
    * Primary method to trigger the agent's reasoning loop.
    */
   async run(messages: CoreMessage[], context?: any): Promise<AgentResponse> {
-    console.log(`[AxonJS] AGENT VERSION 2.0.0-FIX running with ${messages.length} messages`);
+    console.log(`[SynapseJS] AGENT VERSION 2.0.0-FIX running with ${messages.length} messages`);
 
     if (!this.config.apiKey && this.config.llmProvider !== 'mock') {
-        throw new Error(`AxonJS Error: OpenAPI/Gemini key is missing in config.`);
+        throw new Error(`SynapseJS Error: OpenAPI/Gemini key is missing in config.`);
     }
 
     if (this.config.llmProvider === 'openai') {
@@ -319,7 +319,7 @@ export class Agent {
         description: t.description,
         parameters: t.schema || z.object({}).passthrough(),
         execute: async (args: any) => {
-          console.log(`[AxonJS] Tool Executing: ${t.name} | Args:`, JSON.stringify(args));
+          console.log(`[SynapseJS] Tool Executing: ${t.name} | Args:`, JSON.stringify(args));
           return await this.tools.execute(t.name, args);
         }
       });
@@ -384,7 +384,7 @@ Always respond to the user after performing actions.`;
                 if (toolDef && toolDef.schema) {
                   const correctSchema = zodToJsonSchema(toolDef.schema as any) as any;
                   delete correctSchema['$schema'];
-                  console.log(`[AxonJS SDK Fix] Replacing ${t.function.name} schema. Original:`, JSON.stringify(t.function.parameters), 'New:', JSON.stringify(correctSchema));
+                  console.log(`[SynapseJS SDK Fix] Replacing ${t.function.name} schema. Original:`, JSON.stringify(t.function.parameters), 'New:', JSON.stringify(correctSchema));
                   t.function.parameters = correctSchema;
                 }
               }
@@ -393,7 +393,7 @@ Always respond to the user after performing actions.`;
           }
           options.body = JSON.stringify(body);
         } catch (e) {
-          console.error('[AxonJS] Fetch Interceptor JSON Parse Error:', e);
+          console.error('[SynapseJS] Fetch Interceptor JSON Parse Error:', e);
         }
         return fetch(url, options);
       }

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TypeScript Types — SynapseJS Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-name">SynapseJS</div><div class="logo-version">v0.3.0</div></div>
+      </a>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="search" placeholder="Search docs…" class="search-input" oninput="handleSearch(this.value)" />
+      <span class="search-kbd">⌘K</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Reference</div>
+        <a href="types.html" class="nav-link active">TypeScript Types</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="changelog.html" class="nav-link">Changelog</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="sidebar-footer-link">GitHub ↗</a>
+    </div>
+  </aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-breadcrumb">Reference → TypeScript Types</div>
+      <div class="topbar-right">
+        <button class="theme-btn" onclick="toggleTheme()"><span class="theme-icon">🌙</span></button>
+      </div>
+    </header>
+    <main class="content">
+      <div class="hero" style="padding-bottom:32px">
+        <h1 class="hero-title" style="font-size:48px">TypeScript Types</h1>
+        <p class="hero-subtitle">All exported types from <code>@synapsejs/core</code>.</p>
+      </div>
+
+      <section class="section">
+        <h2 class="section-title">AxonSignal</h2>
+        <p class="section-text">The central discriminated union type. Every tool call the AI makes is typed as one of these signal variants.</p>
+        <div class="code-block-wrap">
+          <div class="code-block-header"><span>types.ts</span></div>
+          <pre class="code-block"><code><span class="token-keyword">export type</span> <span class="token-type">AxonSignal</span> =
+  | { <span class="token-prop">type</span>: <span class="token-string">'UI_INTERACTION'</span>;     <span class="token-prop">elementId</span>: <span class="token-type">string</span>; <span class="token-prop">action</span>: <span class="token-type">string</span>; <span class="token-prop">value</span>?: <span class="token-type">string</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'FILL_FORM'</span>;          <span class="token-prop">fields</span>: { <span class="token-prop">elementId</span>: <span class="token-type">string</span>; <span class="token-prop">value</span>: <span class="token-type">string</span> }[] }
+  | { <span class="token-prop">type</span>: <span class="token-string">'NAVIGATE'</span>;          <span class="token-prop">url</span>: <span class="token-type">string</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'SHOW_NOTIFICATION'</span>;  <span class="token-prop">message</span>: <span class="token-type">string</span>; <span class="token-prop">notificationType</span>?: <span class="token-type">string</span>; <span class="token-prop">durationMs</span>?: <span class="token-type">number</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'SCROLL_TO'</span>;         <span class="token-prop">elementId</span>?: <span class="token-type">string</span>; <span class="token-prop">top</span>?: <span class="token-type">number</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'SET_THEME'</span>;         <span class="token-prop">theme</span>: <span class="token-type">string</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'OPEN_MODAL'</span>;        <span class="token-prop">elementId</span>: <span class="token-type">string</span>; <span class="token-prop">action</span>: <span class="token-type">'open' | 'close'</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'SELECT_DROPDOWN'</span>;  <span class="token-prop">elementId</span>: <span class="token-type">string</span>; <span class="token-prop">value</span>: <span class="token-type">string</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'CHECKBOX_TOGGLE'</span>;  <span class="token-prop">elementId</span>: <span class="token-type">string</span>; <span class="token-prop">checked</span>: <span class="token-type">boolean</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'TOGGLE_ELEMENT'</span>;   <span class="token-prop">elementId</span>: <span class="token-type">string</span>; <span class="token-prop">visible</span>: <span class="token-type">boolean</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'HIGHLIGHT_ELEMENT'</span>; <span class="token-prop">elementId</span>: <span class="token-type">string</span>; <span class="token-prop">color</span>?: <span class="token-type">string</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'COPY_TO_CLIPBOARD'</span>; <span class="token-prop">text</span>: <span class="token-type">string</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'DOWNLOAD_FILE'</span>;    <span class="token-prop">url</span>: <span class="token-type">string</span>; <span class="token-prop">filename</span>?: <span class="token-type">string</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'SUBMIT_FORM'</span>;       <span class="token-prop">elementId</span>: <span class="token-type">string</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'READ_ELEMENT'</span>;     <span class="token-prop">elementId</span>: <span class="token-type">string</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'OBSERVE_STATE'</span>;    <span class="token-prop">elementId</span>: <span class="token-type">string</span>; <span class="token-prop">property</span>: <span class="token-type">string</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'WAIT_FOR_ELEMENT'</span>; <span class="token-prop">elementId</span>: <span class="token-type">string</span>; <span class="token-prop">timeoutMs</span>?: <span class="token-type">number</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'GET_PAGE_URL'</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'SET_PAGE_TITLE'</span>;   <span class="token-prop">title</span>: <span class="token-type">string</span> }
+  | { <span class="token-prop">type</span>: <span class="token-string">'3D_INTERACTION'</span>;  <span class="token-prop">sceneId</span>: <span class="token-type">string</span>; <span class="token-prop">actionType</span>: <span class="token-type">string</span>; <span class="token-prop">target</span>: <span class="token-type">string</span>; <span class="token-prop">value</span>?: <span class="token-type">unknown</span> };</code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">AgentOptions</h2>
+        <div class="code-block-wrap">
+          <div class="code-block-header"><span>types.ts</span></div>
+          <pre class="code-block"><code><span class="token-keyword">export interface</span> <span class="token-type">AgentOptions</span> {
+  <span class="token-prop">llmProvider</span>: <span class="token-string">'groq'</span> | <span class="token-string">'gemini'</span> | <span class="token-string">'openai'</span>;
+  <span class="token-prop">apiKey</span>: <span class="token-type">string</span>;
+  <span class="token-prop">model</span>?: <span class="token-type">string</span>;
+  <span class="token-prop">systemPrompt</span>?: <span class="token-type">string</span>;
+}
+
+<span class="token-keyword">export interface</span> <span class="token-type">AgentRunResult</span> {
+  <span class="token-prop">text</span>: <span class="token-type">string</span>;
+  <span class="token-prop">toolCalls</span>: <span class="token-type">AxonSignal</span>[];
+}
+
+<span class="token-keyword">export interface</span> <span class="token-type">ToolDef</span> {
+  <span class="token-prop">name</span>: <span class="token-type">string</span>;
+  <span class="token-prop">description</span>: <span class="token-type">string</span>;
+  <span class="token-prop">parameters</span>: <span class="token-type">object</span>; <span class="token-comment">// JSON Schema</span>
+  <span class="token-prop">signal</span>: <span class="token-type">string</span>;
+}</code></pre>
+        </div>
+      </section>
+
+      <footer class="doc-footer">
+        <div class="footer-left">MIT License · SynapseJS v0.3.0</div>
+      </footer>
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
