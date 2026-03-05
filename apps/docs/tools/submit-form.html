@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>submitForm — SynapseJS Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header"><a href="../index.html" class="sidebar-logo"><div class="logo-icon">⚡</div><div><div class="logo-name">SynapseJS</div><div class="logo-version">v0.3.0</div></div></a></div>
+    <nav class="sidebar-nav">
+      <div class="nav-group"><div class="nav-group-label">Built-in Tools</div>
+        <div class="nav-group-label nav-group-sublabel">Wave 3 — Power</div>
+        <a href="wait-for-element.html" class="nav-link nav-link-tool">waitForElement</a>
+        <a href="get-page-url.html" class="nav-link nav-link-tool">getPageUrl</a>
+        <a href="set-page-title.html" class="nav-link nav-link-tool">setPageTitle</a>
+        <a href="open-modal.html" class="nav-link nav-link-tool">openModal</a>
+        <a href="download-file.html" class="nav-link nav-link-tool">downloadFile</a>
+        <a href="submit-form.html" class="nav-link nav-link-tool active">submitForm</a>
+        <a href="checkbox-toggle.html" class="nav-link nav-link-tool">checkboxToggle</a>
+        <a href="set-theme.html" class="nav-link nav-link-tool">setTheme</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer"><a href="https://github.com/ziuus/SynapseJS" target="_blank" class="sidebar-footer-link">GitHub</a></div>
+  </aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <div class="topbar-breadcrumb">Tools — Wave 3 → submitForm</div>
+      <div class="topbar-right"><button class="theme-btn" onclick="toggleTheme()"><span class="theme-icon">🌙</span></button></div>
+    </header>
+    <main class="content">
+      <div class="hero" style="padding-bottom:32px">
+        <div class="hero-badge"><span class="wave-badge wave-3" style="font-size:11px">Wave 3</span></div>
+        <h1 class="hero-title" style="font-size:48px">submitForm</h1>
+        <p class="hero-subtitle">Programmatically submit a form element by its ID.</p>
+      </div>
+
+      <section class="section">
+        <h2 class="section-title">Overview</h2>
+        <p class="section-text">Use <code>submitForm</code> as the final step of an AI-assisted form-filling workflow. After calling <code>fillForm</code> to populate the fields, <code>submitForm</code> triggers the submission — including validation via browser-native <code>requestSubmit()</code> so required fields and input patterns are enforced.</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px">
+          <div style="background:var(--bg-2); border:1px solid var(--border); border-radius:8px; padding:10px 16px; font-size:13px"><span style="color:var(--text-3)">Signal</span><br/><code>SUBMIT_FORM</code></div>
+          <div style="background:var(--bg-2); border:1px solid var(--border); border-radius:8px; padding:10px 16px; font-size:13px"><span style="color:var(--text-3)">Wave</span><br/>Wave 3 — Power</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Parameters</h2>
+        <table style="width:100%; border-collapse:collapse; font-size:14px">
+          <thead><tr style="background:var(--bg-3)">
+            <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Parameter</th>
+            <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Type</th>
+            <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Required</th>
+            <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Description</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="padding:12px"><code>formId</code></td><td style="padding:12px"><code>string</code></td><td style="padding:12px; color:var(--emerald)">Yes</td><td style="padding:12px">The <code>id</code> attribute of the <code>&lt;form&gt;</code> element to submit.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Frontend Handler</h2>
+        <div class="code-block-wrap"><div class="code-block-header"><span>app/page.tsx</span></div>
+          <pre class="code-block"><code><span class="token-const">SUBMIT_FORM</span>: ({ <span class="token-ident">formId</span> }) => {
+  <span class="token-keyword">const</span> <span class="token-ident">form</span> = document.<span class="token-fn">getElementById</span>(<span class="token-ident">formId</span>) <span class="token-keyword">as</span> <span class="token-type">HTMLFormElement</span>;
+  <span class="token-keyword">if</span> (<span class="token-ident">form</span>) {
+    <span class="token-comment">// requestSubmit() triggers validation, submit() bypasses it</span>
+    <span class="token-keyword">if</span> (<span class="token-ident">form</span>.<span class="token-prop">requestSubmit</span>) { <span class="token-ident">form</span>.<span class="token-fn">requestSubmit</span>(); }
+    <span class="token-keyword">else</span> { <span class="token-ident">form</span>.<span class="token-fn">submit</span>(); }
+    <span class="token-fn">showToast</span>(<span class="token-string">'Form submitted!'</span>, <span class="token-string">'success'</span>);
+  }
+},</code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Typical Workflow</h2>
+        <div class="code-block-wrap"><div class="code-block-header"><span>Multi-step AI flow</span></div>
+          <pre class="code-block"><code><span class="token-comment">// 1. AI fills the form fields</span>
+fillForm({ fields: [
+  { elementId: <span class="token-string">'name-input'</span>, value: <span class="token-string">'Alice'</span> },
+  { elementId: <span class="token-string">'email-input'</span>, value: <span class="token-string">'alice@example.com'</span> },
+]})
+
+<span class="token-comment">// 2. AI submits the form</span>
+submitForm({ formId: <span class="token-string">'signup-form'</span> })</code></pre>
+        </div>
+      </section>
+
+      <footer class="doc-footer"><div class="footer-left">MIT License · SynapseJS v0.3.0</div></footer>
+    </main>
+  </div>
+</div>
+<script src="../app.js"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>downloadFile — SynapseJS Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header"><a href="../index.html" class="sidebar-logo"><div class="logo-icon">⚡</div><div><div class="logo-name">SynapseJS</div><div class="logo-version">v0.3.0</div></div></a></div>
+    <nav class="sidebar-nav">
+      <div class="nav-group"><div class="nav-group-label">Built-in Tools</div>
+        <div class="nav-group-label nav-group-sublabel">Wave 3 — Power</div>
+        <a href="wait-for-element.html" class="nav-link nav-link-tool">waitForElement</a>
+        <a href="get-page-url.html" class="nav-link nav-link-tool">getPageUrl</a>
+        <a href="set-page-title.html" class="nav-link nav-link-tool">setPageTitle</a>
+        <a href="open-modal.html" class="nav-link nav-link-tool">openModal</a>
+        <a href="download-file.html" class="nav-link nav-link-tool active">downloadFile</a>
+        <a href="submit-form.html" class="nav-link nav-link-tool">submitForm</a>
+        <a href="checkbox-toggle.html" class="nav-link nav-link-tool">checkboxToggle</a>
+        <a href="set-theme.html" class="nav-link nav-link-tool">setTheme</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer"><a href="https://github.com/ziuus/SynapseJS" target="_blank" class="sidebar-footer-link">GitHub</a></div>
+  </aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <div class="topbar-breadcrumb">Tools — Wave 3 → downloadFile</div>
+      <div class="topbar-right"><button class="theme-btn" onclick="toggleTheme()"><span class="theme-icon">🌙</span></button></div>
+    </header>
+    <main class="content">
+      <div class="hero" style="padding-bottom:32px">
+        <div class="hero-badge"><span class="wave-badge wave-3" style="font-size:11px">Wave 3</span></div>
+        <h1 class="hero-title" style="font-size:48px">downloadFile</h1>
+        <p class="hero-subtitle">Trigger a browser file download from any URL.</p>
+      </div>
+
+      <section class="section">
+        <h2 class="section-title">Overview</h2>
+        <p class="section-text">Use <code>downloadFile</code> when the user asks to download an export, a report, a CSV, or any binary asset. The frontend creates a temporary anchor element and triggers a click.</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px">
+          <div style="background:var(--bg-2); border:1px solid var(--border); border-radius:8px; padding:10px 16px; font-size:13px"><span style="color:var(--text-3)">Signal</span><br/><code>DOWNLOAD_FILE</code></div>
+          <div style="background:var(--bg-2); border:1px solid var(--border); border-radius:8px; padding:10px 16px; font-size:13px"><span style="color:var(--text-3)">Wave</span><br/>Wave 3 — Power</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Parameters</h2>
+        <table style="width:100%; border-collapse:collapse; font-size:14px">
+          <thead><tr style="background:var(--bg-3)">
+            <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Parameter</th>
+            <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Type</th>
+            <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Required</th>
+            <th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Description</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="padding:12px; border-bottom:1px solid var(--border)"><code>url</code></td><td style="padding:12px; border-bottom:1px solid var(--border)"><code>string</code></td><td style="padding:12px; border-bottom:1px solid var(--border); color:var(--emerald)">Yes</td><td style="padding:12px; border-bottom:1px solid var(--border)">The URL of the file to download. Can be an API route, blob URL, or external link.</td></tr>
+            <tr><td style="padding:12px"><code>filename</code></td><td style="padding:12px"><code>string</code></td><td style="padding:12px; color:var(--text-3)">No</td><td style="padding:12px">Suggested filename for the saved file, e.g. <code>"report-2026.csv"</code>.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Frontend Handler</h2>
+        <div class="code-block-wrap"><div class="code-block-header"><span>app/page.tsx</span></div>
+          <pre class="code-block"><code><span class="token-const">DOWNLOAD_FILE</span>: ({ <span class="token-ident">url</span>, <span class="token-ident">filename</span> }) => {
+  <span class="token-keyword">const</span> <span class="token-ident">a</span> = document.<span class="token-fn">createElement</span>(<span class="token-string">'a'</span>);
+  <span class="token-ident">a</span>.<span class="token-prop">href</span> = <span class="token-ident">url</span>;
+  <span class="token-ident">a</span>.<span class="token-prop">download</span> = <span class="token-ident">filename</span> ?? <span class="token-string">''</span>;
+  document.<span class="token-prop">body</span>.<span class="token-fn">appendChild</span>(<span class="token-ident">a</span>);
+  <span class="token-ident">a</span>.<span class="token-fn">click</span>();
+  document.<span class="token-prop">body</span>.<span class="token-fn">removeChild</span>(<span class="token-ident">a</span>);
+},</code></pre>
+        </div>
+      </section>
+
+      <footer class="doc-footer"><div class="footer-left">MIT License · SynapseJS v0.3.0</div></footer>
+    </main>
+  </div>
+</div>
+<script src="../app.js"></script>
+</body>
+</html>

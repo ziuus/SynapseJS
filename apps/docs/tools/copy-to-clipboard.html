@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>copyToClipboard — SynapseJS Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header"><a href="../index.html" class="sidebar-logo"><div class="logo-icon">⚡</div><div><div class="logo-name">SynapseJS</div><div class="logo-version">v0.3.0</div></div></a></div>
+    <nav class="sidebar-nav">
+      <div class="nav-group"><div class="nav-group-label">Built-in Tools</div>
+        <div class="nav-group-label nav-group-sublabel">Wave 2 — Enhanced</div>
+        <a href="scroll-to.html" class="nav-link nav-link-tool">scrollTo</a>
+        <a href="copy-to-clipboard.html" class="nav-link nav-link-tool active">copyToClipboard</a>
+        <a href="toggle-element.html" class="nav-link nav-link-tool">toggleElement</a>
+        <a href="select-dropdown.html" class="nav-link nav-link-tool">selectDropdown</a>
+        <a href="highlight-element.html" class="nav-link nav-link-tool">highlightElement</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer"><a href="https://github.com/ziuus/SynapseJS" target="_blank" class="sidebar-footer-link">GitHub ↗</a></div>
+  </aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <div class="topbar-breadcrumb">Tools — Wave 2 → copyToClipboard</div>
+      <div class="topbar-right"><button class="theme-btn" onclick="toggleTheme()"><span class="theme-icon">🌙</span></button></div>
+    </header>
+    <main class="content">
+      <div class="hero" style="padding-bottom:32px">
+        <div class="hero-badge"><span class="wave-badge wave-2" style="font-size:11px">Wave 2</span></div>
+        <h1 class="hero-title" style="font-size:48px">copyToClipboard</h1>
+        <p class="hero-subtitle">Copy any string of text to the user's clipboard.</p>
+      </div>
+
+      <section class="section">
+        <h2 class="section-title">Overview</h2>
+        <p class="section-text">Use <code>copyToClipboard</code> when the user asks to copy a link, a code snippet, an API key, or any text. The AI provides the string and the frontend uses the Clipboard API.</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px">
+          <div style="background:var(--bg-2); border:1px solid var(--border); border-radius:8px; padding:10px 16px; font-size:13px"><span style="color:var(--text-3)">Signal</span><br/><code>COPY_TO_CLIPBOARD</code></div>
+          <div style="background:var(--bg-2); border:1px solid var(--border); border-radius:8px; padding:10px 16px; font-size:13px"><span style="color:var(--text-3)">Wave</span><br/>Wave 2 — Enhanced</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Parameters</h2>
+        <table style="width:100%; border-collapse:collapse; font-size:14px">
+          <thead><tr style="background:var(--bg-3)"><th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Parameter</th><th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Type</th><th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Required</th><th style="text-align:left; padding:12px; border-bottom:1px solid var(--border)">Description</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:12px"><code>text</code></td><td style="padding:12px"><code>string</code></td><td style="padding:12px; color:var(--emerald)">Yes</td><td style="padding:12px">The text to write to the clipboard.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Frontend Handler</h2>
+        <div class="code-block-wrap"><div class="code-block-header"><span>app/page.tsx</span></div>
+          <pre class="code-block"><code><span class="token-const">COPY_TO_CLIPBOARD</span>: <span class="token-keyword">async</span> ({ <span class="token-ident">text</span> }) => {
+  <span class="token-keyword">await</span> navigator.clipboard.<span class="token-fn">writeText</span>(<span class="token-ident">text</span>);
+  <span class="token-fn">showToast</span>(<span class="token-string">'Copied to clipboard!'</span>, <span class="token-string">'success'</span>);
+},</code></pre>
+        </div>
+      </section>
+
+      <footer class="doc-footer"><div class="footer-left">MIT License · SynapseJS v0.3.0</div></footer>
+    </main>
+  </div>
+</div>
+<script src="../app.js"></script>
+</body>
+</html>
