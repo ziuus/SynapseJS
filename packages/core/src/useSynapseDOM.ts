@@ -23,13 +23,13 @@ export function useSynapseDOM() {
     // We run a scan whenever the DOM changes using a MutationObserver in a real app,
     // but a simple interval or dependency array works for this MVP.
     const scanDOM = () => {
-      const interactables = document.querySelectorAll('button, input, a, [role="button"], [data-axon-read="true"], [data-axon-3d="true"]');
+      const interactables = document.querySelectorAll('button, input, a, [role="button"], [data-synapse-read="true"], [data-synapse-3d="true"]');
       const elements: AgentElement[] = [];
 
       interactables.forEach((el) => {
         // Enforce IDs so the Agent has a target
         if (!el.id) {
-          el.id = 'axon-' + Math.random().toString(36).substr(2, 9);
+          el.id = 'synapse-' + Math.random().toString(36).substr(2, 9);
         }
 
         const tagName = el.tagName.toLowerCase();
@@ -41,7 +41,7 @@ export function useSynapseDOM() {
         
         let is3D = false;
         let variables, events;
-        if (el.getAttribute('data-axon-3d') === 'true') {
+        if (el.getAttribute('data-synapse-3d') === 'true') {
             type = 'unknown'; // or '3d-scene'
             is3D = true;
             variables = el.getAttribute('data-3d-variables') || undefined;

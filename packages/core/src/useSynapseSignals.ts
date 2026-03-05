@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
-import type { AgentSignalHandler, AxonSignalType } from './types';
+import type { AgentSignalHandler, SynapseSignalType } from './types';
 
 /**
  * useSynapseSignals
@@ -31,7 +31,7 @@ export function useSynapseSignals(handlers: AgentSignalHandler) {
    */
   const processSignals = (toolCalls: { name: string; args: any }[]) => {
     for (const tc of toolCalls) {
-      // Built-in signals come back with _axonSignal in the result,
+      // Built-in signals come back with _synapseSignal in the result,
       // but we route them by tool name for simplicity
       const signalType = TOOL_NAME_TO_SIGNAL[tc.name as keyof typeof TOOL_NAME_TO_SIGNAL];
       if (!signalType) continue;
@@ -51,7 +51,7 @@ export function useSynapseSignals(handlers: AgentSignalHandler) {
 }
 
 /** Maps tool name → signal type for routing */
-const TOOL_NAME_TO_SIGNAL: Record<string, AxonSignalType> = {
+const TOOL_NAME_TO_SIGNAL: Record<string, SynapseSignalType> = {
   interactWithScreen:  'UI_INTERACTION',
   interactWith3DScene: '3D_INTERACTION',
   readScreenText:      'READ_ELEMENT',

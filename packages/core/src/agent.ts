@@ -26,7 +26,7 @@ export class Agent {
       }) as any,
       execute: async ({ elementId, action, value }: any) => {
         return {
-          _axonSignal: 'UI_INTERACTION',
+          _synapseSignal: 'UI_INTERACTION',
           payload: { elementId, action, value }
         };
       }
@@ -44,7 +44,7 @@ export class Agent {
       }) as any,
       execute: async ({ sceneId, actionType, target, value }: any) => {
         return {
-          _axonSignal: '3D_INTERACTION',
+          _synapseSignal: '3D_INTERACTION',
           payload: { sceneId, actionType, target, value }
         };
       }
@@ -61,7 +61,7 @@ export class Agent {
       }) as any,
       execute: async ({ elementId }: any) => {
         return {
-          _axonSignal: 'READ_ELEMENT',
+          _synapseSignal: 'READ_ELEMENT',
           payload: { elementId }
         };
       }
@@ -77,7 +77,7 @@ export class Agent {
       }) as any,
       execute: async ({ url, newTab }: any) => {
         return {
-          _axonSignal: 'NAVIGATE',
+          _synapseSignal: 'NAVIGATE',
           payload: { url, newTab }
         };
       }
@@ -95,7 +95,7 @@ export class Agent {
       }) as any,
       execute: async ({ fields }: any) => {
         return {
-          _axonSignal: 'FILL_FORM',
+          _synapseSignal: 'FILL_FORM',
           payload: { fields }
         };
       }
@@ -112,7 +112,7 @@ export class Agent {
       }) as any,
       execute: async ({ message, type, durationMs }: any) => {
         return {
-          _axonSignal: 'SHOW_NOTIFICATION',
+          _synapseSignal: 'SHOW_NOTIFICATION',
           payload: { message, type: type || 'info', durationMs: durationMs || 3000 }
         };
       }
@@ -128,7 +128,7 @@ export class Agent {
       }) as any,
       execute: async ({ elementId, property }: any) => {
         return {
-          _axonSignal: 'OBSERVE_STATE',
+          _synapseSignal: 'OBSERVE_STATE',
           payload: { elementId, property: property || 'textContent' }
         };
       }
@@ -145,7 +145,7 @@ export class Agent {
         top: z.number().optional().describe('Scroll to this y-pixel offset (alternative to elementId)'),
         behavior: z.enum(['smooth', 'instant']).optional().describe('Scroll animation style, default smooth'),
       }) as any,
-      execute: async (args: any) => ({ _axonSignal: 'SCROLL_TO', payload: args })
+      execute: async (args: any) => ({ _synapseSignal: 'SCROLL_TO', payload: args })
     });
 
     // 7. COPY — copy any text to the clipboard
@@ -155,7 +155,7 @@ export class Agent {
       schema: z.object({
         text: z.string().describe('The text to copy to the clipboard'),
       }) as any,
-      execute: async (args: any) => ({ _axonSignal: 'COPY_TO_CLIPBOARD', payload: args })
+      execute: async (args: any) => ({ _synapseSignal: 'COPY_TO_CLIPBOARD', payload: args })
     });
 
     // 8. TOGGLE — show/hide any element
@@ -166,7 +166,7 @@ export class Agent {
         elementId: z.string().describe('The ID of the element to toggle'),
         visible: z.boolean().optional().describe('If true, show the element; if false, hide it. If omitted, toggles the current visibility.'),
       }) as any,
-      execute: async (args: any) => ({ _axonSignal: 'TOGGLE_ELEMENT', payload: args })
+      execute: async (args: any) => ({ _synapseSignal: 'TOGGLE_ELEMENT', payload: args })
     });
 
     // 9. SELECT — choose an option in a dropdown / select element
@@ -177,7 +177,7 @@ export class Agent {
         elementId: z.string().describe('The ID of the <select> element'),
         value: z.string().describe('The option value or visible label text to select'),
       }) as any,
-      execute: async (args: any) => ({ _axonSignal: 'SELECT_DROPDOWN', payload: args })
+      execute: async (args: any) => ({ _synapseSignal: 'SELECT_DROPDOWN', payload: args })
     });
 
     // 10. HIGHLIGHT — visually draw attention to an element
@@ -189,7 +189,7 @@ export class Agent {
         color: z.string().optional().describe('CSS color for the highlight ring, default is indigo'),
         durationMs: z.number().optional().describe('How long to show the highlight in milliseconds, default 2000'),
       }) as any,
-      execute: async (args: any) => ({ _axonSignal: 'HIGHLIGHT_ELEMENT', payload: args })
+      execute: async (args: any) => ({ _synapseSignal: 'HIGHLIGHT_ELEMENT', payload: args })
     });
 
     // ── WAVE 3 INTEGRATIONS ─────────────────────────────────────────────────
@@ -202,7 +202,7 @@ export class Agent {
         elementId: z.string().describe('The element ID to wait for'),
         timeoutMs: z.number().optional().describe('Max milliseconds to wait, default 5000'),
       }) as any,
-      execute: async (args: any) => ({ _axonSignal: 'WAIT_FOR_ELEMENT', payload: args })
+      execute: async (args: any) => ({ _synapseSignal: 'WAIT_FOR_ELEMENT', payload: args })
     });
 
     // 12. GET PAGE URL — read the current page URL
@@ -210,7 +210,7 @@ export class Agent {
       name: 'getPageUrl',
       description: 'Return the current page URL or pathname. Use when the user asks where they are, what page they are on, or what the URL is.',
       schema: z.object({}) as any,
-      execute: async () => ({ _axonSignal: 'GET_PAGE_URL', payload: {} })
+      execute: async () => ({ _synapseSignal: 'GET_PAGE_URL', payload: {} })
     });
 
     // 13. SET PAGE TITLE — update the browser tab title
@@ -220,7 +220,7 @@ export class Agent {
       schema: z.object({
         title: z.string().describe('New title to set for the browser tab'),
       }) as any,
-      execute: async (args: any) => ({ _axonSignal: 'SET_PAGE_TITLE', payload: args })
+      execute: async (args: any) => ({ _synapseSignal: 'SET_PAGE_TITLE', payload: args })
     });
 
     // 14. OPEN MODAL — open a dialog or modal by ID
@@ -231,7 +231,7 @@ export class Agent {
         elementId: z.string().describe('The ID of the modal trigger button or dialog element'),
         action: z.enum(['open', 'close']).optional().describe('Whether to open or close the modal, defaults to open'),
       }) as any,
-      execute: async (args: any) => ({ _axonSignal: 'OPEN_MODAL', payload: args })
+      execute: async (args: any) => ({ _synapseSignal: 'OPEN_MODAL', payload: args })
     });
 
     // 15. DOWNLOAD FILE — trigger a file download
@@ -242,7 +242,7 @@ export class Agent {
         url: z.string().describe('The URL of the file to download'),
         filename: z.string().optional().describe('The suggested filename for the downloaded file'),
       }) as any,
-      execute: async (args: any) => ({ _axonSignal: 'DOWNLOAD_FILE', payload: args })
+      execute: async (args: any) => ({ _synapseSignal: 'DOWNLOAD_FILE', payload: args })
     });
 
     // 16. SUBMIT FORM — submit a form element by ID
@@ -252,7 +252,7 @@ export class Agent {
       schema: z.object({
         formId: z.string().describe('The ID of the <form> element to submit'),
       }) as any,
-      execute: async (args: any) => ({ _axonSignal: 'SUBMIT_FORM', payload: args })
+      execute: async (args: any) => ({ _synapseSignal: 'SUBMIT_FORM', payload: args })
     });
 
     // 17. CHECKBOX TOGGLE — check or uncheck a checkbox
@@ -263,7 +263,7 @@ export class Agent {
         elementId: z.string().describe('The ID of the checkbox element'),
         checked: z.boolean().optional().describe('true to check, false to uncheck. If omitted, toggles current state.'),
       }) as any,
-      execute: async (args: any) => ({ _axonSignal: 'CHECKBOX_TOGGLE', payload: args })
+      execute: async (args: any) => ({ _synapseSignal: 'CHECKBOX_TOGGLE', payload: args })
     });
 
     // 18. SET THEME — set a data-theme attribute on the document
@@ -273,7 +273,7 @@ export class Agent {
       schema: z.object({
         theme: z.string().describe('Theme name to apply, e.g. "dark", "light", "ocean", "high-contrast"'),
       }) as any,
-      execute: async (args: any) => ({ _axonSignal: 'SET_THEME', payload: args })
+      execute: async (args: any) => ({ _synapseSignal: 'SET_THEME', payload: args })
     });
   }
 

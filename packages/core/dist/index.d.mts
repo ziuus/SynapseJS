@@ -1,5 +1,5 @@
-import { T as Tool, a as AgentConfig, C as CoreMessage, b as AgentResponse } from './types-BRqIM55z.mjs';
-export { A as AgentSignalHandler, c as AxonSignal, d as AxonSignalType, e as AxonToolName, S as SYNAPSE_TOOL_NAMES } from './types-BRqIM55z.mjs';
+import { T as Tool, a as AgentConfig, C as CoreMessage, b as AgentResponse } from './types-z8amuw1D.mjs';
+export { A as AgentSignalHandler, S as SYNAPSE_TOOL_NAMES, c as SynapseSignal, d as SynapseSignalType, e as SynapseToolName } from './types-z8amuw1D.mjs';
 import { z } from 'zod';
 
 /**

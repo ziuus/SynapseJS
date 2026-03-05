@@ -61,7 +61,7 @@ export default function SplineScene() {
     <div
       id="hero-3d-scene"
       className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden bg-slate-900 border-b border-slate-800/60"
-      data-axon-3d="true"
+      data-synapse-3d="true"
       data-3d-events="mouseHover (trigger hover animations), mouseDown (trigger click actions)"
     >
       {/* Gradient background fallback */}

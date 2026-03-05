@@ -129,7 +129,7 @@ var Agent = class {
       }),
       execute: async ({ elementId, action, value }) => {
         return {
-          _axonSignal: "UI_INTERACTION",
+          _synapseSignal: "UI_INTERACTION",
           payload: { elementId, action, value }
         };
       }
@@ -145,7 +145,7 @@ var Agent = class {
       }),
       execute: async ({ sceneId, actionType, target, value }) => {
         return {
-          _axonSignal: "3D_INTERACTION",
+          _synapseSignal: "3D_INTERACTION",
           payload: { sceneId, actionType, target, value }
         };
       }
@@ -158,7 +158,7 @@ var Agent = class {
       }),
       execute: async ({ elementId }) => {
         return {
-          _axonSignal: "READ_ELEMENT",
+          _synapseSignal: "READ_ELEMENT",
           payload: { elementId }
         };
       }
@@ -172,7 +172,7 @@ var Agent = class {
       }),
       execute: async ({ url, newTab }) => {
         return {
-          _axonSignal: "NAVIGATE",
+          _synapseSignal: "NAVIGATE",
           payload: { url, newTab }
         };
       }
@@ -188,7 +188,7 @@ var Agent = class {
       }),
       execute: async ({ fields }) => {
         return {
-          _axonSignal: "FILL_FORM",
+          _synapseSignal: "FILL_FORM",
           payload: { fields }
         };
       }
@@ -203,7 +203,7 @@ var Agent = class {
       }),
       execute: async ({ message, type, durationMs }) => {
         return {
-          _axonSignal: "SHOW_NOTIFICATION",
+          _synapseSignal: "SHOW_NOTIFICATION",
           payload: { message, type: type || "info", durationMs: durationMs || 3e3 }
         };
       }
@@ -217,7 +217,7 @@ var Agent = class {
       }),
       execute: async ({ elementId, property }) => {
         return {
-          _axonSignal: "OBSERVE_STATE",
+          _synapseSignal: "OBSERVE_STATE",
           payload: { elementId, property: property || "textContent" }
         };
       }
@@ -230,7 +230,7 @@ var Agent = class {
         top: import_zod.z.number().optional().describe("Scroll to this y-pixel offset (alternative to elementId)"),
         behavior: import_zod.z.enum(["smooth", "instant"]).optional().describe("Scroll animation style, default smooth")
       }),
-      execute: async (args) => ({ _axonSignal: "SCROLL_TO", payload: args })
+      execute: async (args) => ({ _synapseSignal: "SCROLL_TO", payload: args })
     });
     this.tools.register({
       name: "copyToClipboard",
@@ -238,7 +238,7 @@ var Agent = class {
       schema: import_zod.z.object({
         text: import_zod.z.string().describe("The text to copy to the clipboard")
       }),
-      execute: async (args) => ({ _axonSignal: "COPY_TO_CLIPBOARD", payload: args })
+      execute: async (args) => ({ _synapseSignal: "COPY_TO_CLIPBOARD", payload: args })
     });
     this.tools.register({
       name: "toggleElement",
@@ -247,7 +247,7 @@ var Agent = class {
         elementId: import_zod.z.string().describe("The ID of the element to toggle"),
         visible: import_zod.z.boolean().optional().describe("If true, show the element; if false, hide it. If omitted, toggles the current visibility.")
       }),
-      execute: async (args) => ({ _axonSignal: "TOGGLE_ELEMENT", payload: args })
+      execute: async (args) => ({ _synapseSignal: "TOGGLE_ELEMENT", payload: args })
     });
     this.tools.register({
       name: "selectDropdown",
@@ -256,7 +256,7 @@ var Agent = class {
         elementId: import_zod.z.string().describe("The ID of the <select> element"),
         value: import_zod.z.string().describe("The option value or visible label text to select")
       }),
-      execute: async (args) => ({ _axonSignal: "SELECT_DROPDOWN", payload: args })
+      execute: async (args) => ({ _synapseSignal: "SELECT_DROPDOWN", payload: args })
     });
     this.tools.register({
       name: "highlightElement",
@@ -266,7 +266,7 @@ var Agent = class {
         color: import_zod.z.string().optional().describe("CSS color for the highlight ring, default is indigo"),
         durationMs: import_zod.z.number().optional().describe("How long to show the highlight in milliseconds, default 2000")
       }),
-      execute: async (args) => ({ _axonSignal: "HIGHLIGHT_ELEMENT", payload: args })
+      execute: async (args) => ({ _synapseSignal: "HIGHLIGHT_ELEMENT", payload: args })
     });
     this.tools.register({
       name: "waitForElement",
@@ -275,13 +275,13 @@ var Agent = class {
         elementId: import_zod.z.string().describe("The element ID to wait for"),
         timeoutMs: import_zod.z.number().optional().describe("Max milliseconds to wait, default 5000")
       }),
-      execute: async (args) => ({ _axonSignal: "WAIT_FOR_ELEMENT", payload: args })
+      execute: async (args) => ({ _synapseSignal: "WAIT_FOR_ELEMENT", payload: args })
     });
     this.tools.register({
       name: "getPageUrl",
       description: "Return the current page URL or pathname. Use when the user asks where they are, what page they are on, or what the URL is.",
       schema: import_zod.z.object({}),
-      execute: async () => ({ _axonSignal: "GET_PAGE_URL", payload: {} })
+      execute: async () => ({ _synapseSignal: "GET_PAGE_URL", payload: {} })
     });
     this.tools.register({
       name: "setPageTitle",
@@ -289,7 +289,7 @@ var Agent = class {
       schema: import_zod.z.object({
         title: import_zod.z.string().describe("New title to set for the browser tab")
       }),
-      execute: async (args) => ({ _axonSignal: "SET_PAGE_TITLE", payload: args })
+      execute: async (args) => ({ _synapseSignal: "SET_PAGE_TITLE", payload: args })
     });
     this.tools.register({
       name: "openModal",
@@ -298,7 +298,7 @@ var Agent = class {
         elementId: import_zod.z.string().describe("The ID of the modal trigger button or dialog element"),
         action: import_zod.z.enum(["open", "close"]).optional().describe("Whether to open or close the modal, defaults to open")
       }),
-      execute: async (args) => ({ _axonSignal: "OPEN_MODAL", payload: args })
+      execute: async (args) => ({ _synapseSignal: "OPEN_MODAL", payload: args })
     });
     this.tools.register({
       name: "downloadFile",
@@ -307,7 +307,7 @@ var Agent = class {
         url: import_zod.z.string().describe("The URL of the file to download"),
         filename: import_zod.z.string().optional().describe("The suggested filename for the downloaded file")
       }),
-      execute: async (args) => ({ _axonSignal: "DOWNLOAD_FILE", payload: args })
+      execute: async (args) => ({ _synapseSignal: "DOWNLOAD_FILE", payload: args })
     });
     this.tools.register({
       name: "submitForm",
@@ -315,7 +315,7 @@ var Agent = class {
       schema: import_zod.z.object({
         formId: import_zod.z.string().describe("The ID of the <form> element to submit")
       }),
-      execute: async (args) => ({ _axonSignal: "SUBMIT_FORM", payload: args })
+      execute: async (args) => ({ _synapseSignal: "SUBMIT_FORM", payload: args })
     });
     this.tools.register({
       name: "checkboxToggle",
@@ -324,7 +324,7 @@ var Agent = class {
         elementId: import_zod.z.string().describe("The ID of the checkbox element"),
         checked: import_zod.z.boolean().optional().describe("true to check, false to uncheck. If omitted, toggles current state.")
       }),
-      execute: async (args) => ({ _axonSignal: "CHECKBOX_TOGGLE", payload: args })
+      execute: async (args) => ({ _synapseSignal: "CHECKBOX_TOGGLE", payload: args })
     });
     this.tools.register({
       name: "setTheme",
@@ -332,7 +332,7 @@ var Agent = class {
       schema: import_zod.z.object({
         theme: import_zod.z.string().describe('Theme name to apply, e.g. "dark", "light", "ocean", "high-contrast"')
       }),
-      execute: async (args) => ({ _axonSignal: "SET_THEME", payload: args })
+      execute: async (args) => ({ _synapseSignal: "SET_THEME", payload: args })
     });
   }
   /**

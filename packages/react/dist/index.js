@@ -21,33 +21,33 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var index_exports = {};
 __export(index_exports, {
   Agent: () => import_core.Agent,
-  AxonProvider: () => AxonProvider,
+  SynapseProvider: () => SynapseProvider,
   createAgent: () => import_core.createAgent,
   useAgent: () => useAgent
 });
 module.exports = __toCommonJS(index_exports);
 
-// src/AxonProvider.tsx
+// src/SynapseProvider.tsx
 var import_react = require("react");
 var import_jsx_runtime = require("react/jsx-runtime");
-var AxonContext = (0, import_react.createContext)(null);
-function AxonProvider({ runtime, children }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AxonContext.Provider, { value: { agent: runtime }, children });
+var SynapseContext = (0, import_react.createContext)(null);
+function SynapseProvider({ runtime, children }) {
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SynapseContext.Provider, { value: { agent: runtime }, children });
 }
 function useAgent() {
-  const context = (0, import_react.useContext)(AxonContext);
+  const context = (0, import_react.useContext)(SynapseContext);
   if (!context) {
-    throw new Error("useAgent must be used within an AxonProvider");
+    throw new Error("useAgent must be used within an SynapseProvider");
   }
   return context.agent;
 }
 
 // src/index.ts
-var import_core = require("@axonjs/core");
+var import_core = require("@synapsejs/core");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   Agent,
-  AxonProvider,
+  SynapseProvider,
   createAgent,
   useAgent
 });

@@ -3,13 +3,13 @@ function toggleTheme() {
   const html = document.documentElement;
   const isDark = html.dataset.theme === 'dark';
   html.dataset.theme = isDark ? 'light' : 'dark';
-  localStorage.setItem('axon-theme', html.dataset.theme);
+  localStorage.setItem('synapse-theme', html.dataset.theme);
   document.querySelector('.theme-icon').textContent = isDark ? '☀️' : '🌙';
 }
 
 // Restore saved theme
 (function() {
-  const saved = localStorage.getItem('axon-theme') || 'dark';
+  const saved = localStorage.getItem('synapse-theme') || 'dark';
   document.documentElement.dataset.theme = saved;
   const icon = document.querySelector('.theme-icon');
   if (icon) icon.textContent = saved === 'dark' ? '🌙' : '☀️';
@@ -45,8 +45,8 @@ const SEARCH_INDEX = [
   { title: 'Tool Registry', page: 'tool-registry.html', desc: 'register, unregister, list' },
   { title: 'Custom Tools', page: 'custom-tools.html', desc: 'Register your own tools' },
   { title: 'useSynapseDOM', page: 'use-agent-dom.html', desc: 'DOM scanning hook' },
-  { title: 'useSynapseSignals', page: 'use-axon-signals.html', desc: 'Signal handler hook' },
-  { title: 'TypeScript Types', page: 'types.html', desc: 'AxonSignal, CoreMessage, etc.' },
+  { title: 'useSynapseSignals', page: 'use-synapse-signals.html', desc: 'Signal handler hook' },
+  { title: 'TypeScript Types', page: 'types.html', desc: 'SynapseSignal, CoreMessage, etc.' },
   { title: 'FAQ', page: 'faq.html', desc: 'Common questions' },
   { title: 'Changelog', page: 'changelog.html', desc: 'Release history' },
   // Tools
@@ -124,3 +124,48 @@ document.addEventListener('keydown', e => {
     }
   });
 })();
+/* ── Animations (GSAP) ──────────────────────────────────────────────────────── */
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof gsap === 'undefined') return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero Entrance
+  gsap.from('.hero-badge', { y: -20, opacity: 0, duration: 0.8, ease: 'back.out(1.7)' });
+  gsap.from('.hero-title', { 
+    y: 40, opacity: 0, duration: 1, delay: 0.2, ease: 'power4.out',
+    skewY: 2, transformOrigin: 'left top'
+  });
+  gsap.from('.hero-subtitle', { y: 20, opacity: 0, duration: 0.8, delay: 0.4, ease: 'power3.out' });
+  gsap.from('.hero-desc', { y: 20, opacity: 0, duration: 0.8, delay: 0.5, ease: 'power3.out' });
+  gsap.from('.hero-actions .btn', { 
+    scale: 0.8, opacity: 0, duration: 0.6, delay: 0.6, stagger: 0.1, ease: 'back.out(2)' 
+  });
+
+  // Staggered Cards
+  gsap.from('.tool-card, .next-step-card', {
+    scrollTrigger: {
+      trigger: '.tools-grid, .next-steps',
+      start: 'top 85%',
+    },
+    y: 30, opacity: 0, duration: 0.8, stagger: 0.05, ease: 'power2.out'
+  });
+
+  // Logo Pulsing Spell
+  gsap.to('.logo-icon', {
+    scale: 1.1, duration: 2, repeat: -1, yoyo: true, ease: 'sine.inOut'
+  });
+});
+
+/* ── Magnetic Buttons Spell ────────────────────────────────────────────────── */
+document.querySelectorAll('.btn-primary, .sidebar-logo').forEach(el => {
+  el.addEventListener('mousemove', e => {
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    gsap.to(el, { x: x * 0.3, y: y * 0.3, duration: 0.4, ease: 'power2.out' });
+  });
+  el.addEventListener('mouseleave', () => {
+    gsap.to(el, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.3)' });
+  });
+});

@@ -1,13 +1,13 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
-import { Agent } from '@axonjs/core';
-export { Agent, createAgent } from '@axonjs/core';
+import { Agent } from '@synapsejs/core';
+export { Agent, createAgent } from '@synapsejs/core';
 
-interface AxonProviderProps {
+interface SynapseProviderProps {
     runtime: Agent;
     children: ReactNode;
 }
-declare function AxonProvider({ runtime, children }: AxonProviderProps): react_jsx_runtime.JSX.Element;
+declare function SynapseProvider({ runtime, children }: SynapseProviderProps): react_jsx_runtime.JSX.Element;
 declare function useAgent(): Agent;
 
-export { AxonProvider, type AxonProviderProps, useAgent };
+export { SynapseProvider, type SynapseProviderProps, useAgent };

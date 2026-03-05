@@ -1,8 +1,8 @@
 <div align="center">
-  <h1>⚡ AxonJS</h1>
+  <h1>⚡ SynapseJS</h1>
   <p><strong>The AI Runtime Layer for Frontend Applications</strong></p>
   <p>
-    <a href="https://www.npmjs.com/package/@axonjs/core"><img src="https://img.shields.io/npm/v/@axonjs/core?color=6366f1&label=npm" alt="npm version"></a>
+    <a href="https://www.npmjs.com/package/@synapsejs/core"><img src="https://img.shields.io/npm/v/@synapsejs/core?color=6366f1&label=npm" alt="npm version"></a>
     <img src="https://img.shields.io/badge/tools-20_built--in-emerald?color=10b981" alt="20 built-in tools">
     <img src="https://img.shields.io/badge/providers-Groq%20%7C%20Gemini%20%7C%20OpenAI-8b5cf6" alt="providers">
     <img src="https://img.shields.io/badge/TypeScript-5.x-3178c6" alt="TypeScript">
@@ -11,7 +11,7 @@
 
 ---
 
-**AxonJS** lets any LLM see, click, scroll, fill, navigate, and control your web UI — with one line of setup and zero extra infrastructure. Drop it into any React / Next.js project and your AI agent gains 20 production-ready capabilities instantly.
+**SynapseJS** lets any LLM see, click, scroll, fill, navigate, and control your web UI — with one line of setup and zero extra infrastructure. Drop it into any React / Next.js project and your AI agent gains 20 production-ready capabilities instantly.
 
 ```ts
 const agent = new Agent({
@@ -33,8 +33,8 @@ const result = await agent.run([
 3. [Built-in Tools (20)](#built-in-tools)
 4. [Custom Tools](#custom-tools)
 5. [Frontend Integration](#frontend-integration)
-   - [useAgentDOM](#useagentdom)
-   - [useAxonSignals](#useaxonsignals)
+   - [useSynapseDOM](#useagentdom)
+   - [useSynapseSignals](#useaxonsignals)
 6. [3D Scene Integration](#3d-scene-integration)
 7. [API Reference](#api-reference)
 8. [TypeScript Types](#typescript-types)
@@ -47,16 +47,16 @@ const result = await agent.run([
 ### 1. Install
 
 ```bash
-npm install @axonjs/core
+npm install @synapsejs/core
 # or
-pnpm add @axonjs/core
+pnpm add @synapsejs/core
 ```
 
 ### 2. Create an Agent (backend — Next.js API route)
 
 ```ts
 // app/api/chat/route.ts
-import { Agent } from "@axonjs/core";
+import { Agent } from "@synapsejs/core";
 
 export async function POST(req: Request) {
   const { messages, domElements } = await req.json();
@@ -87,11 +87,11 @@ export async function POST(req: Request) {
 ```tsx
 // app/page.tsx
 "use client";
-import { useAgentDOM, useAxonSignals } from "@axonjs/core/client";
+import { useSynapseDOM, useSynapseSignals } from "@synapsejs/core/client";
 
 export default function Page() {
-  const domElements = useAgentDOM(); // auto-scans interactive elements
-  const { processSignals } = useAxonSignals({
+  const domElements = useSynapseDOM(); // auto-scans interactive elements
+  const { processSignals } = useSynapseSignals({
     // handle AI actions
     SHOW_NOTIFICATION: ({ message, type }) => toast(message, type),
     NAVIGATE: ({ url }) => router.push(url),
@@ -125,7 +125,7 @@ export default function Page() {
 
 ## Built-in Tools
 
-AxonJS ships **20 tools** that are registered automatically — no configuration needed. The LLM selects the right tool based on the user's intent.
+SynapseJS ships **20 tools** that are registered automatically — no configuration needed. The LLM selects the right tool based on the user's intent.
 
 ### Wave 1 — Core UI Automation
 
@@ -174,7 +174,7 @@ AxonJS ships **20 tools** that are registered automatically — no configuration
 Register any tool that runs your own business logic:
 
 ```ts
-import { Agent } from "@axonjs/core";
+import { Agent } from "@synapsejs/core";
 import { z } from "zod";
 
 const agent = new Agent({ llmProvider: "groq", apiKey: "..." });
@@ -218,14 +218,14 @@ agent.tools.execute(name, args); // Run a tool      → Promise<any>
 
 ## Frontend Integration
 
-### useAgentDOM
+### useSynapseDOM
 
 Automatically scans the DOM and returns a simplified JSON snapshot the LLM uses to understand your UI:
 
 ```tsx
-import { useAgentDOM } from "@axonjs/core/client";
+import { useSynapseDOM } from "@synapsejs/core/client";
 
-const domElements = useAgentDOM();
+const domElements = useSynapseDOM();
 // Returns: [{ id: 'submit-btn', type: 'button', text: 'Submit', actionable: true }, ...]
 ```
 
@@ -233,25 +233,25 @@ Tag any element for AI visibility:
 
 ```html
 <!-- Make a static element readable by the AI -->
-<div id="cart-count" data-axon-read="true">3 items</div>
+<div id="cart-count" data-synapse-read="true">3 items</div>
 
 <!-- Register a 3D canvas with controllable events -->
 <div
   id="hero-scene"
-  data-axon-3d="true"
+  data-synapse-3d="true"
   data-3d-events="mouseHover, mouseDown"
   data-3d-variables="score, speed"
 ></div>
 ```
 
-### useAxonSignals
+### useSynapseSignals
 
 The zero-boilerplate way to handle any signal the AI emits:
 
 ```tsx
-import { useAxonSignals } from "@axonjs/core/client";
+import { useSynapseSignals } from "@synapsejs/core/client";
 
-const { processSignals } = useAxonSignals({
+const { processSignals } = useSynapseSignals({
   UI_INTERACTION: ({ elementId, action, value }) => {
     const el = document.getElementById(elementId);
     if (action === "click") el?.click();
@@ -289,18 +289,18 @@ import { useEffect } from 'react';
 import type { Application } from '@splinetool/runtime';
 
 declare global {
-  interface Window { AxonSplineInterop?: { emitEvent: ..., setVariable: ... } }
+  interface Window { SynapseSplineInterop?: { emitEvent: ..., setVariable: ... } }
 }
 
 function SplineScene() {
   function onLoad(app: Application) {
-    window.AxonSplineInterop = {
+    window.SynapseSplineInterop = {
       emitEvent: (action, target) => app.emitEvent(action as any, target),
       setVariable: (name, value) => app.setVariable(name, value as any),
     };
   }
   return (
-    <div id="hero-3d-scene" data-axon-3d="true" data-3d-events="mouseHover, mouseDown">
+    <div id="hero-3d-scene" data-synapse-3d="true" data-3d-events="mouseHover, mouseDown">
       <Spline scene="your-scene.splinecode" onLoad={onLoad} />
     </div>
   );
@@ -310,12 +310,12 @@ function SplineScene() {
 Then wire the signal:
 
 ```tsx
-const { processSignals } = useAxonSignals({
+const { processSignals } = useSynapseSignals({
   "3D_INTERACTION": ({ actionType, target, value }) => {
     if (actionType === "emitEvent")
-      window.AxonSplineInterop?.emitEvent("mouseHover", target);
+      window.SynapseSplineInterop?.emitEvent("mouseHover", target);
     if (actionType === "setVariable")
-      window.AxonSplineInterop?.setVariable(target, value);
+      window.SynapseSplineInterop?.setVariable(target, value);
   },
 });
 ```
@@ -331,7 +331,7 @@ const { processSignals } = useAxonSignals({
 | `llmProvider`  | `'groq' \| 'gemini' \| 'openai' \| 'mock'` | required         | LLM backend to use            |
 | `apiKey`       | `string`                                   | —                | Provider API key              |
 | `model`        | `string`                                   | provider default | Override the default model    |
-| `systemPrompt` | `string`                                   | AxonJS default   | Custom system instructions    |
+| `systemPrompt` | `string`                                   | SynapseJS default   | Custom system instructions    |
 | `maxSteps`     | `number`                                   | `5`              | Max reasoning loop iterations |
 | `memory`       | `'session' \| 'none'`                      | `'none'`         | Conversation memory mode      |
 
@@ -356,13 +356,13 @@ const result = await agent.run(
 import type {
   AgentConfig,
   AgentResponse,
-  AxonSignalType,
-  AxonSignal,
+  SynapseSignalType,
+  SynapseSignal,
   AgentSignalHandler,
-  AxonToolName,
+  SynapseToolName,
   Tool,
   CoreMessage,
-} from "@axonjs/core";
+} from "@synapsejs/core";
 ```
 
 ---
@@ -370,7 +370,7 @@ import type {
 ## FAQ
 
 **Q: How does the AI know what's on the screen?**  
-A: `useAgentDOM()` scans for all `button`, `input`, `a`, and `data-axon-read`/`data-axon-3d` tagged elements and produces a JSON snapshot sent with every request.
+A: `useSynapseDOM()` scans for all `button`, `input`, `a`, and `data-synapse-read`/`data-synapse-3d` tagged elements and produces a JSON snapshot sent with every request.
 
 **Q: Do I need to configure anything to get the 20 tools?**  
 A: No. All tools are pre-registered in the constructor. Just create an `Agent` and they're available.
@@ -382,7 +382,7 @@ A: Yes: `agent.tools.unregister('setTheme')`.
 A: `agent.tools.register({ name, description, schema, execute })`. See [Custom Tools](#custom-tools).
 
 **Q: Does this work with Next.js App Router?**  
-A: Yes. The `Agent` class runs only on the server (API routes). `useAgentDOM` and `useAxonSignals` are client components.
+A: Yes. The `Agent` class runs only on the server (API routes). `useSynapseDOM` and `useSynapseSignals` are client components.
 
 **Q: What if I'm not using React?**  
 A: The `Agent` class and `ToolRegistry` are framework-agnostic. Build your own signal dispatch layer for Vue, Svelte, or vanilla JS.
@@ -391,4 +391,4 @@ A: The `Agent` class and `ToolRegistry` are framework-agnostic. Build your own s
 
 ## License
 
-MIT © AxonJS Contributors
+MIT © SynapseJS Contributors

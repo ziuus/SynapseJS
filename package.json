@@ -1,5 +1,5 @@
 {
-  "name": "axonjs-monorepo",
+  "name": "synapsejs-monorepo",
   "private": true,
   "workspaces": [
     "packages/*",

@@ -32,11 +32,11 @@ function useSynapseDOM() {
   const [domElements, setDomElements] = (0, import_react.useState)([]);
   (0, import_react.useEffect)(() => {
     const scanDOM = () => {
-      const interactables = document.querySelectorAll('button, input, a, [role="button"], [data-axon-read="true"], [data-axon-3d="true"]');
+      const interactables = document.querySelectorAll('button, input, a, [role="button"], [data-synapse-read="true"], [data-synapse-3d="true"]');
       const elements = [];
       interactables.forEach((el) => {
         if (!el.id) {
-          el.id = "axon-" + Math.random().toString(36).substr(2, 9);
+          el.id = "synapse-" + Math.random().toString(36).substr(2, 9);
         }
         const tagName = el.tagName.toLowerCase();
         let type = "unknown";
@@ -45,7 +45,7 @@ function useSynapseDOM() {
         if (tagName === "a") type = "link";
         let is3D = false;
         let variables, events;
-        if (el.getAttribute("data-axon-3d") === "true") {
+        if (el.getAttribute("data-synapse-3d") === "true") {
           type = "unknown";
           is3D = true;
           variables = el.getAttribute("data-3d-variables") || void 0;

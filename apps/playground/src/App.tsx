@@ -15,7 +15,7 @@ function App() {
 
     try {
       setLog(prev => [...prev, `⚙️ Agent is thinking...`]);
-      const response = await agent.run(userInput);
+      const response = await agent.run([{ role: 'user', content: userInput }]);
       
       setLog(prev => [...prev, `Agent: ${response.text}`]);
       
@@ -25,7 +25,7 @@ function App() {
             // Recreate the minimal validation locally just for the UI log.
             try {
                const tool = agent.tools.getTool(call.name);
-               if (tool) {
+               if (tool && tool.schema) {
                    tool.schema.parse(call.args);
                }
                setLog(prev => [...prev, `✅ Zod Validation Passed.`]);

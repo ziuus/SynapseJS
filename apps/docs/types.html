@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 <body>
 <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
@@ -51,11 +53,11 @@
       </div>
 
       <section class="section">
-        <h2 class="section-title">AxonSignal</h2>
+        <h2 class="section-title">SynapseSignal</h2>
         <p class="section-text">The central discriminated union type. Every tool call the AI makes is typed as one of these signal variants.</p>
         <div class="code-block-wrap">
           <div class="code-block-header"><span>types.ts</span></div>
-          <pre class="code-block"><code><span class="token-keyword">export type</span> <span class="token-type">AxonSignal</span> =
+          <pre class="code-block"><code><span class="token-keyword">export type</span> <span class="token-type">SynapseSignal</span> =
   | { <span class="token-prop">type</span>: <span class="token-string">'UI_INTERACTION'</span>;     <span class="token-prop">elementId</span>: <span class="token-type">string</span>; <span class="token-prop">action</span>: <span class="token-type">string</span>; <span class="token-prop">value</span>?: <span class="token-type">string</span> }
   | { <span class="token-prop">type</span>: <span class="token-string">'FILL_FORM'</span>;          <span class="token-prop">fields</span>: { <span class="token-prop">elementId</span>: <span class="token-type">string</span>; <span class="token-prop">value</span>: <span class="token-type">string</span> }[] }
   | { <span class="token-prop">type</span>: <span class="token-string">'NAVIGATE'</span>;          <span class="token-prop">url</span>: <span class="token-type">string</span> }
@@ -92,7 +94,7 @@
 
 <span class="token-keyword">export interface</span> <span class="token-type">AgentRunResult</span> {
   <span class="token-prop">text</span>: <span class="token-type">string</span>;
-  <span class="token-prop">toolCalls</span>: <span class="token-type">AxonSignal</span>[];
+  <span class="token-prop">toolCalls</span>: <span class="token-type">SynapseSignal</span>[];
 }
 
 <span class="token-keyword">export interface</span> <span class="token-type">ToolDef</span> {

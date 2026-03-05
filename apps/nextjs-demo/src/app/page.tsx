@@ -276,7 +276,7 @@ export default function ChatDashboard() {
           <button id="theme-toggle" onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} className={`p-2 rounded-lg border ${isDark ? 'border-slate-700 hover:bg-slate-800' : 'border-slate-300 hover:bg-slate-100'} transition-colors`} title="Toggle Theme">
             {isDark ? '🌙' : '☀️'}
           </button>
-          <div id="cart-status" data-axon-read="true" className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 text-indigo-500 font-medium text-sm border border-indigo-500/20">
+          <div id="cart-status" data-synapse-read="true" className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 text-indigo-500 font-medium text-sm border border-indigo-500/20">
             🛒 {cartCount} Items
           </div>
         </div>

@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 <body>
 <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
@@ -26,7 +28,7 @@
       <div class="nav-group">
         <div class="nav-group-label">React Hooks</div>
         <a href="use-agent-dom.html" class="nav-link">useSynapseDOM</a>
-        <a href="use-axon-signals.html" class="nav-link active">useSynapseSignals</a>
+        <a href="use-synapse-signals.html" class="nav-link active">useSynapseSignals</a>
       </div>
     </nav>
     <div class="sidebar-footer">
@@ -52,7 +54,7 @@
 
       <section class="section">
         <h2 class="section-title">Overview</h2>
-        <p class="section-text"><code>useSynapseSignals</code> is the recommended way to wire up your entire signal pipeline. You pass a handler map — one callback per signal type — and the hook returns a <code>processSignals</code> function that you call after each AI response. Each callback is fully typed via the <code>AxonSignal</code> discriminated union.</p>
+        <p class="section-text"><code>useSynapseSignals</code> is the recommended way to wire up your entire signal pipeline. You pass a handler map — one callback per signal type — and the hook returns a <code>processSignals</code> function that you call after each AI response. Each callback is fully typed via the <code>SynapseSignal</code> discriminated union.</p>
       </section>
 
       <section class="section">
