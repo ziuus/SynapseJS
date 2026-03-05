@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAgent } from '@axonjs/react';
+import { useAgent } from '@synapsejs/react';
 
 function App() {
   const agent = useAgent();
@@ -43,8 +43,8 @@ function App() {
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>AxonJS Playground</h1>
-      <p>This tests the core AxonJS mock runtime.</p>
+      <h1>SynapseJS Playground</h1>
+      <p>This tests the core SynapseJS mock runtime.</p>
       
       <div style={{ marginBottom: '1rem', border: '1px solid #ccc', padding: '1rem', height: '300px', overflowY: 'auto' }}>
         {log.map((entry, i) => (

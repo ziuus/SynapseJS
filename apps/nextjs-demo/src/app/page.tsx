@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useAgentDOM } from '@axonjs/core/client';
+import { useSynapseDOM } from '@synapsejs/core/client';
 import SplineScene from './SplineScene';
 
 type Message = { role: 'user' | 'assistant', content: string, toolCalls?: any[] };
@@ -29,10 +29,10 @@ export default function ChatDashboard() {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [formData, setFormData] = useState({ name: '', email: '', plan: 'free', newsletter: false });
   const [modalOpen, setModalOpen] = useState(false);
-  const [pageTitle, setPageTitle] = useState('AxonJS Agent');
+  const [pageTitle, setPageTitle] = useState('SynapseJS Agent');
 
   const scrollRef = useRef<HTMLDivElement>(null);
-  const domElements = useAgentDOM();
+  const domElements = useSynapseDOM();
   const toastId = useRef(0);
 
   // Keep page title in sync
@@ -65,10 +65,10 @@ export default function ChatDashboard() {
         }
         case '3D_INTERACTION': {
           const { actionType, target, value } = tc.args;
-          if (!window.AxonSplineInterop) break;
-          if (actionType === 'emitEvent') window.AxonSplineInterop.emitEvent('mouseHover', target);
+          if (!window.SynapseSplineInterop) break;
+          if (actionType === 'emitEvent') window.SynapseSplineInterop.emitEvent('mouseHover', target);
           else if (actionType === 'setVariable' && value !== undefined)
-            window.AxonSplineInterop.setVariable(target, value);
+            window.SynapseSplineInterop.setVariable(target, value);
           break;
         }
         case 'READ_ELEMENT':
@@ -179,7 +179,7 @@ export default function ChatDashboard() {
         case 'SUBMIT_FORM': {
           const form = document.getElementById(tc.args.formId) as HTMLFormElement;
           if (form) {
-            form.requestSubmit?.() || form.submit();
+            if (form.requestSubmit) { form.requestSubmit(); } else { form.submit(); }
             showToast('Form submitted!', 'success');
           }
           break;
@@ -265,7 +265,7 @@ export default function ChatDashboard() {
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow font-bold text-white">A</div>
           <div>
-            <h1 className="text-lg font-semibold tracking-tight">AxonJS Agent</h1>
+            <h1 className="text-lg font-semibold tracking-tight">SynapseJS Agent</h1>
             <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>20 built-in integrations · Spatial AI</p>
           </div>
         </div>

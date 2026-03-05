@@ -1,0 +1,9 @@
+#!/bin/sh
+# pnpm shim: satisfies Next.js Turbopack's SWC lockfile patching
+# which calls `pnpm config get registry`
+if [ "$*" = "config get registry" ]; then
+  echo "https://registry.npmjs.org/"
+  exit 0
+fi
+# Fall through to actual pnpm if installed
+exec pnpm_real "$@" 2>/dev/null || exit 0

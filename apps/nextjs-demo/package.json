@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/react": "^1.1.0",
-    "@axonjs/core": "^0.1.0",
+    "@synapsejs/core": "file:../../packages/core",
     "@splinetool/react-spline": "^4.1.0",
     "ai": "^4.1.41",
     "next": "16.1.6",

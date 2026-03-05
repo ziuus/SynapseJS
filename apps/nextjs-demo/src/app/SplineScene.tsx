@@ -5,7 +5,7 @@ import type { Application } from '@splinetool/runtime';
 
 declare global {
   interface Window {
-    AxonSplineInterop?: {
+    SynapseSplineInterop?: {
       app: Application | null;
       emitEvent: (action: string, targetName: string) => void;
       setVariable: (name: string, value: string | number) => void;
@@ -28,7 +28,7 @@ export default function SplineScene() {
     });
 
     return () => {
-      delete window.AxonSplineInterop;
+      delete window.SynapseSplineInterop;
     };
   }, []);
 
@@ -36,7 +36,7 @@ export default function SplineScene() {
     appRef.current = app;
     setIsLoaded(true);
 
-    window.AxonSplineInterop = {
+    window.SynapseSplineInterop = {
       app,
       emitEvent: (action: string, targetName: string) => {
         try {

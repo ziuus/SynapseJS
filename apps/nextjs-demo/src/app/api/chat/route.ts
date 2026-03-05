@@ -1,8 +1,8 @@
-import { createAgent } from '@axonjs/core';
+import { createAgent } from '@synapsejs/core';
 import { z } from 'zod';
 
 // Force the edge runtime for better performance and AI SDK streaming compatibility
-export const runtime = 'edge';
+// export const runtime = 'edge';
 
 // We instantiate the AxonAgent backend execution loop here
 const agent = createAgent({
@@ -19,7 +19,7 @@ agent.registerTool({
   description: 'Fetches the live weather for a given city.',
   schema: z.object({
     city: z.string().describe('The name of the city, e.g. London or New York')
-  }),
+  }) as z.ZodTypeAny,
   execute: async ({ city }) => {
     console.log(`[Backend Tool] Fetching weather for ${city}...`);
     // Mock network delay
@@ -44,7 +44,7 @@ agent.registerTool({
   description: 'Pings the main production database to check if it is online.',
   schema: z.object({
       region: z.string().describe('The AWS region to check, e.g. us-east-1')
-  }),
+  }) as z.ZodTypeAny,
   execute: async ({ region }) => {
      console.log(`[Backend Tool] Pinging database in ${region}...`);
      await new Promise(resolve => setTimeout(resolve, 1200));
