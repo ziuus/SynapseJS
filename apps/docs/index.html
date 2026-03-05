@@ -1,749 +1,120 @@
-<!doctype html>
-<html lang="en" data-theme="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SynapseJS Docs — The AI Runtime Layer for Frontend</title>
-    <meta
-      name="description"
-      content="Full documentation for SynapseJS — 20 built-in AI tools, useSynapseDOM, useSynapseSignals, and complete API reference."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SynapseJS — Intelligence for your Frontend</title>
+    <meta name="description" content="The AI runtime layer that gives your React apps superpowers. Drop-in 20+ AI tools and built-in automation feats.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="landing.css">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  </head>
-  <body>
-    <!-- ── Mobile overlay ──────────────────────────────────────────────────── -->
-    <div
-      id="sidebar-overlay"
-      class="sidebar-overlay"
-      onclick="closeSidebar()"
-    ></div>
+</head>
+<body>
 
-    <!-- ── Layout wrapper ─────────────────────────────────────────────────── -->
-    <div class="layout">
-      <!-- ── Sidebar ──────────────────────────────────────────────────────── -->
-      <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <a href="index.html" class="sidebar-logo">
+    <div class="spatial-bg"></div>
+    <div class="heavenly-aura"></div>
+    <div class="glow-orb" style="top: -10%; right: -10%;"></div>
+    <div class="glow-orb" style="bottom: -20%; left: -20%;"></div>
+
+    <nav class="navbar">
+        <a href="#" class="logo magnetic">
             <div class="logo-icon">⚡</div>
-            <div>
-              <div class="logo-name">SynapseJS</div>
-              <div class="logo-version">v0.3.0</div>
-            </div>
-          </a>
+            <span>SynapseJS</span>
+        </a>
+        <div class="nav-links">
+            <a href="intro.html" class="nav-link">Documentation</a>
+            <a href="showcase.html" class="nav-link">Showcase</a>
+            <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="nav-link">GitHub</a>
         </div>
+        <a href="intro.html" class="btn btn-secondary magnetic">Get Started</a>
+    </nav>
 
-        <!-- Search -->
-        <div class="search-wrap">
-          <input
-            type="text"
-            id="search"
-            placeholder="Search docs…"
-            class="search-input"
-            oninput="handleSearch(this.value)"
-          />
-          <span class="search-kbd">⌘K</span>
-        </div>
-
-        <nav class="sidebar-nav" id="nav">
-          <div class="nav-group">
-            <div class="nav-group-label">Getting Started</div>
-            <a href="index.html" class="nav-link active" data-page="home"
-              >Introduction</a
-            >
-            <a href="quick-start.html" class="nav-link" data-page="quick-start"
-              >Quick Start</a
-            >
-            <a href="providers.html" class="nav-link" data-page="providers"
-              >Providers</a
-            >
-          </div>
-
-          <div class="nav-group">
-            <div class="nav-group-label">Showcase</div>
-            <a href="showcase.html" class="nav-link" data-page="showcase"
-              >Showcase Gallery</a
-            >
-            <a
-              href="showcase/shopping.html"
-              class="nav-link"
-              data-page="showcase-shopping"
-              >AI Shopping Assistant</a
-            >
-            <a
-              href="showcase/dashboard.html"
-              class="nav-link"
-              data-page="showcase-dashboard"
-              >SaaS Dashboard</a
-            >
-            <a
-              href="showcase/configurator.html"
-              class="nav-link"
-              data-page="showcase-configurator"
-              >3D Configurator</a
-            >
-          </div>
-
-          <div class="nav-group">
-            <div class="nav-group-label">Core Concepts</div>
-            <a href="agent.html" class="nav-link" data-page="agent">Agent</a>
-            <a
-              href="tool-registry.html"
-              class="nav-link"
-              data-page="tool-registry"
-              >Tool Registry</a
-            >
-            <a
-              href="custom-tools.html"
-              class="nav-link"
-              data-page="custom-tools"
-              >Custom Tools</a
-            >
-          </div>
-
-          <div class="nav-group">
-            <div class="nav-group-label">React Hooks</div>
-            <a
-              href="use-agent-dom.html"
-              class="nav-link"
-              data-page="use-agent-dom"
-              >useSynapseDOM</a
-            >
-            <a
-              href="use-synapse-signals.html"
-              class="nav-link"
-              data-page="use-synapse-signals"
-              >useSynapseSignals</a
-            >
-          </div>
-
-          <div class="nav-group">
-            <div class="nav-group-label">Built-in Tools</div>
-            <div class="nav-group-label nav-group-sublabel">
-              Wave 1 — Core UI
-            </div>
-            <a
-              href="tools/interact-with-screen.html"
-              class="nav-link nav-link-tool"
-              >interactWithScreen</a
-            >
-            <a href="tools/read-screen-text.html" class="nav-link nav-link-tool"
-              >readScreenText</a
-            >
-            <a href="tools/observe-state.html" class="nav-link nav-link-tool"
-              >observeState</a
-            >
-            <a href="tools/fill-form.html" class="nav-link nav-link-tool"
-              >fillForm</a
-            >
-            <a href="tools/navigate-to.html" class="nav-link nav-link-tool"
-              >navigateTo</a
-            >
-            <a
-              href="tools/show-notification.html"
-              class="nav-link nav-link-tool"
-              >showNotification</a
-            >
-            <div class="nav-group-label nav-group-sublabel">
-              Wave 2 — Enhanced
-            </div>
-            <a href="tools/scroll-to.html" class="nav-link nav-link-tool"
-              >scrollTo</a
-            >
-            <a
-              href="tools/copy-to-clipboard.html"
-              class="nav-link nav-link-tool"
-              >copyToClipboard</a
-            >
-            <a href="tools/toggle-element.html" class="nav-link nav-link-tool"
-              >toggleElement</a
-            >
-            <a href="tools/select-dropdown.html" class="nav-link nav-link-tool"
-              >selectDropdown</a
-            >
-            <a
-              href="tools/highlight-element.html"
-              class="nav-link nav-link-tool"
-              >highlightElement</a
-            >
-            <div class="nav-group-label nav-group-sublabel">Wave 3 — Power</div>
-            <a href="tools/wait-for-element.html" class="nav-link nav-link-tool"
-              >waitForElement</a
-            >
-            <a href="tools/get-page-url.html" class="nav-link nav-link-tool"
-              >getPageUrl</a
-            >
-            <a href="tools/set-page-title.html" class="nav-link nav-link-tool"
-              >setPageTitle</a
-            >
-            <a href="tools/open-modal.html" class="nav-link nav-link-tool"
-              >openModal</a
-            >
-            <a href="tools/download-file.html" class="nav-link nav-link-tool"
-              >downloadFile</a
-            >
-            <a href="tools/submit-form.html" class="nav-link nav-link-tool"
-              >submitForm</a
-            >
-            <a href="tools/checkbox-toggle.html" class="nav-link nav-link-tool"
-              >checkboxToggle</a
-            >
-            <a href="tools/set-theme.html" class="nav-link nav-link-tool"
-              >setTheme</a
-            >
-            <div class="nav-group-label nav-group-sublabel">3D Integration</div>
-            <a
-              href="tools/interact-with-3d-scene.html"
-              class="nav-link nav-link-tool"
-              >interactWith3DScene</a
-            >
-          </div>
-
-          <div class="nav-group">
-            <div class="nav-group-label">Reference</div>
-            <a href="types.html" class="nav-link" data-page="types"
-              >TypeScript Types</a
-            >
-            <a href="faq.html" class="nav-link" data-page="faq">FAQ</a>
-            <a href="changelog.html" class="nav-link" data-page="changelog"
-              >Changelog</a
-            >
-          </div>
-        </nav>
-
-        <div class="sidebar-footer">
-          <a
-            href="https://github.com/ziuus/SynapseJS"
-            target="_blank"
-            class="sidebar-footer-link"
-            >GitHub ↗</a
-          >
-          <a
-            href="https://www.npmjs.com/package/@synapsejs/core"
-            target="_blank"
-            class="sidebar-footer-link"
-            >npm ↗</a
-          >
-        </div>
-      </aside>
-
-      <!-- ── Main content ──────────────────────────────────────────────────── -->
-      <div class="main-wrap">
-        <!-- Top bar -->
-        <header class="topbar">
-          <button class="menu-btn" onclick="toggleSidebar()">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-          <div class="topbar-breadcrumb">Introduction</div>
-          <div class="topbar-right">
-            <button
-              class="theme-btn"
-              onclick="toggleTheme()"
-              title="Toggle theme"
-            >
-              <span class="theme-icon">🌙</span>
-            </button>
-            <a
-              href="https://github.com/ziuus/SynapseJS"
-              target="_blank"
-              class="topbar-gh"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                width="18"
-                height="18"
-                fill="currentColor"
-              >
-                <path
-                  d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                />
-              </svg>
-            </a>
-          </div>
-        </header>
-
-        <!-- Page content -->
-        <main class="content">
-          <!-- Hero -->
-          <div class="hero">
-            <div class="hero-badge">v0.3.0 — Production Ready</div>
-            <h1 class="hero-title">SynapseJS</h1>
-            <p class="hero-subtitle">
-              The AI Runtime Layer for Frontend Applications
+    <main>
+        <section class="hero">
+            <div class="hero-badge reveal">INTRODUCING SYNAPSE FEATS & VISION v0.3.0</div>
+            <h1 class="hero-title reveal">
+                <span class="gradient-text">Intelligence.</span><br>
+                Heavenly Connected.
+            </h1>
+            <p class="hero-subtitle reveal">
+                SynapseJS is the neural link between your AI agent and your web UI. Drop-in 20+ built-in tools and advanced automation feats into any React or Next.js app in minutes.
             </p>
-            <p class="hero-desc">
-              Drop SynapseJS into any React / Next.js app and your AI agent
-              instantly gains
-              <strong>20 built-in superpowers</strong> — click, fill, navigate,
-              scroll, copy, highlight, control 3D scenes, and more. Zero
-              infrastructure. Zero configuration.
-            </p>
-            <div class="hero-actions">
-              <a href="quick-start.html" class="btn btn-primary"
-                >Get Started →</a
-              >
-              <a
-                href="https://github.com/ziuus/SynapseJS"
-                target="_blank"
-                class="btn btn-ghost"
-                >View on GitHub</a
-              >
+            <div class="hero-actions reveal">
+                <a href="intro.html" class="btn btn-primary magnetic">Documentation</a>
+                <a href="showcase.html" class="btn btn-secondary magnetic">Explore Demos</a>
             </div>
 
-            <!-- Stats row -->
-            <div class="stats-row">
-              <div class="stat">
-                <div class="stat-value">20</div>
-                <div class="stat-label">Built-in Tools</div>
-              </div>
-              <div class="stat-divider"></div>
-              <div class="stat">
-                <div class="stat-value">3</div>
-                <div class="stat-label">LLM Providers</div>
-              </div>
-              <div class="stat-divider"></div>
-              <div class="stat">
-                <div class="stat-value">0</div>
-                <div class="stat-label">Config Required</div>
-              </div>
-              <div class="stat-divider"></div>
-              <div class="stat">
-                <div class="stat-value">TypeScript</div>
-                <div class="stat-label">First Class</div>
-              </div>
+            <div class="hero-asset-container reveal">
+                <img src="assets/hero.png" alt="SynapseJS Intelligence" class="hero-image" id="heroAsset">
             </div>
-          </div>
+        </section>
 
-          <!-- Install banner -->
-          <div class="install-banner">
-            <span class="install-label">Install</span>
-            <code class="install-code">npm install @synapsejs/core</code>
-            <button
-              class="copy-btn"
-              onclick="copyCode(this, 'npm install @synapsejs/core')"
-              title="Copy"
-            >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <rect x="9" y="9" width="13" height="13" rx="2" />
-                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-              </svg>
-            </button>
-          </div>
-
-          <!-- What is SynapseJS -->
-          <section class="section">
-            <h2 class="section-title">What is SynapseJS?</h2>
-            <p class="section-text">
-              SynapseJS is a TypeScript library that bridges your LLM (Groq,
-              Gemini, OpenAI) and your web UI. It gives the AI a structured
-              toolkit to <em>see</em> the DOM, <em>act</em> on elements, and
-              <em>respond</em> to user intent — all without you writing any of
-              the plumbing.
-            </p>
-            <p class="section-text">
-              Every interaction flows through a typed signal pipeline, so your
-              frontend stays in full control. The AI emits a signal → your
-              handler fires → your UI updates.
-            </p>
-          </section>
-
-          <!-- How it works -->
-          <section class="section">
-            <h2 class="section-title">How It Works</h2>
-            <div class="flow-diagram">
-              <div class="flow-step">
-                <div class="flow-icon">💬</div>
-                <div class="flow-label">User Message</div>
-                <div class="flow-desc">"Select the Pro plan"</div>
-              </div>
-              <div class="flow-arrow">→</div>
-              <div class="flow-step">
-                <div class="flow-icon">🧠</div>
-                <div class="flow-label">LLM Reasons</div>
-                <div class="flow-desc">Picks <code>selectDropdown</code></div>
-              </div>
-              <div class="flow-arrow">→</div>
-              <div class="flow-step">
-                <div class="flow-icon">⚡</div>
-                <div class="flow-label">Signal Emitted</div>
-                <div class="flow-desc"><code>SELECT_DROPDOWN</code></div>
-              </div>
-              <div class="flow-arrow">→</div>
-              <div class="flow-step">
-                <div class="flow-icon">✅</div>
-                <div class="flow-label">UI Updates</div>
-                <div class="flow-desc">Dropdown set to "Pro"</div>
-              </div>
-            </div>
-          </section>
-
-          <!-- Code example -->
-          <section class="section">
-            <h2 class="section-title">5-Minute Setup</h2>
-            <div class="code-block-wrap">
-              <div class="code-block-header">
-                <span>app/api/chat/route.ts</span>
-                <button
-                  class="copy-btn"
-                  onclick="
-                    copyCode(this, document.getElementById('code1').textContent)
-                  "
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <rect x="9" y="9" width="13" height="13" rx="2" />
-                    <path
-                      d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <pre
-                class="code-block"
-                id="code1"
-              ><code><span class="token-keyword">import</span> { <span class="token-ident">Agent</span> } <span class="token-keyword">from</span> <span class="token-string">'@synapsejs/core'</span>;
-
-<span class="token-keyword">const</span> <span class="token-ident">agent</span> = <span class="token-keyword">new</span> <span class="token-ident">Agent</span>({
-  <span class="token-prop">llmProvider</span>: <span class="token-string">'groq'</span>,
-  <span class="token-prop">apiKey</span>: <span class="token-ident">process</span>.<span class="token-prop">env</span>.<span class="token-const">GROQ_API_KEY</span>,
-});
-
-<span class="token-keyword">export async function</span> <span class="token-fn">POST</span>(<span class="token-ident">req</span>: <span class="token-type">Request</span>) {
-  <span class="token-keyword">const</span> { <span class="token-ident">messages</span>, <span class="token-ident">domElements</span> } = <span class="token-keyword">await</span> <span class="token-ident">req</span>.<span class="token-fn">json</span>();
-  <span class="token-keyword">const</span> <span class="token-ident">result</span> = <span class="token-keyword">await</span> <span class="token-ident">agent</span>.<span class="token-fn">run</span>(<span class="token-ident">messages</span>, <span class="token-ident">domElements</span>);
-  <span class="token-keyword">return</span> <span class="token-ident">Response</span>.<span class="token-fn">json</span>({ <span class="token-prop">messages</span>: [
-    ...<span class="token-ident">messages</span>,
-    { <span class="token-prop">role</span>: <span class="token-string">'assistant'</span>, <span class="token-prop">content</span>: <span class="token-ident">result</span>.<span class="token-prop">text</span>,
-      <span class="token-prop">toolCalls</span>: <span class="token-ident">result</span>.<span class="token-prop">toolCalls</span> }
-  ]});
-}</code></pre>
+        <section class="features">
+            <div class="section-header">
+                <h2 class="section-title reveal" id="features-title">Proven Excellence.</h2>
+                <p class="section-subtitle reveal">The most extensible AI framework for modern web development.</p>
             </div>
 
-            <div class="code-block-wrap" style="margin-top: 16px">
-              <div class="code-block-header">
-                <span>app/page.tsx</span>
-                <button
-                  class="copy-btn"
-                  onclick="
-                    copyCode(this, document.getElementById('code2').textContent)
-                  "
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <rect x="9" y="9" width="13" height="13" rx="2" />
-                    <path
-                      d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <pre
-                class="code-block"
-                id="code2"
-              ><code><span class="token-string">'use client'</span>;
-<span class="token-keyword">import</span> { <span class="token-ident">useSynapseDOM</span>, <span class="token-ident">useSynapseSignals</span> } <span class="token-keyword">from</span> <span class="token-string">'@synapsejs/core/client'</span>;
-
-<span class="token-keyword">export default function</span> <span class="token-fn">Page</span>() {
-  <span class="token-keyword">const</span> <span class="token-ident">domElements</span> = <span class="token-fn">useSynapseDOM</span>();
-  <span class="token-keyword">const</span> { <span class="token-ident">processSignals</span> } = <span class="token-fn">useSynapseSignals</span>({
-    <span class="token-const">SHOW_NOTIFICATION</span>: ({ <span class="token-ident">message</span>, <span class="token-ident">type</span> }) => <span class="token-fn">toast</span>(<span class="token-ident">message</span>, <span class="token-ident">type</span>),
-    <span class="token-const">NAVIGATE</span>: ({ <span class="token-ident">url</span> }) => <span class="token-ident">router</span>.<span class="token-fn">push</span>(<span class="token-ident">url</span>),
-    <span class="token-const">SET_THEME</span>: ({ <span class="token-ident">theme</span> }) => <span class="token-ident">setTheme</span>(<span class="token-ident">theme</span>),
-  });
-
-  <span class="token-keyword">const</span> <span class="token-fn">handleChat</span> = <span class="token-keyword">async</span> (<span class="token-ident">msg</span>) => {
-    <span class="token-keyword">const</span> <span class="token-ident">data</span> = <span class="token-keyword">await</span> <span class="token-fn">fetch</span>(<span class="token-string">'/api/chat'</span>, {
-      <span class="token-prop">method</span>: <span class="token-string">'POST'</span>,
-      <span class="token-prop">body</span>: <span class="token-ident">JSON</span>.<span class="token-fn">stringify</span>({ <span class="token-prop">messages</span>, <span class="token-ident">domElements</span> })
-    }).<span class="token-fn">then</span>(<span class="token-ident">r</span> => <span class="token-ident">r</span>.<span class="token-fn">json</span>());
-    <span class="token-fn">processSignals</span>(<span class="token-ident">data</span>.<span class="token-ident">messages</span>.<span class="token-fn">flatMap</span>(<span class="token-ident">m</span> => <span class="token-ident">m</span>.<span class="token-ident">toolCalls</span> ?? []));
-  };
-}</code></pre>
-            </div>
-          </section>
-
-          <!-- Tool catalogue -->
-          <section class="section">
-            <h2 class="section-title">Built-in Tools</h2>
-
-            <div class="wave-section">
-              <div class="wave-header">
-                <span class="wave-badge wave-1">Wave 1</span>
-                <span class="wave-title">Core UI Automation</span>
-              </div>
-              <div class="tools-grid">
-                <a href="tools/interact-with-screen.html" class="tool-card">
-                  <code class="tool-name">interactWithScreen</code>
-                  <p class="tool-desc">Click any element or type into inputs</p>
-                  <span class="tool-signal">UI_INTERACTION</span>
-                </a>
-                <a href="tools/fill-form.html" class="tool-card">
-                  <code class="tool-name">fillForm</code>
-                  <p class="tool-desc">
-                    Batch-fill multiple form fields at once
-                  </p>
-                  <span class="tool-signal">FILL_FORM</span>
-                </a>
-                <a href="tools/navigate-to.html" class="tool-card">
-                  <code class="tool-name">navigateTo</code>
-                  <p class="tool-desc">
-                    Navigate the browser to any URL or route
-                  </p>
-                  <span class="tool-signal">NAVIGATE</span>
-                </a>
-                <a href="tools/show-notification.html" class="tool-card">
-                  <code class="tool-name">showNotification</code>
-                  <p class="tool-desc">Display a toast notification</p>
-                  <span class="tool-signal">SHOW_NOTIFICATION</span>
-                </a>
-                <a href="tools/read-screen-text.html" class="tool-card">
-                  <code class="tool-name">readScreenText</code>
-                  <p class="tool-desc">Read text content of any element</p>
-                  <span class="tool-signal">READ_ELEMENT</span>
-                </a>
-                <a href="tools/observe-state.html" class="tool-card">
-                  <code class="tool-name">observeState</code>
-                  <p class="tool-desc">
-                    Read any DOM property (value, checked…)
-                  </p>
-                  <span class="tool-signal">OBSERVE_STATE</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="wave-section">
-              <div class="wave-header">
-                <span class="wave-badge wave-2">Wave 2</span>
-                <span class="wave-title">Enhanced Interactions</span>
-              </div>
-              <div class="tools-grid">
-                <a href="tools/scroll-to.html" class="tool-card">
-                  <code class="tool-name">scrollTo</code>
-                  <p class="tool-desc">Scroll to an element or pixel offset</p>
-                  <span class="tool-signal">SCROLL_TO</span>
-                </a>
-                <a href="tools/copy-to-clipboard.html" class="tool-card">
-                  <code class="tool-name">copyToClipboard</code>
-                  <p class="tool-desc">Copy any text to the user's clipboard</p>
-                  <span class="tool-signal">COPY_TO_CLIPBOARD</span>
-                </a>
-                <a href="tools/toggle-element.html" class="tool-card">
-                  <code class="tool-name">toggleElement</code>
-                  <p class="tool-desc">Show or hide any DOM element</p>
-                  <span class="tool-signal">TOGGLE_ELEMENT</span>
-                </a>
-                <a href="tools/select-dropdown.html" class="tool-card">
-                  <code class="tool-name">selectDropdown</code>
-                  <p class="tool-desc">
-                    Set a &lt;select&gt; to any option value
-                  </p>
-                  <span class="tool-signal">SELECT_DROPDOWN</span>
-                </a>
-                <a href="tools/highlight-element.html" class="tool-card">
-                  <code class="tool-name">highlightElement</code>
-                  <p class="tool-desc">
-                    Draw an attention ring around an element
-                  </p>
-                  <span class="tool-signal">HIGHLIGHT_ELEMENT</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="wave-section">
-              <div class="wave-header">
-                <span class="wave-badge wave-3">Wave 3</span>
-                <span class="wave-title">Power Features</span>
-              </div>
-              <div class="tools-grid">
-                <a href="tools/wait-for-element.html" class="tool-card">
-                  <code class="tool-name">waitForElement</code>
-                  <p class="tool-desc">Poll DOM until an element appears</p>
-                  <span class="tool-signal">WAIT_FOR_ELEMENT</span>
-                </a>
-                <a href="tools/open-modal.html" class="tool-card">
-                  <code class="tool-name">openModal</code>
-                  <p class="tool-desc">Open or close any modal or dialog</p>
-                  <span class="tool-signal">OPEN_MODAL</span>
-                </a>
-                <a href="tools/submit-form.html" class="tool-card">
-                  <code class="tool-name">submitForm</code>
-                  <p class="tool-desc">
-                    Submit a &lt;form&gt; element programmatically
-                  </p>
-                  <span class="tool-signal">SUBMIT_FORM</span>
-                </a>
-                <a href="tools/checkbox-toggle.html" class="tool-card">
-                  <code class="tool-name">checkboxToggle</code>
-                  <p class="tool-desc">Check or uncheck a checkbox input</p>
-                  <span class="tool-signal">CHECKBOX_TOGGLE</span>
-                </a>
-                <a href="tools/set-theme.html" class="tool-card">
-                  <code class="tool-name">setTheme</code>
-                  <p class="tool-desc">Set data-theme on &lt;html&gt;</p>
-                  <span class="tool-signal">SET_THEME</span>
-                </a>
-                <a href="tools/download-file.html" class="tool-card">
-                  <code class="tool-name">downloadFile</code>
-                  <p class="tool-desc">Trigger a browser file download</p>
-                  <span class="tool-signal">DOWNLOAD_FILE</span>
-                </a>
-                <a href="tools/get-page-url.html" class="tool-card">
-                  <code class="tool-name">getPageUrl</code>
-                  <p class="tool-desc">Read window.location.href</p>
-                  <span class="tool-signal">GET_PAGE_URL</span>
-                </a>
-                <a href="tools/set-page-title.html" class="tool-card">
-                  <code class="tool-name">setPageTitle</code>
-                  <p class="tool-desc">Update document.title</p>
-                  <span class="tool-signal">SET_PAGE_TITLE</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="wave-section">
-              <div class="wave-header">
-                <span class="wave-badge wave-3d">3D</span>
-                <span class="wave-title">Spatial Integration</span>
-              </div>
-              <div class="tools-grid">
-                <a
-                  href="tools/interact-with-3d-scene.html"
-                  class="tool-card tool-card-3d"
-                >
-                  <code class="tool-name">interactWith3DScene</code>
-                  <p class="tool-desc">
-                    Emit events or set variables on a Spline 3D scene
-                  </p>
-                  <span class="tool-signal">3D_INTERACTION</span>
-                </a>
-              </div>
-            </div>
-          </section>
-
-          <!-- Showcase Section -->
-      <section class="section">
-        <h2 class="section-title">Explore the Showcase</h2>
-        <p class="section-text" style="margin-bottom:24px">
-          See SynapseJS in action across various high-fidelity demos. Each showcase includes a simulation panel to demonstrate how signals drive the UI.
-        </p>
-        <div class="next-steps">
-          <a href="showcase/shopping.html" class="next-step-card">
-            <div class="next-step-icon">🛒</div>
-            <div>
-              <div class="next-step-title">E-Commerce</div>
-              <div class="next-step-desc">Interactive shopping & cart control</div>
-            </div>
-          </a>
-          <a href="showcase/dashboard.html" class="next-step-card">
-            <div class="next-step-icon">📊</div>
-            <div>
-              <div class="next-step-title">SaaS Admin</div>
-              <div class="next-step-desc">Theme switching & profile automation</div>
-            </div>
-          </a>
-          <a href="showcase/configurator.html" class="next-step-card">
-            <div class="next-step-icon">🛋️</div>
-            <div>
-              <div class="next-step-title">3D Control</div>
-              <div class="next-step-desc">AI-powered spatial configurator</div>
-            </div>
-          </a>
-        </div>
-        <div style="margin-top:16px; text-align:center">
-          <a href="showcase.html" class="btn btn-ghost" style="width:100%">View All Showcases →</a>
-        </div>
-      </section>
-
-      <!-- Next steps -->
-          <section class="section">
-            <h2 class="section-title">Next Steps</h2>
-            <div class="next-steps">
-              <a href="quick-start.html" class="next-step-card">
-                <div class="next-step-icon">🚀</div>
-                <div>
-                  <div class="next-step-title">Quick Start</div>
-                  <div class="next-step-desc">Set up SynapseJS in 5 minutes</div>
+            <div class="features-grid">
+                <div class="feature-card reveal" id="card-feats">
+                    <div class="feature-icon">🍱</div>
+                    <h3>Automation Feats</h3>
+                    <p>Reusable high-level automation bundles. Scaffolding for new features is as easy as 'npm run create-feat'.</p>
                 </div>
-              </a>
-              <a href="custom-tools.html" class="next-step-card">
-                <div class="next-step-icon">🔧</div>
-                <div>
-                  <div class="next-step-title">Custom Tools</div>
-                  <div class="next-step-desc">
-                    Register your own AI capabilities
-                  </div>
+                <div class="feature-card reveal" id="card-vision">
+                    <div class="feature-icon">👁️</div>
+                    <h3>Multi-Modal Vision</h3>
+                    <p>Enabled the agent to "see" your UI. Reasoning about Canvases, 3D scenes, and complex layouts using screenshots.</p>
                 </div>
-              </a>
-              <a href="use-synapse-signals.html" class="next-step-card">
-                <div class="next-step-icon">⚡</div>
-                <div>
-                  <div class="next-step-title">useSynapseSignals</div>
-                  <div class="next-step-desc">
-                    Handle all signals with one hook
-                  </div>
+                <div class="feature-card reveal" id="card-plumbing">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Zero Plumbing</h3>
+                    <p>Typed signal pipeline connects your LLM to the DOM instantly. No more manual tool orchestration.</p>
                 </div>
-              </a>
             </div>
-          </section>
+        </section>
+    </main>
 
-          <!-- Footer -->
-          <footer class="doc-footer">
-            <div class="footer-left">MIT License · SynapseJS v0.3.0</div>
-            <div class="footer-right">
-              <a href="https://github.com/ziuus/SynapseJS" target="_blank"
-                >GitHub</a
-              >
-              <a
-                href="https://www.npmjs.com/package/@synapsejs/core"
-                target="_blank"
-                >npm</a
-              >
-              <a href="changelog.html">Changelog</a>
-            </div>
-          </footer>
-        </main>
-      </div>
+    <!-- Heavenly Demo Assistant -->
+    <div class="assistant-trigger" onclick="toggleAssistant()" id="ai-trigger">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#020617" stroke-width="2.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
     </div>
 
-    <script src="app.js"></script>
-  </body>
+    <div id="synapse-assistant">
+        <div class="assistant-header">
+            <div class="assistant-title">SYNAPSE ASSISTANT</div>
+            <button onclick="toggleAssistant()" style="background:none; border:none; color:var(--primary); cursor:pointer;">✕</button>
+        </div>
+        <div class="assistant-chat" id="chat-box">
+            <div class="msg msg-ai">Hi! I'm the Synapse Assistant. I can interact with this page to show you how our framework works. Try asking me "Highlight the features" or "Scroll to the top".</div>
+        </div>
+        <div class="assistant-input-wrap">
+            <input type="text" id="ai-input" class="assistant-input" placeholder="Ask the agent to act..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()" class="btn-send">Send</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="logo magnetic">
+            <div class="logo-icon">⚡</div>
+            <span>SynapseJS</span>
+        </div>
+        <div class="footer-links">
+            <a href="intro.html" class="nav-link">Docs</a>
+            <a href="showcase.html" class="nav-link">Demos</a>
+            <a href="https://github.com/ziuus/SynapseJS" target="_blank" class="nav-link">GitHub</a>
+        </div>
+        <p class="footer-text">© 2026 SynapseJS Engine. Released under MIT License.</p>
+    </footer>
+
+    <script src="landing.js"></script>
+</body>
 </html>
