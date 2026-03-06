@@ -17,22 +17,41 @@ export default function LandingPage() {
   // ── SynapseJS real integration ───────────────────────────────────────────
   const domElements = useSynapseDOM();
   const { processSignals } = useSynapseSignals({
-    HIGHLIGHT_ELEMENT: ({ elementId }) => {
+    HIGHLIGHT_ELEMENT: (args) => {
+      if (!args) return;
+      const elementId = args.elementId || args.id;
+      if (!elementId) return;
       const el = document.getElementById(elementId);
       if (el) {
         el.classList.add('synapse-highlight-active');
         setTimeout(() => el.classList.remove('synapse-highlight-active'), 3000);
       }
     },
-    SCROLL_TO: ({ elementId, top }) => {
+    SCROLL_TO: (args) => {
+      if (!args) return;
+      const { elementId, top } = args;
       if (elementId) {
         document.getElementById(elementId)?.scrollIntoView({ behavior: 'smooth' });
       } else if (top !== undefined) {
         window.scrollTo({ top, behavior: 'smooth' });
       }
     },
-    NAVIGATE: ({ url }) => {
-      window.location.href = url;
+    NAVIGATE: (args) => {
+      if (!args || !args.url) return;
+      window.location.href = args.url;
+    },
+    UI_INTERACTION: (args) => {
+       if (!args || !args.elementId) return;
+       const { elementId, action } = args;
+       const el = document.getElementById(elementId);
+       if (!el) return;
+       if (action === 'click') {
+          el.click();
+       } else if (action === 'type' && args.value) {
+          (el as any).value = args.value;
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+       }
     }
   });
 
@@ -53,17 +72,24 @@ export default function LandingPage() {
       const data = await res.json();
       if (data.messages) {
         setMessages(data.messages);
-        const latestAssistantMsg = data.messages[data.messages.length - 1];
-        if (latestAssistantMsg.toolCalls) {
-          processSignals(latestAssistantMsg.toolCalls);
-        }
+      } else if (data.error) {
+        setMessages([...history, { role: 'assistant', content: `⚠️ Error: ${data.error}` }]);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error('Chat error:', e);
+      setMessages([...history, { role: 'assistant', content: "⚠️ Sorry, I encountered a connection error." }]);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Reactive Signal Processing
+  useEffect(() => {
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg && lastMsg.role === 'assistant' && (lastMsg as any).toolCalls) {
+        processSignals((lastMsg as any).toolCalls);
+    }
+  }, [messages, processSignals]);
 
   const chatMessages = messages.length > 0 ? messages.map(m => ({ 
     role: m.role === 'user' ? 'user' : 'ai', 

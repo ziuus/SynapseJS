@@ -54,7 +54,6 @@ var SYNAPSE_TOOL_NAMES = [
 ];
 
 // src/agent.ts
-var import_zod_to_json_schema = require("zod-to-json-schema");
 var import_ai = require("ai");
 
 // src/tool-registry.ts
@@ -401,7 +400,7 @@ ${feat.instructions}
     for (const t of this.tools.getAllTools()) {
       aiTools[t.name] = (0, import_ai.tool)({
         description: t.description,
-        parameters: t.schema || import_zod.z.object({}).passthrough(),
+        parameters: t.schema || import_zod.z.object({}),
         execute: async (args) => {
           console.log(`[SynapseJS] Tool Executing: ${t.name} | Args:`, JSON.stringify(args));
           return await this.tools.execute(t.name, args);
@@ -418,26 +417,33 @@ ${feat.instructions}
       apiKey: this.config.apiKey
     });
     const defaultSystem = `You are Axon, an intelligent UI Agent. 
-You have access to 'interactWithScreen' to control the application.
-You will be provided with a 'Current Live DOM State' in the context as a JSON list.
-To interact with the UI, you MUST find the exact 'id' of the element in that JSON and pass it to 'interactWithScreen'.
-If you are asked about the state (like cart count), look for elements in the DOM state with descriptive text or IDs like 'cart-status'.
-If the DOM state contains 'type: 3d-scene', you can use the 'interactWith3DScene' tool to trigger its available events or variables.
-Always respond to the user after performing actions.`;
-    const response = await (0, import_ai.generateText)({
-      model: google(this.config.model || "gemini-2.0-flash-exp"),
-      system: this.getFullSystemPrompt(defaultSystem),
-      messages,
-      tools: this.getAITools(),
-      maxSteps: this.config.maxSteps || 5
-    });
-    const allToolCalls = (response.steps || []).flatMap(
-      (step) => (step.toolCalls || []).map((tc) => ({ name: tc.toolName, args: tc.args }))
-    );
-    return {
-      text: response.text.trim(),
-      toolCalls: allToolCalls
-    };
+You have access to a suite of tools to control the application.
+You will be provided with a 'Current Live DOM State' in the context as a JSON list. 
+
+CRITICAL: 
+- For specific actions, use specific tools: 'highlightElement' to draw attention, 'scrollTo' to move the page, 'navigateTo' to change routes.
+- Use 'interactWithScreen' with action='click' ONLY if no specific tool fits.
+- Always find the exact 'id' from the DOM state.
+- Respond to the user after performing actions.`;
+    try {
+      const response = await (0, import_ai.generateText)({
+        model: google("gemini-1.5-pro"),
+        system: this.getFullSystemPrompt(defaultSystem),
+        messages,
+        tools: this.getAITools(),
+        maxSteps: this.config.maxSteps || 5
+      });
+      const allToolCalls = (response.steps || []).flatMap(
+        (step) => (step.toolCalls || []).map((tc) => ({ name: tc.toolName, args: tc.args }))
+      );
+      return {
+        text: response.text.trim(),
+        toolCalls: allToolCalls
+      };
+    } catch (e) {
+      console.error("[SynapseJS] Agent.runGemini Error:", e);
+      throw e;
+    }
   }
   /**
    * The semantic execution loop using Groq via the AI SDK.
@@ -446,46 +452,30 @@ Always respond to the user after performing actions.`;
    * The semantic execution loop using Groq via the AI SDK.
    */
   async runGroq(messages, context) {
-    const rawTools = this.tools.getAllTools();
     const groq = (0, import_openai.createOpenAI)({
       apiKey: this.config.apiKey,
-      baseURL: "https://api.groq.com/openai/v1",
-      fetch: async (url, options) => {
-        if (!options?.body) return fetch(url, options);
-        try {
-          const body = JSON.parse(options.body);
-          if (body.tools) {
-            body.tools = body.tools.map((t) => {
-              if (t.type === "function" && t.function && t.function.name) {
-                const toolDef = rawTools.find((rt) => rt.name === t.function.name);
-                if (toolDef && toolDef.schema) {
-                  const correctSchema = (0, import_zod_to_json_schema.zodToJsonSchema)(toolDef.schema);
-                  delete correctSchema["$schema"];
-                  console.log(`[SynapseJS SDK Fix] Replacing ${t.function.name} schema. Original:`, JSON.stringify(t.function.parameters), "New:", JSON.stringify(correctSchema));
-                  t.function.parameters = correctSchema;
-                }
-              }
-              return t;
-            });
-          }
-          options.body = JSON.stringify(body);
-        } catch (e) {
-          console.error("[SynapseJS] Fetch Interceptor JSON Parse Error:", e);
-        }
-        return fetch(url, options);
-      }
+      baseURL: "https://api.groq.com/openai/v1"
     });
     const defaultSystem = `You are Axon, an intelligent UI Agent. 
-You have access to 'interactWithScreen' to control the application.
+You have access to a suite of tools to control the application.
 You will be provided with a 'Current Live DOM State' in the context as a JSON list. 
-To interact with the UI, you MUST find the exact 'id' of the element in that JSON and pass it to 'interactWithScreen'.
-If you are asked about the state (like cart count), look for elements in the DOM state with descriptive text or IDs like 'cart-status'.
-If the DOM state contains 'type: 3d-scene', you can use the 'interactWith3DScene' tool to trigger its available events or variables.
-Always respond to the user after performing actions.`;
+
+CRITICAL: 
+- For specific actions, use specific tools: 'highlightElement' to draw attention, 'scrollTo' to move the page, 'navigateTo' to change routes.
+- Use 'interactWithScreen' with action='click' ONLY if no specific tool fits.
+- Always find the exact 'id' from the DOM state.
+- Respond to the user after performing actions.`;
+    const sanitizedMessages = messages.map((m) => {
+      const cleanMsg = { role: m.role, content: m.content || "" };
+      if (m.toolCalls && m.toolCalls.length > 0) {
+        cleanMsg.toolCalls = m.toolCalls;
+      }
+      return cleanMsg;
+    });
     const response = await (0, import_ai.generateText)({
-      model: groq(this.config.model || "llama-3.3-70b-versatile"),
+      model: groq("llama-3.3-70b-versatile"),
       system: this.getFullSystemPrompt(defaultSystem),
-      messages,
+      messages: sanitizedMessages,
       tools: this.getAITools(),
       maxSteps: this.config.maxSteps || 5
     });
