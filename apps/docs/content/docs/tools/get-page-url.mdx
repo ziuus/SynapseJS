@@ -1,0 +1,29 @@
+---
+title: getPageUrl
+description: Read the current page URL so the AI knows where it is.
+---
+
+Triggers the frontend to readwindow.location.hrefand feed it back to the AI as a system message. Takes no parameters.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `GET_PAGE_URL` |
+| **Wave** |  |
+
+### Parameters
+
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  GET_PAGE_URL: () => {
+  const url = window.location.href;
+  addMessage({ role: 'system', content: `Current URL: ${url}` });
+},
+});
+```

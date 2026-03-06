@@ -1,0 +1,34 @@
+---
+title: interactWithScreen
+description: Click or interact with any element on the screen.
+---
+
+The user wants to click a button, link, or icon, or type text into an input field.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `UI_INTERACTION` |
+| **Wave** | 1 — Core |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `elementId` | `string` | required | The DOM element ID to interact with |
+| `action` | `"click" | "type"` | required | The action to perform |
+| `value` | `string` | optional | The text to type (required when action is 'type') |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  agent calls interactWithScreen({
+  elementId: "submit-btn",
+  action: "click"
+})
+});
+```

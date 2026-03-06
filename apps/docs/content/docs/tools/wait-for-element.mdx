@@ -1,0 +1,40 @@
+---
+title: waitForElement
+description: Poll the DOM until a specific element appears, then continue.
+---
+
+UsewaitForElementin multi-step agentic flows — after clicking a button that triggers a loading state, the AI can wait for the results element to appear before reading or interacting with it. The frontend polls the DOM at an interval until the element is found or the timeout is reached.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `WAIT_FOR_ELEMENT` |
+| **Wave** | 3 — Power |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `elementId` | `string` | Yes | The element ID to wait for. |
+| `timeoutMs` | `number` | No | Max time to wait in milliseconds. Default:5000. |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  WAIT_FOR_ELEMENT: ({ elementId, timeoutMs = 5000 }) => {
+  return new Promise((resolve) => {
+    const start = Date.now();
+    const poll = () => {
+      if (document.getElementById(elementId)) return resolve(true);
+      if (Date.now() - start > timeoutMs) return resolve(false);
+      setTimeout(poll, 100);
+    };
+    poll();
+  });
+},
+});
+```

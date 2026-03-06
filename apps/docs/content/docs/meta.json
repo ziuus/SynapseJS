@@ -1,0 +1,16 @@
+{
+  "pages": [
+    "index",
+    "quick-start",
+    "providers",
+    "---Core Concepts---",
+    "agent",
+    "tool-registry",
+    "custom-tools",
+    "---React Hooks---",
+    "use-synapse-dom",
+    "use-synapse-signals",
+    "---Built-in Tools---",
+    "tools"
+  ]
+}

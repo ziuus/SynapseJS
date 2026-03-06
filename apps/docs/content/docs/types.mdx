@@ -1,0 +1,55 @@
+---
+title: TypeScript Types
+description: All exported types from @synapsejs/core.
+---
+
+### SynapseSignal
+
+The central discriminated union type. Every tool call the AI makes is typed as one of these signal variants.
+
+```typescript
+export type SynapseSignal =
+  | { type: 'UI_INTERACTION';     elementId: string; action: string; value?: string }
+  | { type: 'FILL_FORM';          fields: { elementId: string; value: string }[] }
+  | { type: 'NAVIGATE';          url: string }
+  | { type: 'SHOW_NOTIFICATION';  message: string; notificationType?: string; durationMs?: number }
+  | { type: 'SCROLL_TO';         elementId?: string; top?: number }
+  | { type: 'SET_THEME';         theme: string }
+  | { type: 'OPEN_MODAL';        elementId: string; action: 'open' | 'close' }
+  | { type: 'SELECT_DROPDOWN';  elementId: string; value: string }
+  | { type: 'CHECKBOX_TOGGLE';  elementId: string; checked: boolean }
+  | { type: 'TOGGLE_ELEMENT';   elementId: string; visible: boolean }
+  | { type: 'HIGHLIGHT_ELEMENT'; elementId: string; color?: string }
+  | { type: 'COPY_TO_CLIPBOARD'; text: string }
+  | { type: 'DOWNLOAD_FILE';    url: string; filename?: string }
+  | { type: 'SUBMIT_FORM';       elementId: string }
+  | { type: 'READ_ELEMENT';     elementId: string }
+  | { type: 'OBSERVE_STATE';    elementId: string; property: string }
+  | { type: 'WAIT_FOR_ELEMENT'; elementId: string; timeoutMs?: number }
+  | { type: 'GET_PAGE_URL' }
+  | { type: 'SET_PAGE_TITLE';   title: string }
+  | { type: '3D_INTERACTION';  sceneId: string; actionType: string; target: string; value?: unknown };
+```
+
+### AgentOptions
+
+```typescript
+export interface AgentOptions {
+  llmProvider: 'groq' | 'gemini' | 'openai';
+  apiKey: string;
+  model?: string;
+  systemPrompt?: string;
+}
+
+export interface AgentRunResult {
+  text: string;
+  toolCalls: SynapseSignal[];
+}
+
+export interface ToolDef {
+  name: string;
+  description: string;
+  parameters: object; // JSON Schema
+  signal: string;
+}
+```

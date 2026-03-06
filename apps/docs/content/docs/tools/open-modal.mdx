@@ -1,0 +1,30 @@
+---
+title: openModal
+description: Open or close a modal dialog by its element ID.
+---
+
+The user wants to open a popup, confirmation dialog, or overlay panel.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `OPEN_MODAL` |
+| **Wave** | 3 — Power |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `elementId` | `string` | required | ID of the modal trigger button or dialog element |
+| `action` | `"open" | "close"` | optional | open or close (default: open) |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  agent calls openModal({ elementId: "settings-modal-btn", action: "open" })
+});
+```

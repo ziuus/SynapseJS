@@ -1,0 +1,31 @@
+---
+title: scrollTo
+description: Smoothly scroll the page or a container to a specific element or position.
+---
+
+The user asks to scroll down, jump to a section, or bring an element into view.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `SCROLL_TO` |
+| **Wave** | 2 — Interaction |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `elementId` | `string` | optional | Scroll until this element is visible |
+| `top` | `number` | optional | Absolute y-pixel offset (alternative to elementId) |
+| `behavior` | `"smooth" | "instant"` | optional | Scroll animation (default: smooth) |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  agent calls scrollTo({ elementId: "footer" })
+});
+```

@@ -1,0 +1,34 @@
+---
+title: observeState
+description: Read any DOM property — value, checked, href, disabled — from any element.
+---
+
+observeStateis more powerful thanreadScreenText— it can read any property of a DOM element, not just text. Use it to check if a checkbox is checked, read the current value of an input, or inspect any attribute.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `OBSERVE_STATE` |
+| **Wave** | 1 — Core UI |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `elementId` | `string` | Yes | Thedata-synapseID of the element to inspect. |
+| `property` | `string` | No | The DOM property to read. Defaults to"textContent". Examples:"value","checked","disabled","href". |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  OBSERVE_STATE: ({ elementId, property = 'textContent' }) => {
+  const el = document.getElementById(elementId) as any;
+  const val = el?.[property];
+  addMessage({ role: 'system', content: `${elementId}.${property} = ${JSON.stringify(val)}` });
+},
+});
+```

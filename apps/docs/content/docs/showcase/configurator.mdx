@@ -1,0 +1,19 @@
+---
+title: 3D Configurator
+description: Bridging AI and interactive 3D scenes using Spline.
+---
+
+This showcase demonstrates the deep integration between SynapseJS and 3D environments. By bridging natural language to Spline's runtime API, the AI can manipulate 3D objects, change scene variables, and trigger animations.
+
+### Key Features
+- **Event Emission**: Trigger internal Spline events (e.g., hover, click) via AI.
+- **State Injection**: Dynamically change scene variables like rotation, scale, or color.
+- **Spatial Awareness**: The AI understands the hierarchy of objects within the 3D viewport.
+
+### Example Interactions
+
+| User Intent | Signal Emitted |
+| :--- | :--- |
+| "Trigger the object interaction" | `3D_INTERACTION { sceneId: "main-spline", actionType: "emitEvent", target: "mouseHover" }` |
+| "Rotate view to the left" | `3D_INTERACTION { sceneId: "main-spline", actionType: "setVariable", target: "RotationY", value: 45 }` |
+| "Activate performance mode" | `3D_INTERACTION { sceneId: "main-spline", actionType: "emitEvent", target: "onActivate" }` |

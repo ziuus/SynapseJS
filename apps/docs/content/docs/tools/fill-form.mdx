@@ -1,0 +1,34 @@
+---
+title: fillForm
+description: Batch fill multiple input fields, textareas, or selects.
+---
+
+The user wants to auto-populate a form with data — e.g. "Fill in my details".
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `FILL_FORM` |
+| **Wave** | 1 — Core |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `fields` | `{ elementId: string; value: string }[]` | required | Array of element ID + value pairs to fill |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  agent calls fillForm({
+  fields: [
+    { elementId: "name-input", value: "Alex" },
+    { elementId: "email-input", value: "alex@test.com" }
+  ]
+})
+});
+```

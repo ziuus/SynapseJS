@@ -1,0 +1,31 @@
+---
+title: setPageTitle
+description: Update the browser tab title programmatically.
+---
+
+Setsdocument.titleto any string. Useful for dynamic page titles, notification badges (e.g."(3) Inbox"), or personalizing the tab.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `SET_PAGE_TITLE` |
+| **Wave** |  |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `title` | `string` | Yes | New title for the browser tab. |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  SET_PAGE_TITLE: ({ title }) => {
+  document.title = title;
+},
+});
+```

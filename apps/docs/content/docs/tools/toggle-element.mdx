@@ -1,0 +1,35 @@
+---
+title: toggleElement
+description: Show or hide any DOM element by its ID.
+---
+
+UsetoggleElementwhen the user asks to hide a panel, show a section, collapse a menu, or toggle any visibility. If novisiblevalue is provided, the current state is toggled.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `TOGGLE_ELEMENT` |
+| **Wave** | 2 — Enhanced |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `elementId` | `string` | Yes | The ID of the element to toggle. |
+| `visible` | `boolean` | No | trueto show,falseto hide. Omit to toggle current state. |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  TOGGLE_ELEMENT: ({ elementId, visible }) => {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const show = visible !== undefined ? visible : el.style.display === 'none';
+  el.style.display = show ? '' : 'none';
+},
+});
+```

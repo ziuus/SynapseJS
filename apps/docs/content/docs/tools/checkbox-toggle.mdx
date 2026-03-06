@@ -1,0 +1,30 @@
+---
+title: checkboxToggle
+description: Toggle the checked state of a checkbox input.
+---
+
+The user wants to toggle a boolean option, subscribe to a newsletter, or enable a setting.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `CHECKBOX_TOGGLE` |
+| **Wave** | 3 — Power |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `elementId` | `string` | required | The ID of the |
+| `checked` | `boolean` | optional | true to check, false to uncheck. Omit to toggle. |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  agent calls checkboxToggle({ elementId: "newsletter-checkbox", checked: true })
+});
+```

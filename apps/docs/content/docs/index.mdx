@@ -1,0 +1,54 @@
+---
+title: Introduction
+description: What is SynapseJS?
+---
+
+# SynapseJS
+
+SynapseJS is a TypeScript library that bridges your LLM (Groq, Gemini, OpenAI) and your web UI. It gives the AI a structured toolkit to *see* the DOM, *act* on elements, and *respond* to user intent — all without you writing any of the plumbing.
+
+Every interaction flows through a typed signal pipeline, so your frontend stays in full control. The AI emits a signal → your handler fires → your UI updates.
+
+## 5-Minute Setup
+
+### 1. The API Route (app/api/chat/route.ts)
+```ts
+import { Agent } from '@synapsejs/core';
+
+const agent = new Agent({
+  llmProvider: 'groq',
+  apiKey: process.env.GROQ_API_KEY,
+});
+
+export async function POST(req: Request) {
+  const { messages, domElements } = await req.json();
+  const result = await agent.run(messages, domElements);
+  return Response.json({ messages: [
+    ...messages,
+    { role: 'assistant', content: result.text, toolCalls: result.toolCalls }
+  ]});
+}
+```
+
+### 2. The React Hook (app/page.tsx)
+```tsx
+'use client';
+import { useSynapseDOM, useSynapseSignals } from '@synapsejs/core/client';
+
+export default function Page() {
+  const domElements = useSynapseDOM();
+  const { processSignals } = useSynapseSignals({
+    SHOW_NOTIFICATION: ({ message, type }) => toast(message, type),
+    NAVIGATE: ({ url }) => router.push(url),
+    SET_THEME: ({ theme }) => setTheme(theme),
+  });
+
+  const handleChat = async (msg) => {
+    const data = await fetch('/api/chat', {
+      method: 'POST',
+      body: JSON.stringify({ messages, domElements })
+    }).then(r => r.json());
+    processSignals(data.messages.flatMap(m => m.toolCalls ?? []));
+  };
+}
+```

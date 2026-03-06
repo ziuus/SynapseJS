@@ -1,0 +1,19 @@
+---
+title: AI Shopping Assistant
+description: A modern storefront where an AI agent helps users find products and manage their cart.
+---
+
+The AI Shopping Assistant demonstrates how SynapseJS can be used to create conversational e-commerce experiences. The AI understands user intent and translates it into UI interactions like clicking "Add to Cart" or scrolling to specific products.
+
+### Key Features
+- **Categorization**: The AI can navigate between categories (Apparel, Tech, Home).
+- **Cart Management**: Users can ask the AI to add items to their cart.
+- **Visual Feedback**: The AI highlights the element it is interacting with.
+
+### Example Interactions
+
+| User Intent | Signal Emitted |
+| :--- | :--- |
+| "Add the headphones to my cart" | `UI_INTERACTION { elementId: "prod-1", action: "click" }` |
+| "Show me more products" | `SCROLL_TO { top: 1000, behavior: "smooth" }` |
+| "Is this item in stock?" | `SHOW_NOTIFICATION { message: "Item is in stock!", type: "info" }` |

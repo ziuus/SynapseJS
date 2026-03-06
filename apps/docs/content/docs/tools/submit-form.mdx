@@ -1,0 +1,37 @@
+---
+title: submitForm
+description: Programmatically submit a form element by its ID.
+---
+
+As use `submitForm` as the final step of an AI-assisted form-filling workflow. After calling `fillForm` to populate the fields, `submitForm` triggers the submission — including validation via browser-native `requestSubmit()` so required fields and input patterns are enforced.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `SUBMIT_FORM` |
+| **Wave** | 3 — Power |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `formId` | `string` | Yes | The `id` attribute of the `<form>` element to submit. |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  SUBMIT_FORM: ({ formId }) => {
+  const form = document.getElementById(formId) as HTMLFormElement;
+  if (form) {
+    // requestSubmit() triggers validation, submit() bypasses it
+    if (form.requestSubmit) { form.requestSubmit(); }
+    else { form.submit(); }
+    showToast('Form submitted!', 'success');
+  }
+},
+});
+```

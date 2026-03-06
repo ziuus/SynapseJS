@@ -1,0 +1,50 @@
+---
+title: useSynapseDOM
+description: Give the AI a live snapshot of your DOM elements.
+---
+
+`useSynapseDOM` scans your React tree for all elements with a `data-synapse` attribute and returns a serialized map of them. This map is sent to the Agent so it knows exactly what elements exist on screen and what their current state is.
+
+Import from `@synapsejs/core/client` to avoid SSR issues — the hook only runs in the browser.
+
+### Usage
+
+```tsx
+'use client';
+import { useSynapseDOM } from '@synapsejs/core/client';
+
+export default function Page() {
+  // Returns an object mapping data-synapse IDs → element metadata
+  const domElements = useSynapseDOM();
+
+  const handleSend = async () => {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      body: JSON.stringify({ messages, domElements }), // ← pass here
+    });
+  };
+}
+```
+
+### Marking Elements
+
+Add `data-synapse` to any element you want the AI to be able to see or interact with. The value should be a descriptive, unique ID.
+
+```tsx
+<button
+  data-synapse="submit-order-btn"
+  data-synapse-label="Submit Order"
+  onClick={handleSubmit}
+>
+  Place Order
+</button>
+
+<select
+  data-synapse="plan-selector"
+  value={plan}
+  onChange={e => setPlan(e.target.value)}
+>
+  <option value="free">Free</option>
+  <option value="pro">Pro</option>
+</select>
+```

@@ -1,0 +1,30 @@
+---
+title: navigateTo
+description: Programmatically navigate the browser to a new URL.
+---
+
+The user asks to go to a page, open a link, or change routes.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `NAVIGATE` |
+| **Wave** | 1 — Core |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `url` | `string` | required | The URL or path to navigate to |
+| `newTab` | `boolean` | optional | If true, opens in a new browser tab |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  agent calls navigateTo({ url: "/pricing" })
+});
+```

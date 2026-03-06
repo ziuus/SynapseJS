@@ -1,0 +1,49 @@
+---
+title: Providers
+description: Connect SynapseJS to any LLM in seconds.
+---
+
+SynapseJS ships with first-class support for three LLM providers. You configure your provider when constructing the `Agent`. There is no additional setup — just pass your API key and you're done.
+
+### Supported Providers
+
+| Provider | ID | Description |
+| :--- | :--- | :--- |
+| **Groq** | `groq` | Default. Ultra-fast inference. Best for real-time tool calls. |
+| **Google Gemini** | `gemini` | Best-in-class multimodal reasoning. Free tier available. |
+| **OpenAI** | `openai` | GPT-4o and o-series models with advanced tool calling. |
+
+### Configuration
+
+```typescript
+import { Agent } from '@synapsejs/core';
+
+// Groq (default, fastest)
+const agent = new Agent({
+  llmProvider: 'groq',
+  apiKey: process.env.GROQ_API_KEY,
+  model: 'llama-3.3-70b-versatile', // optional
+});
+
+// Google Gemini
+const agent = new Agent({
+  llmProvider: 'gemini',
+  apiKey: process.env.GEMINI_API_KEY,
+  model: 'gemini-2.0-flash', // optional
+});
+
+// OpenAI
+const agent = new Agent({
+  llmProvider: 'openai',
+  apiKey: process.env.OPENAI_API_KEY,
+  model: 'gpt-4o', // optional
+});
+```
+
+### Environment Variables
+
+| Variable | Provider | Get it from |
+| :--- | :--- | :--- |
+| `GROQ_API_KEY` | Groq | [console.groq.com](https://console.groq.com) |
+| `GEMINI_API_KEY` | Google Gemini | [aistudio.google.com](https://aistudio.google.com) |
+| `OPENAI_API_KEY` | OpenAI | [platform.openai.com](https://platform.openai.com) |

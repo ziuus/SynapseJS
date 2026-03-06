@@ -1,0 +1,101 @@
+---
+title: Quick Start
+description: Add AI superpowers to your Next.js app in under 5 minutes.
+---
+
+### 1. Install
+
+```bash
+npm install @synapsejs/core
+```
+
+### 2. Set environment variables
+
+Add your LLM key to `.env.local`:
+
+```bash
+# .env.local
+GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+| Variable | Provider | Get it from |
+| :--- | :--- | :--- |
+| `GROQ_API_KEY` | Groq (free, fast) | [console.groq.com](https://console.groq.com) |
+| `GEMINI_API_KEY` | Google Gemini | [aistudio.google.com](https://aistudio.google.com) |
+| `OPENAI_API_KEY` | OpenAI | [platform.openai.com](https://platform.openai.com) |
+
+### 3. Create the API route
+
+```typescript
+// app/api/chat/route.ts
+import { Agent } from '@synapsejs/core';
+
+const agent = new Agent({
+  llmProvider: 'groq',
+  apiKey: process.env.GROQ_API_KEY,
+});
+
+export async function POST(req: Request) {
+  const { messages, domElements } = await req.json();
+  const result = await agent.run(messages, domElements);
+  return Response.json({
+    messages: [
+      ...messages,
+      { role: 'assistant', content: result.text, toolCalls: result.toolCalls }
+    ]
+  });
+}
+```
+
+### 4. Wire up the frontend
+
+```tsx
+// app/page.tsx
+'use client';
+import { useState } from 'react';
+import { useSynapseDOM, useSynapseSignals } from '@synapsejs/core/client';
+
+export default function Page() {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const domElements = useSynapseDOM();
+
+  const { processSignals } = useSynapseSignals({
+    SHOW_NOTIFICATION: ({ message }) => alert(message),
+    NAVIGATE:          ({ url })     => window.location.href = url,
+    SET_THEME:         ({ theme })   =>
+      document.documentElement.dataset.theme = theme,
+    // Add handlers for any signals you need
+  });
+
+  const send = async () => {
+    const msgs = [...messages, { role: 'user', content: input }];
+    setMessages(msgs); setInput('');
+    const data = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: msgs, domElements })
+    }).then(r => r.json());
+    setMessages(data.messages);
+    processSignals(data.messages.flatMap(m => m.toolCalls ?? []));
+  };
+
+  return (
+    <div>
+      {messages.map((m, i) => <p key={i}>{m.content}</p>)}
+      <input value={input} onChange={e => setInput(e.target.value)} />
+      <button onClick={send}>Send</button>
+    </div>
+  );
+}
+```
+
+### 5. Run and test
+
+```bash
+npm run dev
+# Open http://localhost:3000
+# Type: "Switch to dark mode" or "Scroll to the bottom"
+```
+
+The AI will automatically select the correct built-in tool and emit a typed signal that your handler processes.

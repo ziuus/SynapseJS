@@ -1,0 +1,27 @@
+{
+  "pages": [
+    "---Wave 1: Navigation---",
+    "navigate-to",
+    "scroll-to",
+    "highlight-element",
+    "---Wave 2: Interaction---",
+    "interact-with-screen",
+    "read-screen-text",
+    "fill-form",
+    "---Wave 3: Power---",
+    "wait-for-element",
+    "get-page-url",
+    "set-page-title",
+    "open-modal",
+    "download-file",
+    "submit-form",
+    "checkbox-toggle",
+    "set-theme",
+    "toggle-element",
+    "copy-to-clipboard",
+    "observe-state",
+    "show-notification",
+    "select-dropdown",
+    "interact-with-3d-scene"
+  ]
+}

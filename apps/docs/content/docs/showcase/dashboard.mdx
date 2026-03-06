@@ -1,0 +1,19 @@
+---
+title: SaaS Admin Dashboard
+description: Controlling a complex admin interface with precision.
+---
+
+The SaaS Dashboard showcase highlights SynapseJS's ability to handle complex state management and modal-based workflows. It shows how an AI assistant can perform administrative tasks on behalf of the user.
+
+### Key Features
+- **Theme Switching**: The AI can toggle between light and dark modes via signals.
+- **Form Filling**: Automate profile updates by filling in multiple fields at once.
+- **Modal Control**: The AI can open and interact with confirmation dialogs.
+
+### Example Interactions
+
+| User Intent | Signal Emitted |
+| :--- | :--- |
+| "Switch to light mode" | `SET_THEME { theme: "light" }` |
+| "Update my name to Jordan" | `FILL_FORM { fields: [{ elementId: "full-name", value: "Jordan" }] }` |
+| "Open the upgrade dialog" | `OPEN_MODAL { elementId: "open-modal-btn", action: "open" }` |

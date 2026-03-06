@@ -1,0 +1,35 @@
+---
+title: showNotification
+description: Surface important feedback or confirmation to the user via UI toast.
+---
+
+The AI wants to confirm an action, report an error, or surface important feedback.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `SHOW_NOTIFICATION` |
+| **Wave** | 1 — Core |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `message` | `string` | required | The notification message text |
+| `type` | `"success" | "error" | "info" | "warning"` | optional | Visual style (default: info) |
+| `durationMs` | `number` | optional | How long to show it in ms (default: 3000) |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  agent calls showNotification({
+  message: "Order placed!",
+  type: "success",
+  durationMs: 4000
+})
+});
+```

@@ -1,0 +1,39 @@
+---
+title: Tool Registry
+description: The global catalogue of tools the Agent can call.
+---
+
+The `ToolRegistry` is a singleton that holds all tool definitions the Agent can choose from. All 20 built-in tools are pre-registered automatically. You can add your own tools, remove built-ins you don't need, or query what's currently registered.
+
+### Usage
+
+```typescript
+import { ToolRegistry } from '@synapsejs/core';
+
+// Register a custom tool
+ToolRegistry.register({
+  name: 'myCustomTool',
+  description: 'Does something custom',
+  parameters: { type: 'object', properties: { /* ... */ } },
+  signal: 'MY_CUSTOM_SIGNAL',
+});
+
+// Unregister a built-in you don't want
+ToolRegistry.unregister('interactWith3DScene');
+
+// Check if a tool is registered
+ToolRegistry.has('showNotification'); // true
+
+// List all registered tools
+const tools = ToolRegistry.list();
+console.log(tools.map(t => t.name)); // ['interactWithScreen', ...]
+```
+
+### Methods
+
+| Method | Returns | Description |
+| :--- | :--- | :--- |
+| `register(tool)` | `void` | Add a new tool definition to the registry. |
+| `unregister(name)` | `void` | Remove a tool by name (including built-ins). |
+| `has(name)` | `boolean` | Check if a tool is registered. |
+| `list()` | `ToolDef[]` | Return all registered tool definitions. |

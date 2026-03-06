@@ -1,0 +1,47 @@
+---
+title: Agent
+description: The central orchestrator that connects your LLM to your UI.
+---
+
+The `Agent` class is the heart of SynapseJS. It wraps your chosen LLM provider and gives it access to all 20 built-in tools (plus any custom tools you register). When the user sends a message, the Agent processes it through the LLM, picks the right tools, and returns typed `SynapseSignal` objects for your frontend to handle.
+
+### Constructor
+
+```typescript
+import { Agent } from '@synapsejs/core';
+
+const agent = new Agent({
+  llmProvider: 'groq',       // 'groq' | 'gemini' | 'openai'
+  apiKey: 'sk-...',           // your API key
+  model: 'llama-3.3-70b-versatile', // optional
+  systemPrompt: '...',       // optional custom system prompt
+});
+```
+
+#### Options
+
+| Option | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `llmProvider` | `'groq' \| 'gemini' \| 'openai'` | Yes | The LLM backend to use. |
+| `apiKey` | `string` | Yes | API key for the chosen provider. |
+| `model` | `string` | No | Model ID. Defaults to provider's recommended model. |
+| `systemPrompt` | `string` | No | Override the default system prompt. |
+
+### `agent.run()`
+
+The main method. Processes a conversation and returns a text response plus any tool calls the LLM chose to emit.
+
+```typescript
+const result = await agent.run(messages, domElements);
+
+// result.text     — the AI's text reply
+// result.toolCalls — array of SynapseSignal objects to process
+
+return Response.json({
+  messages: [...messages, {
+    role: 'assistant',
+    content: result.text,
+    toolCalls: result.toolCalls
+  }]
+});
+```

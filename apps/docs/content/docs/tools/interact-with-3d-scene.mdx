@@ -1,0 +1,36 @@
+---
+title: interactWith3DScene
+description: Bridge natural language to Spline's runtime events and variables.
+---
+
+The page contains a Spline 3D canvas and the user wants to trigger animations or change 3D state.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `3D_INTERACTION` |
+| **Wave** | 3 — Power |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `sceneId` | `string` | required | The element ID of the 3D scene container |
+| `actionType` | `"emitEvent" | "setVariable"` | required | Whether to fire an event or set a Spline variable |
+| `target` | `string` | required | Event name or variable name to target |
+| `value` | `any` | optional | New value (for setVariable only) |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  agent calls interactWith3DScene({
+  sceneId: "hero-3d-scene",
+  actionType: "emitEvent",
+  target: "mouseHover"
+})
+});
+```

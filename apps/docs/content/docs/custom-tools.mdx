@@ -1,0 +1,52 @@
+---
+title: Custom Tools
+description: Extend the Agent with your own domain-specific superpowers.
+---
+
+SynapseJS ships with 20 built-in tools, but you can register any number of additional custom tools. A tool definition consists of a name, description (shown to the LLM), a JSON Schema for its parameters, and a signal type that your frontend will receive and handle.
+
+### Full Example
+
+#### 1. Register the tool on the server
+
+Do this before the `Agent` is initialized.
+
+```typescript
+// lib/custom-tools.ts
+import { ToolRegistry } from '@synapsejs/core';
+
+ToolRegistry.register({
+  name: 'addToCart',
+  description: 'Add a product to the shopping cart by its ID',
+  parameters: {
+    type: 'object',
+    properties: {
+      productId: { type: 'string', description: 'The product ID' },
+      quantity: { type: 'number', description: 'Number of items' },
+    },
+    required: ['productId'],
+  },
+  signal: 'ADD_TO_CART',
+});
+```
+
+#### 2. Handle the signal on the client
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  ADD_TO_CART: ({ productId, quantity = 1 }) => {
+    cartStore.add(productId, quantity);
+    toast.success(`Added ${quantity} item(s) to cart!`);
+  },
+});
+```
+
+### Tool Definition Schema
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `name` | `string` | Camel-case function name the LLM calls. |
+| `description` | `string` | Shown directly to the LLM — be precise. |
+| `parameters` | `JSON Schema` | Standard JSON Schema for input parameters. |
+| `signal` | `string` | Identification string on the frontend. |

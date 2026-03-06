@@ -1,0 +1,32 @@
+---
+title: FAQ
+description: Common questions about SynapseJS.
+---
+
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+<Accordions>
+<Accordion title="Does SynapseJS work with Next.js App Router?">
+Yes! SynapseJS is designed for App Router. The `Agent` class and tool definitions run server-side in API routes. The React hooks (`useSynapseDOM`, `useSynapseSignals`) are imported from `@synapsejs/core/client` and only run in Client Components.
+</Accordion>
+
+<Accordion title="Can I use SynapseJS with Pages Router or Vite-React?">
+Yes. For Pages Router, place your `Agent` in `pages/api/`. For Vite-React (no server), SynapseJS can still manage signals on the client — you'd call a third-party AI API directly and pass the tool call results through `processSignals`.
+</Accordion>
+
+<Accordion title="Is my API key safe?">
+Yes. The `Agent` class runs exclusively on the server in your API routes. Your API key is never sent to the browser. The client only receives the AI's text response and tool call signals — both of which are safe to expose.
+</Accordion>
+
+<Accordion title="How many elements should I mark with data-synapse?">
+Mark only the elements you want the AI to be aware of and interact with. A good rule of thumb: if the user might ask the AI to click, fill, or observe it, mark it. Keeping the DOM snapshot focused also reduces token usage and improves response accuracy.
+</Accordion>
+
+<Accordion title="Can I disable specific built-in tools?">
+Yes — use `ToolRegistry.unregister('toolName')` before the Agent is invoked. For example call `ToolRegistry.unregister('interactWith3DScene')` if you don't use Spline in your app.
+</Accordion>
+
+<Accordion title="What's the difference between useSynapseDOM and useSynapseSignals?">
+`useSynapseDOM` is an outgoing pipeline — it reads your DOM and packages info to send to the AI. `useSynapseSignals` is an incoming pipeline — it processes what the AI sends back and fires your UI handlers.
+</Accordion>
+</Accordions>

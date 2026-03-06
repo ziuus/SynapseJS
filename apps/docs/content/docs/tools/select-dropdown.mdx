@@ -1,0 +1,30 @@
+---
+title: selectDropdown
+description: Programmatically select an option in a dropdown menu.
+---
+
+The user wants to pick from a dropdown menu.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `SELECT_DROPDOWN` |
+| **Wave** | 2 — Interaction |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `elementId` | `string` | required | The ID of theelement |
+| `value` | `string` | required | The option value or visible label to select |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  agent calls selectDropdown({ elementId: "plan-select", value: "pro" })
+});
+```

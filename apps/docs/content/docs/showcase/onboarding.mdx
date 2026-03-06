@@ -1,0 +1,19 @@
+---
+title: Smart Onboarding Wizard
+description: Guiding users through complex multi-step forms with an AI concierge.
+---
+
+The Smart Onboarding showcase illustrates how SynapseJS can simplify complex, multi-step user workflows. The AI acts as a concierge, filling in data, selecting options, and navigating the setup process efficiently.
+
+### Key Features
+- **Multi-Step Flow**: The AI manages state transitions between wizard steps.
+- **Validation Awareness**: Wait for elements to appear before interacting.
+- **Automation**: Speed-run onboarding by filling out complex forms instantly.
+
+### Example Interactions
+
+| User Intent | Signal Emitted |
+| :--- | :--- |
+| "Fill step 1 and continue" | `FILL_FORM { fields: [...] }` followed by `UI_INTERACTION { action: "click" }` |
+| "Enable analytics and security" | `CHECKBOX_TOGGLE { elementId: "feature-analytics", checked: true }` |
+| "Finish the setup" | `UI_INTERACTION { elementId: "next-btn-2", action: "click" }` |

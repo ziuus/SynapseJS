@@ -1,0 +1,31 @@
+---
+title: highlightElement
+description: Visually emphasize any element on the page with a highlight border or glow.
+---
+
+Onboarding, tutorials, or pointing out a specific UI feature to the user.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `HIGHLIGHT_ELEMENT` |
+| **Wave** | 2 — Interaction |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `elementId` | `string` | required | The ID of the element to highlight |
+| `color` | `string` | optional | CSS color for the ring (default: #6366f1) |
+| `durationMs` | `number` | optional | Duration in ms (default: 2000) |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  agent calls highlightElement({ elementId: "settings-btn", durationMs: 3000 })
+});
+```

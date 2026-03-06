@@ -1,0 +1,34 @@
+---
+title: readScreenText
+description: Read the text content of any DOM element by its ID.
+---
+
+UsereadScreenTextwhen the user asks what something says, what the current count is, or any other question about displayed text. The AI passes the element's ID and the frontend reads the live DOM value.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `READ_ELEMENT` |
+| **Wave** | 1 — Core UI |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `elementId` | `string` | Yes | Thedata-synapseID of the element to read text from. |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  READ_ELEMENT: ({ elementId }) => {
+  const el = document.getElementById(elementId);
+  const text = el?.textContent ?? '';
+  // Send back to AI via a follow-up message
+  addMessage({ role: 'system', content: `Element "${elementId}" says: "${text}"` });
+},
+});
+```

@@ -1,0 +1,13 @@
+{
+  "name": "synapsejs-docs",
+  "version": "1.0.0",
+  "description": "SynapseJS Documentation Site",
+  "scripts": {
+    "dev": "npx -y serve . -p 3001 --no-clipboard",
+    "build": "echo 'Static site — no build needed'",
+    "start": "npx -y serve . -p 3001 --no-clipboard"
+  },
+  "dependencies": {
+    "@synapsejs/core": "^0.3.0"
+  }
+}

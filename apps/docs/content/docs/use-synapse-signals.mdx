@@ -1,0 +1,49 @@
+---
+title: useSynapseSignals
+description: Handle every AI signal with a single, typed hook.
+---
+
+`useSynapseSignals` is the recommended way to wire up your entire signal pipeline. You pass a handler map — one callback per signal type — and the hook returns a `processSignals` function that you call after each AI response.
+
+Each callback is fully typed via the `SynapseSignal` discriminated union.
+
+### Usage
+
+```tsx
+'use client';
+import { useSynapseSignals } from '@synapsejs/core/client';
+import { toast } from 'sonner';
+
+export default function Page() {
+  const { processSignals } = useSynapseSignals({
+    SHOW_NOTIFICATION: ({ message, type }) => toast[type](message),
+    NAVIGATE: ({ url }) => router.push(url),
+    SET_THEME: ({ theme }) => setTheme(theme),
+    OPEN_MODAL: ({ elementId }) => openModal(elementId),
+    FILL_FORM: ({ fields }) => fields.forEach(({ elementId, value }) => {
+      const el = document.getElementById(elementId) as HTMLInputElement;
+      if (el) el.value = value;
+    }),
+  });
+
+  const handleSend = async () => {
+    // After getting an AI response:
+    const data = await fetch('/api/chat', { /* ... */ }).then(r => r.json());
+    processSignals(data.messages.flatMap(m => m.toolCalls ?? []));
+  };
+}
+```
+
+### All Signal Types
+
+| Signal | Payload Fields |
+| :--- | :--- |
+| `UI_INTERACTION` | `elementId`, `action`, `value?` |
+| `FILL_FORM` | `fields: [{elementId, value}]` |
+| `NAVIGATE` | `url` |
+| `SHOW_NOTIFICATION` | `message`, `type?`, `durationMs?` |
+| `SCROLL_TO` | `elementId?`, `top?` |
+| `SET_THEME` | `theme` |
+| `OPEN_MODAL` | `elementId`, `action` |
+| `SELECT_DROPDOWN` | `elementId`, `value` |
+| `3D_INTERACTION` | `sceneId`, `actionType`, `target`, `value?` |

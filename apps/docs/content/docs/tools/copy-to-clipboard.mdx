@@ -1,0 +1,32 @@
+---
+title: copyToClipboard
+description: Copy any string of text to the user's clipboard.
+---
+
+UsecopyToClipboardwhen the user asks to copy a link, a code snippet, an API key, or any text. The AI provides the string and the frontend uses the Clipboard API.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `COPY_TO_CLIPBOARD` |
+| **Wave** | 2 — Enhanced |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `text` | `string` | Yes | The text to write to the clipboard. |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  COPY_TO_CLIPBOARD: async ({ text }) => {
+  await navigator.clipboard.writeText(text);
+  showToast('Copied to clipboard!', 'success');
+},
+});
+```

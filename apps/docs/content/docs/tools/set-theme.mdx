@@ -1,0 +1,29 @@
+---
+title: setTheme
+description: Switch between light, dark, or custom themes across the application.
+---
+
+The user asks to switch to dark mode, light mode, or any named theme.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `SET_THEME` |
+| **Wave** | 3 — Power |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `theme` | `string` | required | Theme name to apply: "dark", "light", "ocean", etc. |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  agent calls setTheme({ theme: "dark" })
+});
+```

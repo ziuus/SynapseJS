@@ -1,0 +1,37 @@
+---
+title: downloadFile
+description: Trigger a browser file download from any URL.
+---
+
+UsedownloadFilewhen the user asks to download an export, a report, a CSV, or any binary asset. The frontend creates a temporary anchor element and triggers a click.
+
+### Details
+
+| Property | Value |
+| :--- | :--- |
+| **Signal** | `DOWNLOAD_FILE` |
+| **Wave** | 3 — Power |
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `url` | `string` | Yes | The URL of the file to download. Can be an API route, blob URL, or external link. |
+| `filename` | `string` | No | Suggested filename for the saved file, e.g."report-2026.csv". |
+
+
+### Frontend Handler
+
+```tsx
+// app/page.tsx
+const { processSignals } = useSynapseSignals({
+  DOWNLOAD_FILE: ({ url, filename }) => {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename ?? '';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+},
+});
+```

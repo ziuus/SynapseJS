@@ -1,0 +1,40 @@
+---
+title: Changelog
+description: All notable changes to SynapseJS.
+---
+
+### v0.3.0
+*March 2026*
+
+**New Features**
+- **Wave 3 tools**: `waitForElement`, `getPageUrl`, `setPageTitle`, `openModal`, `downloadFile`, `submitForm`, `checkboxToggle`, `setTheme`
+- **3D Integration**: `interactWith3DScene` for Spline designs
+- **New hook**: `useSynapseSignals` — handles all 20 signal types with one import
+- **Showcase Gallery**: 4 high-fidelity demos (Shopping, SaaS, 3D, Onboarding)
+- **Production documentation platform**: migrated to Next.js + Fumadocs
+
+**Improvements**
+- **Server/client split**: hooks now in `@synapsejs/core/client` — zero SSR errors
+- **Expanded API**: `ToolRegistry.unregister()`, `has()`, and `list()` methods added
+- **Rebranding**: Finalized SynapseJS identity with scoped package `@synapsejs/core`
+
+---
+
+### v0.2.0
+*February 2026*
+
+**New Features**
+- **Wave 2 tools**: `scrollTo`, `copyToClipboard`, `toggleElement`, `selectDropdown`, `highlightElement`
+- **Multi-provider support**: Groq, Google Gemini, OpenAI
+- **Gemini 2.0 Flash**: Native integration with optimized tool-call format
+
+---
+
+### v0.1.0
+*January 2026*
+
+**Initial Release**
+- **Wave 1 tools**: `interactWithScreen`, `readScreenText`, `observeState`, `fillForm`, `navigateTo`, `showNotification`
+- **Core Engine**: `Agent` class with Groq provider support
+- **DOM Integration**: `useSynapseDOM` hook for live snapshots
+- **Monorepo**: Established project structure with `@synapsejs/core`
