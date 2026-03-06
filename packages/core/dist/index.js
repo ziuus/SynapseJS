@@ -425,7 +425,7 @@ If you are asked about the state (like cart count), look for elements in the DOM
 If the DOM state contains 'type: 3d-scene', you can use the 'interactWith3DScene' tool to trigger its available events or variables.
 Always respond to the user after performing actions.`;
     const response = await (0, import_ai.generateText)({
-      model: google(this.config.model || "gemini-1.5-flash"),
+      model: google(this.config.model || "gemini-2.0-flash-exp"),
       system: this.getFullSystemPrompt(defaultSystem),
       messages,
       tools: this.getAITools(),

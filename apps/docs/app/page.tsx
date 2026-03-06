@@ -10,6 +10,9 @@ import './landing.css';
 
 export default function LandingPage() {
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
   // ── SynapseJS real integration ───────────────────────────────────────────
   const domElements = useSynapseDOM();
@@ -33,16 +36,34 @@ export default function LandingPage() {
     }
   });
 
-  const { messages, input, setInput, append, isLoading } = useChat({
-    api: '/api/chat',
-    body: { domElements },
-    onFinish: (message) => {
-       // Extract and process tool calls from the message if they exist
-       if (message.toolCalls) {
-          processSignals(message.toolCalls as any);
-       }
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
+    const userMsg = { role: 'user', content: input };
+    const history = [...messages, userMsg];
+    setMessages(history);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: history, domElements })
+      });
+      const data = await res.json();
+      if (data.messages) {
+        setMessages(data.messages);
+        const latestAssistantMsg = data.messages[data.messages.length - 1];
+        if (latestAssistantMsg.toolCalls) {
+          processSignals(latestAssistantMsg.toolCalls);
+        }
+      }
+    } catch (e) {
+      console.error('Chat error:', e);
+    } finally {
+      setIsLoading(false);
     }
-  });
+  };
 
   const chatMessages = messages.length > 0 ? messages.map(m => ({ 
     role: m.role === 'user' ? 'user' : 'ai', 
@@ -204,11 +225,6 @@ export default function LandingPage() {
     });
   }, []);
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
-    append({ role: 'user', content: input });
-    setInput('');
-  };
 
   return (
     <div className="landing-body">
