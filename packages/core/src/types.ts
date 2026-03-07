@@ -24,7 +24,7 @@ export interface Tool<TArgs = any, TResult = any> {
 }
 
 export interface AgentConfig {
-  llmProvider: 'openai' | 'gemini' | 'groq' | 'mock';
+  llmProvider: 'openai' | 'gemini' | 'groq' | 'anthropic' | 'mistral' | 'perplexity' | 'fireworks' | 'together' | 'cohere' | 'mock';
   apiKey?: string;
   systemPrompt?: string;
   model?: string;
