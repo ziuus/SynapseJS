@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode, useEffect } from 'react';
-import { Agent, SynapseFeat } from '@synapsejs/core';
+import { Agent, SynapseFeat } from '@synapsenodes/core';
 
 interface SynapseContextType {
   agent: Agent;

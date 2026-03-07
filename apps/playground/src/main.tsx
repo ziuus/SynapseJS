@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { SynapseProvider, createAgent } from '@synapsejs/react';
+import { SynapseProvider, createAgent } from '@synapsenodes/react';
 import { z } from 'zod';
 
 const runtime = createAgent({

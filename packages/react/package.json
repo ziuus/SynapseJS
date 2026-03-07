@@ -1,5 +1,5 @@
 {
-  "name": "@synapsejs/react",
+  "name": "@synapsenodes/react",
   "version": "0.3.0",
   "description": "React Adapter for SynapseJS",
   "main": "dist/index.js",
@@ -13,7 +13,7 @@
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch"
   },
   "dependencies": {
-    "@synapsejs/core": "^0.3.0"
+    "@synapsenodes/core": "^0.3.0"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

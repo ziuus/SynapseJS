@@ -6,7 +6,7 @@ description: Add AI superpowers to your Next.js app in under 5 minutes.
 ### 1. Install
 
 ```bash
-npm install @synapsejs/core
+npm install @synapsenodes/core
 ```
 
 ### 2. Set environment variables
@@ -28,7 +28,7 @@ GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxxxxxxx
 
 ```typescript
 // app/api/chat/route.ts
-import { Agent } from '@synapsejs/core';
+import { Agent } from '@synapsenodes/core';
 
 const agent = new Agent({
   llmProvider: 'groq',
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 // app/page.tsx
 'use client';
 import { useState } from 'react';
-import { useSynapseDOM, useSynapseSignals } from '@synapsejs/core/client';
+import { useSynapseDOM, useSynapseSignals } from '@synapsenodes/core/client';
 
 export default function Page() {
   const [messages, setMessages] = useState([]);

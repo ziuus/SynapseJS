@@ -1,11 +1,11 @@
-# @synapsejs/core
+# @synapsenodes/core
 
 The AI Runtime Layer for Frontend Applications. SynapseJS bridges your LLM (Groq, Gemini, OpenAI) and your web UI, providing a structured toolkit for AI agents to interact with the DOM.
 
 ## Installation
 
 ```bash
-npm install @synapsejs/core
+npm install @synapsenodes/core
 ```
 
 ## Features
@@ -18,7 +18,7 @@ npm install @synapsejs/core
 ## Quick Start
 
 ```typescript
-import { Agent } from "@synapsejs/core";
+import { Agent } from "@synapsenodes/core";
 
 const agent = new Agent({
   llmProvider: "groq",

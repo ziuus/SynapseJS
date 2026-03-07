@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@synapsejs/core": "file:../../packages/core",
-    "@synapsejs/react": "file:../../packages/react",
+    "@synapsenodes/core": "file:../../packages/core",
+    "@synapsenodes/react": "file:../../packages/react",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "zod": "^3.23.8"

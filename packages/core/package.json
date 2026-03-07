@@ -1,5 +1,5 @@
 {
-  "name": "@synapsejs/core",
+  "name": "@synapsenodes/core",
   "version": "0.3.0",
   "description": "The AI Runtime Layer for Frontend Applications",
   "main": "./dist/index.js",

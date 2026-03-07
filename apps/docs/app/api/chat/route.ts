@@ -1,4 +1,4 @@
-import { createAgent, UIInsightsFeat, VisionFeat } from '@synapsejs/core';
+import { createAgent, UIInsightsFeat, VisionFeat } from '@synapsenodes/core';
 
 // Instantiate the SynapseJS Agent for the Docs app
 const agent = createAgent({

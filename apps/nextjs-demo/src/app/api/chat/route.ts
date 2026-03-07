@@ -1,4 +1,4 @@
-import { createAgent, UIInsightsFeat, VisionFeat } from '@synapsejs/core';
+import { createAgent, UIInsightsFeat, VisionFeat } from '@synapsenodes/core';
 import { z } from 'zod';
 
 // Force the edge runtime for better performance and AI SDK streaming compatibility

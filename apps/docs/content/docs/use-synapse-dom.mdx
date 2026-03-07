@@ -5,13 +5,13 @@ description: Give the AI a live snapshot of your DOM elements.
 
 `useSynapseDOM` scans your React tree for all elements with a `data-synapse` attribute and returns a serialized map of them. This map is sent to the Agent so it knows exactly what elements exist on screen and what their current state is.
 
-Import from `@synapsejs/core/client` to avoid SSR issues — the hook only runs in the browser.
+Import from `@synapsenodes/core/client` to avoid SSR issues — the hook only runs in the browser.
 
 ### Usage
 
 ```tsx
 'use client';
-import { useSynapseDOM } from '@synapsejs/core/client';
+import { useSynapseDOM } from '@synapsenodes/core/client';
 
 export default function Page() {
   // Returns an object mapping data-synapse IDs → element metadata

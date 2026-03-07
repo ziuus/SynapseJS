@@ -48,7 +48,7 @@ function useAgent() {
 }
 
 // src/index.ts
-var import_core = require("@synapsejs/core");
+var import_core = require("@synapsenodes/core");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   Agent,

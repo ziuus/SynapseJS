@@ -2,7 +2,7 @@
   <h1>⚡ SynapseJS</h1>
   <p><strong>The AI Runtime Layer for Frontend Applications</strong></p>
   <p>
-    <a href="https://www.npmjs.com/package/@synapsejs/core"><img src="https://img.shields.io/npm/v/@synapsejs/core?color=6366f1&label=npm" alt="npm version"></a>
+    <a href="https://www.npmjs.com/package/@synapsenodes/core"><img src="https://img.shields.io/npm/v/@synapsenodes/core?color=6366f1&label=npm" alt="npm version"></a>
     <img src="https://img.shields.io/badge/tools-20_built--in-emerald?color=10b981" alt="20 built-in tools">
     <img src="https://img.shields.io/badge/providers-Groq%20%7C%20Gemini%20%7C%20OpenAI-8b5cf6" alt="providers">
     <img src="https://img.shields.io/badge/TypeScript-5.x-3178c6" alt="TypeScript">
@@ -47,16 +47,16 @@ const result = await agent.run([
 ### 1. Install
 
 ```bash
-npm install @synapsejs/core
+npm install @synapsenodes/core
 # or
-pnpm add @synapsejs/core
+pnpm add @synapsenodes/core
 ```
 
 ### 2. Create an Agent (backend — Next.js API route)
 
 ```ts
 // app/api/chat/route.ts
-import { Agent } from "@synapsejs/core";
+import { Agent } from "@synapsenodes/core";
 
 export async function POST(req: Request) {
   const { messages, domElements } = await req.json();
@@ -87,7 +87,7 @@ export async function POST(req: Request) {
 ```tsx
 // app/page.tsx
 "use client";
-import { useSynapseDOM, useSynapseSignals } from "@synapsejs/core/client";
+import { useSynapseDOM, useSynapseSignals } from "@synapsenodes/core/client";
 
 export default function Page() {
   const domElements = useSynapseDOM(); // auto-scans interactive elements
@@ -174,7 +174,7 @@ SynapseJS ships **20 tools** that are registered automatically — no configurat
 Register any tool that runs your own business logic:
 
 ```ts
-import { Agent } from "@synapsejs/core";
+import { Agent } from "@synapsenodes/core";
 import { z } from "zod";
 
 const agent = new Agent({ llmProvider: "groq", apiKey: "..." });
@@ -223,7 +223,7 @@ agent.tools.execute(name, args); // Run a tool      → Promise<any>
 Automatically scans the DOM and returns a simplified JSON snapshot the LLM uses to understand your UI:
 
 ```tsx
-import { useSynapseDOM } from "@synapsejs/core/client";
+import { useSynapseDOM } from "@synapsenodes/core/client";
 
 const domElements = useSynapseDOM();
 // Returns: [{ id: 'submit-btn', type: 'button', text: 'Submit', actionable: true }, ...]
@@ -249,7 +249,7 @@ Tag any element for AI visibility:
 The zero-boilerplate way to handle any signal the AI emits:
 
 ```tsx
-import { useSynapseSignals } from "@synapsejs/core/client";
+import { useSynapseSignals } from "@synapsenodes/core/client";
 
 const { processSignals } = useSynapseSignals({
   UI_INTERACTION: ({ elementId, action, value }) => {
@@ -362,7 +362,7 @@ import type {
   SynapseToolName,
   Tool,
   CoreMessage,
-} from "@synapsejs/core";
+} from "@synapsenodes/core";
 ```
 
 ---

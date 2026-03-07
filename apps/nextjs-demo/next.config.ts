@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@synapsejs/core"],
+  transpilePackages: ["@synapsenodes/core"],
 };
 
 export default nextConfig;

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useSynapseDOM } from '@synapsejs/core/client';
+import { useSynapseDOM } from '@synapsenodes/core/client';
 import SplineScene from './SplineScene';
 
 type Message = { role: 'user' | 'assistant', content: string, toolCalls?: any[] };

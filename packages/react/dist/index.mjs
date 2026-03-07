@@ -19,7 +19,7 @@ function useAgent() {
 }
 
 // src/index.ts
-import { createAgent, Agent } from "@synapsejs/core";
+import { createAgent, Agent } from "@synapsenodes/core";
 export {
   Agent,
   SynapseProvider,

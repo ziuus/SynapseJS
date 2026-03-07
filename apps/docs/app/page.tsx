@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useSynapseDOM } from '@synapsejs/core/client';
+import { useSynapseDOM } from '@synapsenodes/core/client';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';

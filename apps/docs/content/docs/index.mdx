@@ -13,7 +13,7 @@ Every interaction flows through a typed signal pipeline, so your frontend stays 
 
 ### 1. The API Route (app/api/chat/route.ts)
 ```ts
-import { Agent } from '@synapsejs/core';
+import { Agent } from '@synapsenodes/core';
 
 const agent = new Agent({
   llmProvider: 'groq',
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 ### 2. The React Hook (app/page.tsx)
 ```tsx
 'use client';
-import { useSynapseDOM, useSynapseSignals } from '@synapsejs/core/client';
+import { useSynapseDOM, useSynapseSignals } from '@synapsenodes/core/client';
 
 export default function Page() {
   const domElements = useSynapseDOM();

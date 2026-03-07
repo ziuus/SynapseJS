@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@ai-sdk/react": "^3.0.118",
-    "@synapsejs/core": "file:../../packages/core",
-    "@synapsejs/react": "file:../../packages/react",
+    "@synapsenodes/core": "file:../../packages/core",
+    "@synapsenodes/react": "file:../../packages/react",
     "@types/gsap": "^1.20.2",
     "@types/mdx": "^2.0.13",
     "fumadocs-core": "^16.6.9",

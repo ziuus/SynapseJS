@@ -1,11 +1,11 @@
-# @synapsejs/react
+# @synapsenodes/react
 
 The React adapter for SynapseJS. Provides hooks for seamless integration of AI agents into React and Next.js applications.
 
 ## Installation
 
 ```bash
-npm install @synapsejs/core @synapsejs/react
+npm install @synapsenodes/core @synapsenodes/react
 ```
 
 ## Hooks
@@ -19,7 +19,7 @@ Scans the document for interactive elements and returns a compact representation
 A powerful hook for handling signals emitted by the AI agent.
 
 ```tsx
-import { useSynapseDOM, useSynapseSignals } from "@synapsejs/react";
+import { useSynapseDOM, useSynapseSignals } from "@synapsenodes/react";
 
 function Chat() {
   const domElements = useSynapseDOM();

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSynapseDOM, useSynapseSignals } from '@synapsejs/core/client';
+import { useSynapseDOM, useSynapseSignals } from '@synapsenodes/core/client';
 
 export function FloatingAssistant() {
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);

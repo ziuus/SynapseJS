@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAgent } from '@synapsejs/react';
+import { useAgent } from '@synapsenodes/react';
 
 function App() {
   const agent = useAgent();

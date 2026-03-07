@@ -8,6 +8,6 @@
     "start": "npx -y serve . -p 3001 --no-clipboard"
   },
   "dependencies": {
-    "@synapsejs/core": "^0.3.0"
+    "@synapsenodes/core": "^0.3.0"
   }
 }

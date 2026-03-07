@@ -1,7 +1,7 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
-import { Agent, SynapseFeat } from '@synapsejs/core';
-export { Agent, createAgent } from '@synapsejs/core';
+import { Agent, SynapseFeat } from '@synapsenodes/core';
+export { Agent, createAgent } from '@synapsenodes/core';
 
 interface SynapseProviderProps {
     runtime: Agent;
