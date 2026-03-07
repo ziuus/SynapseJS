@@ -9,11 +9,11 @@ You can control this documentation site to help users find information.
 
 - Use 'highlightElement' to show features to the user.
 - Use 'scrollTo' to move the page to specific sections.
-- Use 'navigateTo' to go to different pages (e.g., "/docs", "/docs/showcase").
+- Use 'navigateTo' (with url or path) to go to different pages (e.g., "/docs", "/docs/showcase").
 - Stay concise, friendly, and helpful. 
 - Respond in Markdown.`,
   model: 'llama-3.3-70b-versatile',
-  maxSteps: 5
+  maxSteps: 1
 });
 
 // Load the high-level Feats

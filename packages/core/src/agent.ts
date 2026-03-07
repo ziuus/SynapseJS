@@ -73,13 +73,14 @@ export class Agent {
       name: 'navigateTo',
       description: 'Navigate the browser to a different page, route, or URL. Use when the user asks to go to a different page, section, or route.',
       schema: z.object({
-        url: z.string().describe('The URL or relative path to navigate to, e.g. "/about" or "https://example.com"'),
+        url: z.string().optional().describe('The URL or relative path to navigate to, e.g. "/about"'),
+        path: z.string().optional().describe('The relative path to navigate to, e.g. "/docs"'),
         newTab: z.boolean().optional().describe('If true, open the URL in a new browser tab'),
       }) as any,
-      execute: async ({ url, newTab }: any) => {
+      execute: async ({ url, path, newTab }: any) => {
         return {
           _synapseSignal: 'NAVIGATE',
-          payload: { url, newTab }
+          payload: { url: url || path, newTab }
         };
       }
     });
@@ -186,11 +187,15 @@ export class Agent {
       name: 'highlightElement',
       description: 'Visually highlight a specific UI element to draw the user\'s attention to it. Useful for tutorials, onboarding, and pointing out features.',
       schema: z.object({
-        elementId: z.string().describe('The ID of the element to highlight'),
+        elementId: z.string().optional().describe('The ID of the element to highlight'),
+        id: z.string().optional().describe('The element ID to highlight (alias for elementId)'),
         color: z.string().optional().describe('CSS color for the highlight ring, default is indigo'),
         durationMs: z.number().optional().describe('How long to show the highlight in milliseconds, default 2000'),
       }) as any,
-      execute: async (args: any) => ({ _synapseSignal: 'HIGHLIGHT_ELEMENT', payload: args })
+      execute: async (args: any) => ({ 
+        _synapseSignal: 'HIGHLIGHT_ELEMENT', 
+        payload: { ...args, elementId: args.elementId || args.id } 
+      })
     });
 
     // ── WAVE 3 INTEGRATIONS ─────────────────────────────────────────────────
@@ -339,6 +344,8 @@ export class Agent {
     }
 
     if (this.config.llmProvider === 'groq') {
+      const aiTools = this.getAITools();
+      console.log(`[SynapseJS] Starting runGroq with tools:`, Object.keys(aiTools));
       return this.runGroq(messages, context);
     }
 
@@ -356,7 +363,9 @@ export class Agent {
         parameters: t.schema || z.object({}),
         execute: async (args: any) => {
           console.log(`[SynapseJS] Tool Executing: ${t.name} | Args:`, JSON.stringify(args));
-          return await this.tools.execute(t.name, args);
+          // Return a simple string to the AI reasoning loop to keep it stable.
+          // The actual signal will be extracted from the tool call history.
+          return "Tool executed. UI signal triggered.";
         }
       });
     }
@@ -371,23 +380,21 @@ export class Agent {
       apiKey: this.config.apiKey,
     });
 
-    const defaultSystem = `You are Axon, an intelligent UI Agent. 
-You have access to a suite of tools to control the application.
-You will be provided with a 'Current Live DOM State' in the context as a JSON list. 
-
-CRITICAL: 
-- For specific actions, use specific tools: 'highlightElement' to draw attention, 'scrollTo' to move the page, 'navigateTo' to change routes.
-- Use 'interactWithScreen' with action='click' ONLY if no specific tool fits.
-- Always find the exact 'id' from the DOM state.
-- Respond to the user after performing actions.`;
+    const defaultSystem = `You are Synapse Assistant, a helpful UI specialized agent.
+You help users by interacting with this documentation site.
+- Use 'highlightElement' to draw attention to features.
+- Use 'scrollTo' to move the page to specific sections.
+- Use 'navigateTo' to change routes (e.g., "/docs").
+- Stay concise, friendly, and helpful. 
+- ALWAYS respond to the user AFTER performing actions.`;
 
     try {
       const response = await (generateText as any)({
-        model: google('gemini-1.5-pro'),
+        model: google('gemini-1.5-flash'),
         system: this.getFullSystemPrompt(defaultSystem),
         messages: messages as any,
         tools: this.getAITools(),
-        maxSteps: this.config.maxSteps || 5,
+        maxSteps: 5,
       });
 
       const allToolCalls = (response.steps || []).flatMap((step: any) => 
@@ -395,7 +402,7 @@ CRITICAL:
       );
 
       return { 
-        text: response.text.trim(), 
+        text: response.text.trim() || "Execution complete.", 
         toolCalls: allToolCalls 
       };
     } catch (e: any) {
@@ -412,48 +419,90 @@ CRITICAL:
    * The semantic execution loop using Groq via the AI SDK.
    */
   private async runGroq(messages: CoreMessage[], context?: any): Promise<AgentResponse> {
-    const groq = createOpenAI({
+    const groq = createGroq({
       apiKey: this.config.apiKey,
-      baseURL: 'https://api.groq.com/openai/v1',
     });
 
-    const defaultSystem = `You are Axon, an intelligent UI Agent. 
-You have access to a suite of tools to control the application.
-You will be provided with a 'Current Live DOM State' in the context as a JSON list. 
+    const toolDefinitions = this.tools.getAllTools().map(t => ({
+      name: t.name,
+      description: t.description,
+      parameters: zodToJsonSchema(t.schema as any)
+    }));
 
-CRITICAL: 
-- For specific actions, use specific tools: 'highlightElement' to draw attention, 'scrollTo' to move the page, 'navigateTo' to change routes.
-- Use 'interactWithScreen' with action='click' ONLY if no specific tool fits.
-- Always find the exact 'id' from the DOM state.
-- Respond to the user after performing actions.`;
+    const defaultSystem = `You are Synapse Assistant, a specialized UI agent.
+You help users by interacting with the page.
 
-    // Groq and other OpenAI-compatible providers can be strict about protocol.
-    // We sanitize to ensure role alternation and remove incomplete tool turns.
-    const sanitizedMessages = messages.map((m: any) => {
-      // Create a clean copy without extra fields that might trigger 400s
-      const cleanMsg: any = { role: m.role, content: m.content || "" };
-      if (m.toolCalls && m.toolCalls.length > 0) {
-        cleanMsg.toolCalls = m.toolCalls;
+IMPORTANT: To use a tool, you MUST use this exact format at the beginning of your response:
+[TOOL_CALL: {"name": "toolName", "args": { ... }}]
+
+EXAMPLES:
+User: "Show me the features"
+Assistant: [TOOL_CALL: {"name": "highlightElement", "args": {"elementId": "features"}}] I've highlighted the features for you!
+
+User: "Go to docs"
+Assistant: [TOOL_CALL: {"name": "navigateTo", "args": {"url": "/docs"}}] Certainly! Moving to the documentation.
+
+AVAILABLE TOOLS:
+${JSON.stringify(toolDefinitions, null, 2)}
+
+Stay concise and helpful.`;
+
+    const sanitizedMessages = messages.filter(m => (m as any).role !== 'system').map((m: any) => ({
+      role: m.role,
+      content: m.content || ""
+    }));
+
+    try {
+      const response = await (generateText as any)({
+        model: groq('llama-3.3-70b-versatile'),
+        system: this.getFullSystemPrompt(defaultSystem),
+        messages: sanitizedMessages,
+      });
+
+      const text = response.text.trim();
+      const toolCalls: any[] = [];
+
+      // Primary strategy: [TOOL_CALL: { ... }]
+      const formalRegex = /\[TOOL_CALL:\s*(\{.*?\})\]/gi;
+      let match;
+      while ((match = formalRegex.exec(text)) !== null) {
+        try {
+          toolCalls.push(JSON.parse(match[1]));
+        } catch (e) {}
       }
-      return cleanMsg;
-    });
 
-    const response = await (generateText as any)({
-      model: groq('llama-3.3-70b-versatile'),
-      system: this.getFullSystemPrompt(defaultSystem),
-      messages: sanitizedMessages,
-      tools: this.getAITools(),
-      maxSteps: this.config.maxSteps || 5,
-    });
+      // Broad fallback for varied hallucinations (markdown, code blocks, etc)
+      const catchAllRegex = /(\w+)\(\s*(\{.*?\}|["'].*?["'])\s*\)/g;
+      if (toolCalls.length === 0) {
+        while ((match = catchAllRegex.exec(text)) !== null) {
+          try {
+            const name = match[1];
+            let rawArgs = match[2].trim();
+            let args: any = {};
+            if (rawArgs.startsWith('{')) {
+               args = JSON.parse(rawArgs);
+            } else {
+               const val = rawArgs.replace(/['"]/g, '');
+               if (name === 'navigateTo') args = { url: val };
+               if (name === 'highlightElement') args = { elementId: val };
+            }
+            if (this.tools.getTool(name)) {
+               toolCalls.push({ name, args });
+            }
+          } catch (e) {}
+        }
+      }
 
-    const allToolCalls = (response.steps || []).flatMap((step: any) => 
-       (step.toolCalls || []).map((tc: any) => ({ name: tc.toolName, args: tc.args }))
-    );
+      const cleanText = text.replace(formalRegex, '').replace(catchAllRegex, '').replace(/```\w*\n?|```/g, '').trim();
 
-    return { 
-      text: response.text.trim(), 
-      toolCalls: allToolCalls 
-    };
+      return { 
+        text: cleanText || "Action complete.", 
+        toolCalls 
+      };
+    } catch (e: any) {
+      console.error("[SynapseJS] Agent.runGroq Error:", e);
+      throw e;
+    }
   }
 
   /**
